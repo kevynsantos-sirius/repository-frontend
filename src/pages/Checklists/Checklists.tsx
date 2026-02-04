@@ -1,8 +1,80 @@
+import AppLayout from '../../layouts/AppLayout'
+
 export default function Checklists() {
   return (
-    <div className="container mt-4">
-      <h3>Checklists</h3>
-      <p>Lista de checklists será exibida aqui</p>
-    </div>
+    <AppLayout>
+
+      {/* HEADER / SUBMENU */}
+      <div className="content-header">
+        <div className="submenu-top">
+          <button className="submenu-item">Identificação</button>
+          <button className="submenu-item">TI</button>
+          <button className="submenu-item active">Checklists</button>
+          <button className="submenu-item">Modelo</button>
+        </div>
+
+        <button className="btn btn-outline-secondary btn-versoes">
+          Versões
+        </button>
+      </div>
+
+      {/* CONTEÚDO */}
+      <div className="card p-4">
+
+        <div className="row mb-3">
+          <div className="col-md-6">
+            <label>Categoria</label>
+            <select className="form-select">
+              <option>Selecione</option>
+              <option>Obrigatório</option>
+              <option>Opcional</option>
+            </select>
+          </div>
+
+          <div className="col-md-6">
+            <label>Status</label>
+            <select className="form-select">
+              <option>Ativo</option>
+              <option>Inativo</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="table-responsive">
+          <table className="table table-bordered">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Obrigatório</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Documento assinado</td>
+                <td>Sim</td>
+                <td>
+                  <button className="btn btn-sm btn-outline-primary">
+                    Editar
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="d-flex gap-2 mt-3">
+          <button className="btn btn-salvar">
+            Salvar
+          </button>
+
+          <button className="btn btn-cancelar">
+            Cancelar
+          </button>
+        </div>
+
+      </div>
+
+    </AppLayout>
   )
 }

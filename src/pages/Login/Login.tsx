@@ -1,19 +1,9 @@
-import Notiflix from 'notiflix'
-import '../../assets/css/login.css'
+// pages/Login/Login.tsx
+import AuthLayout from '../../layouts/AuthLayout'
 
 export default function Login() {
-  function submit(e) {
-    e.preventDefault()
-    Notiflix.Loading.standard('Carregando, aguarde...')
-
-    setTimeout(() => {
-      Notiflix.Loading.remove()
-      window.location.href = '/home'
-    }, 1200)
-  }
-
   return (
-    <div className="login-bg">
+    <AuthLayout>
       <div className="container">
         <div className="row justify-content-center align-items-center min-vh-100">
           <div className="col-md-4">
@@ -24,15 +14,15 @@ export default function Login() {
                   <small className="text-muted">Checklist Online</small>
                 </div>
 
-                <form onSubmit={submit}>
+                <form>
                   <div className="mb-3">
                     <label className="form-label">Login</label>
-                    <input className="form-control" required />
+                    <input className="form-control" />
                   </div>
 
                   <div className="mb-3">
                     <label className="form-label">Senha</label>
-                    <input type="password" className="form-control" required />
+                    <input type="password" className="form-control" />
                   </div>
 
                   <button className="btn btn-primary w-100">
@@ -48,6 +38,6 @@ export default function Login() {
           </div>
         </div>
       </div>
-    </div>
+    </AuthLayout>
   )
 }

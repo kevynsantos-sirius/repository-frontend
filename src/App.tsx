@@ -1,11 +1,11 @@
 import { Routes, Route } from 'react-router-dom'
 
-import Login from './pages/Login/Login.tsx'
-import Home from './pages/Home/Home.tsx'
-import Identificacao from './pages/Identificacao/Identificacao.tsx'
-import TI from './pages/TI/TI.tsx'
-import Checklists from './pages/Checklists/Checklists.tsx'
-import Modelo from './pages/Modelo/Modelo.tsx'
+import Login from './pages/Login/Login'
+import Home from './pages/Home/Home'
+import Identificacao from './pages/Identificacao/Identificacao'
+import TI from './pages/TI/TI'
+import Checklists from './pages/Checklists/Checklists'
+import Modelo from './pages/Modelo/Modelo'
 
 export default function App() {
   return (
