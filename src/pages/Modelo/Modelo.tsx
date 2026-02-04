@@ -1,24 +1,12 @@
 import AppLayout from '../../layouts/AppLayout'
+import SubmenuHeader from '../../components/SubmenuHeader/SubmenuHeader'
 
 export default function Modelo() {
   return (
     <AppLayout>
 
-      {/* HEADER / SUBMENU */}
-      <div className="content-header">
-        <div className="submenu-top">
-          <button className="submenu-item">Identificação</button>
-          <button className="submenu-item">TI</button>
-          <button className="submenu-item">Checklists</button>
-          <button className="submenu-item active">Modelo</button>
-        </div>
+      <SubmenuHeader active="modelo" />
 
-        <button className="btn btn-outline-secondary btn-versoes">
-          Versões
-        </button>
-      </div>
-
-      {/* FORMULÁRIO */}
       <form className="card p-4">
 
         <div className="mb-3">

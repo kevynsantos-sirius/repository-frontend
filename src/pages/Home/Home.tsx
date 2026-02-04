@@ -1,22 +1,11 @@
-// pages/Home/Home.tsx
 import AppLayout from '../../layouts/AppLayout'
+import SubmenuHeader from '../../components/SubmenuHeader/SubmenuHeader'
 
 export default function Home() {
   return (
     <AppLayout>
 
-      <div className="content-header">
-        <div className="submenu-top">
-          <button className="submenu-item active">Identificação</button>
-          <button className="submenu-item">TI</button>
-          <button className="submenu-item">Checklists</button>
-          <button className="submenu-item">Modelo</button>
-        </div>
-
-        <button className="btn btn-outline-secondary btn-versoes">
-          Versões
-        </button>
-      </div>
+      <SubmenuHeader active="identificacao" />
 
       <div className="card p-4">
         <h5>Selecione uma opção no menu</h5>

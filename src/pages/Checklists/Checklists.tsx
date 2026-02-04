@@ -1,24 +1,12 @@
 import AppLayout from '../../layouts/AppLayout'
+import SubmenuHeader from '../../components/SubmenuHeader/SubmenuHeader'
 
 export default function Checklists() {
   return (
     <AppLayout>
 
-      {/* HEADER / SUBMENU */}
-      <div className="content-header">
-        <div className="submenu-top">
-          <button className="submenu-item">Identificação</button>
-          <button className="submenu-item">TI</button>
-          <button className="submenu-item active">Checklists</button>
-          <button className="submenu-item">Modelo</button>
-        </div>
+      <SubmenuHeader active="ti" />
 
-        <button className="btn btn-outline-secondary btn-versoes">
-          Versões
-        </button>
-      </div>
-
-      {/* CONTEÚDO */}
       <div className="card p-4">
 
         <div className="row mb-3">
