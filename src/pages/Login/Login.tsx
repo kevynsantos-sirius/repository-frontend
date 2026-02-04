@@ -1,43 +1,51 @@
-// pages/Login/Login.tsx
-import AuthLayout from '../../layouts/AuthLayout'
+import { useState } from 'react'
+import { login } from '../../services/authService'
 
 export default function Login() {
+  const [usuario, setUsuario] = useState('')
+  const [senha, setSenha] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  async function handleLogin() {
+    try {
+      setLoading(true)
+      await login(usuario, senha)
+      window.location.href = '/home'
+    } catch {
+      alert('Usuário ou senha inválidos')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
-    <AuthLayout>
-      <div className="container">
-        <div className="row justify-content-center align-items-center min-vh-100">
-          <div className="col-md-4">
-            <div className="card shadow-sm">
-              <div className="card-body p-4">
-                <div className="text-center mb-4">
-                  <h3 className="fw-bold text-primary">PADD</h3>
-                  <small className="text-muted">Checklist Online</small>
-                </div>
+    <div className="d-flex justify-content-center align-items-center vh-100">
+      <div className="card p-4" style={{ width: 360 }}>
+        <h5 className="mb-3">Login</h5>
 
-                <form>
-                  <div className="mb-3">
-                    <label className="form-label">Login</label>
-                    <input className="form-control" />
-                  </div>
+        <input
+          className="form-control mb-2"
+          placeholder="Usuário"
+          value={usuario}
+          onChange={e => setUsuario(e.target.value)}
+        />
 
-                  <div className="mb-3">
-                    <label className="form-label">Senha</label>
-                    <input type="password" className="form-control" />
-                  </div>
+        <input
+          type="password"
+          className="form-control mb-3"
+          placeholder="Senha"
+          value={senha}
+          onChange={e => setSenha(e.target.value)}
+        />
 
-                  <button className="btn btn-primary w-100">
-                    Entrar
-                  </button>
-                </form>
-              </div>
-            </div>
-
-            <p className="text-center text-muted mt-3 small">
-              © 2025 ChecklistOnline
-            </p>
-          </div>
-        </div>
+        <button
+          className="btn btn-primary w-100"
+          onClick={handleLogin}
+          disabled={loading}
+        >
+          Entrar
+        </button>
       </div>
-    </AuthLayout>
+    </div>
   )
 }
