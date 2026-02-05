@@ -1,42 +1,32 @@
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+import { Outlet, useNavigate } from 'react-router-dom'
+
+export default function AppLayout() {
+  const navigate = useNavigate()
+
+  function logout() {
+    // limpar token, session, etc
+    navigate('/login')
+  }
+
   return (
-    <div className="main-wrapper">
+    <>
+      <header className="topbar d-flex justify-content-between align-items-center p-3 border-bottom">
+        <strong>Meu Sistema</strong>
 
-      {/* SIDEBAR */}
-      <aside className="sidebar">
-
-        <div className="logo">PADD</div>
-
-        <button className="btn-novo active mb-3">
-          Novo Documento
-        </button>
-
-        <ul className="lista-versoes" id="listaVersoesLateral">
-          <li className="atual">
-            <small>Doc 4999 - Inclusão massa</small>
-            <small>Versão 10 - 26/01</small>
-          </li>
-          <li>
-            <small>Doc 4999 - Inclusão massa</small>
-            <small>Versão 9 - 12/01</small>
-          </li>
-        </ul>
-
-        <div className="sidebar-user-footer mt-auto">
-          <div className="avatar-circle">KS</div>
-          <div className="ms-2">
-            <div className="nome-usuario">Kevyn Santos</div>
-            <button className="btn-logout mt-1">Sair</button>
-          </div>
+        <div className="d-flex align-items-center gap-3">
+          <span>Administrador</span>
+          <button
+            className="btn btn-outline-danger btn-sm"
+            onClick={logout}
+          >
+            Sair
+          </button>
         </div>
+      </header>
 
-      </aside>
-
-      {/* CONTEÚDO */}
-      <main className="content-area p-4">
-        {children}
+      <main>
+        <Outlet />
       </main>
-
-    </div>
+    </>
   )
 }

@@ -1,18 +1,15 @@
-import AppLayout from '../../layouts/AppLayout'
 import SubmenuHeader from '../../components/SubmenuHeader/SubmenuHeader'
 
 export default function Checklists() {
   return (
-    <AppLayout>
-
+    <div className="p-4">
 
       <SubmenuHeader
         active="ti"
         onChange={() => {}}
       />
 
-
-      <div className="card p-4">
+      <div className="card p-4 mt-4">
 
         <div className="row mb-3">
           <div className="col-md-6">
@@ -57,17 +54,11 @@ export default function Checklists() {
         </div>
 
         <div className="d-flex gap-2 mt-3">
-          <button className="btn btn-salvar">
-            Salvar
-          </button>
-
-          <button className="btn btn-cancelar">
-            Cancelar
-          </button>
+          <button className="btn btn-salvar">Salvar</button>
+          <button className="btn btn-cancelar">Cancelar</button>
         </div>
 
       </div>
-
-    </AppLayout>
+    </div>
   )
 }
