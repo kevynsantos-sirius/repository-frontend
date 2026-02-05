@@ -16,7 +16,7 @@ export default function TIForm({ layouts, setLayouts }: Props) {
   const layoutAtivo = layouts.find(l => l.id === layoutAtivoId)
 
   /* ===============================
-     ADICIONAR LAYOUT (RESET FORM)
+     ADICIONAR LAYOUT
      =============================== */
   function adicionarLayout() {
     const novoLayout: Layout = {
@@ -27,17 +27,13 @@ export default function TIForm({ layouts, setLayouts }: Props) {
     }
 
     setLayouts(prev => [...prev, novoLayout])
-
-    // 🔑 layout recém-criado vira o ativo
     setLayoutAtivoId(novoLayout.id)
     setMassaAtivaIndex(null)
-
-    // 🔑 limpa inputs file
     setFileKey(prev => prev + 1)
   }
 
   /* ===============================
-     ADICIONAR MASSA (RESET FORM)
+     ADICIONAR MASSA
      =============================== */
   function adicionarMassa() {
     if (!layoutAtivo) return
@@ -56,10 +52,7 @@ export default function TIForm({ layouts, setLayouts }: Props) {
       )
     )
 
-    // 🔑 nova massa vira a ativa
     setMassaAtivaIndex(layoutAtivo.massas.length)
-
-    // 🔑 limpa inputs file
     setFileKey(prev => prev + 1)
   }
 
@@ -91,9 +84,36 @@ export default function TIForm({ layouts, setLayouts }: Props) {
     )
   }
 
+  /* ===============================
+     SALVAR (RESET TOTAL)
+     =============================== */
+  function salvar() {
+    if (!layoutAtivo) return
+
+    // 🔥 limpa observações do layout e das massas
+    setLayouts(prev =>
+      prev.map(l =>
+        l.id === layoutAtivo.id
+          ? {
+              ...l,
+              observacao: '',
+              massas: l.massas.map(m => ({
+                ...m,
+                observacao: ''
+              }))
+            }
+          : l
+      )
+    )
+
+    // 🔥 reset geral do formulário
+    setLayoutAtivoId(null)
+    setMassaAtivaIndex(null)
+    setFileKey(prev => prev + 1)
+  }
+
   return (
     <form className="card form-card p-4">
-
       <h5 className="mb-3">TI – Layout e Forma de Envio</h5>
 
       {/* ===== LAYOUTS ===== */}
@@ -181,15 +201,7 @@ export default function TIForm({ layouts, setLayouts }: Props) {
         <button
           type="button"
           className="btn btn-salvar"
-          onClick={() => {
-            // 🔑 futuramente: chamada da API aqui
-
-            // 🔑 reset REAL dos inputs file
-            setFileKey(prev => prev + 1)
-
-            // opcional: limpa massa ativa
-            setMassaAtivaIndex(null)
-          }}
+          onClick={salvar}
         >
           Salvar
         </button>
@@ -206,7 +218,6 @@ export default function TIForm({ layouts, setLayouts }: Props) {
           Cancelar
         </button>
       </div>
-
     </form>
   )
 }
