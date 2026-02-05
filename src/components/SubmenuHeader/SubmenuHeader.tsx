@@ -33,9 +33,7 @@ export default function SubmenuHeader({ active, onChange }: Props) {
 
       </div>
 
-      <button className="btn btn-outline-secondary btn-versoes">
-        Versões
-      </button>
+      
     </div>
   )
 }
