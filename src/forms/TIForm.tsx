@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Layout, Massa } from '../pages/Home/Home'
+import RichTextEditor from '../components/utils/RichTextEditor'
 
 type Props = {
   layouts: Layout[]
@@ -28,11 +29,9 @@ export default function TIForm({ layouts, setLayouts }: Props) {
 
     setLayouts(prev => [...prev, novoLayout])
 
-    // 🔑 layout recém-criado vira o ativo
     setLayoutAtivoId(novoLayout.id)
     setMassaAtivaIndex(null)
 
-    // 🔑 limpa inputs file
     setFileKey(prev => prev + 1)
   }
 
@@ -56,10 +55,7 @@ export default function TIForm({ layouts, setLayouts }: Props) {
       )
     )
 
-    // 🔑 nova massa vira a ativa
     setMassaAtivaIndex(layoutAtivo.massas.length)
-
-    // 🔑 limpa inputs file
     setFileKey(prev => prev + 1)
   }
 
@@ -124,11 +120,9 @@ export default function TIForm({ layouts, setLayouts }: Props) {
           />
 
           <label className="mt-3">Observação</label>
-          <textarea
-            className="form-control"
-            rows={3}
+          <RichTextEditor
             value={layoutAtivo.observacao || ''}
-            onChange={e => updateLayout('observacao', e.target.value)}
+            onChange={value => updateLayout('observacao', value)}
           />
 
           <hr className="my-4" />
@@ -162,14 +156,12 @@ export default function TIForm({ layouts, setLayouts }: Props) {
                 />
 
                 <label className="mt-3">Observação</label>
-                <textarea
-                  className="form-control"
-                  rows={3}
+                <RichTextEditor
                   value={
                     layoutAtivo.massas[massaAtivaIndex].observacao || ''
                   }
-                  onChange={e =>
-                    updateMassa('observacao', e.target.value)
+                  onChange={value =>
+                    updateMassa('observacao', value)
                   }
                 />
               </>
@@ -182,12 +174,9 @@ export default function TIForm({ layouts, setLayouts }: Props) {
           type="button"
           className="btn btn-salvar"
           onClick={() => {
-            // 🔑 futuramente: chamada da API aqui
+            // 🔑 aqui entra a API depois
 
-            // 🔑 reset REAL dos inputs file
             setFileKey(prev => prev + 1)
-
-            // opcional: limpa massa ativa
             setMassaAtivaIndex(null)
           }}
         >
