@@ -10,13 +10,14 @@ export default function TIForm({ layouts, setLayouts }: Props) {
   const [layoutAtivoId, setLayoutAtivoId] = useState<string | null>(null)
   const [massaAtivaIndex, setMassaAtivaIndex] = useState<number | null>(null)
 
-  // 🔑 usado para resetar inputs type="file"
-  const [fileKey, setFileKey] = useState(0)
+  // 🔑 keys SEPARADAS para resetar inputs file corretamente
+  const [layoutFileKey, setLayoutFileKey] = useState(0)
+  const [massaFileKey, setMassaFileKey] = useState(0)
 
   const layoutAtivo = layouts.find(l => l.id === layoutAtivoId)
 
   /* ===============================
-     ADICIONAR LAYOUT
+     ADICIONAR LAYOUT (RESET TOTAL)
      =============================== */
   function adicionarLayout() {
     const novoLayout: Layout = {
@@ -27,13 +28,18 @@ export default function TIForm({ layouts, setLayouts }: Props) {
     }
 
     setLayouts(prev => [...prev, novoLayout])
+
+    // layout recém-criado vira o ativo
     setLayoutAtivoId(novoLayout.id)
     setMassaAtivaIndex(null)
-    setFileKey(prev => prev + 1)
+
+    // reset total dos files
+    setLayoutFileKey(prev => prev + 1)
+    setMassaFileKey(prev => prev + 1)
   }
 
   /* ===============================
-     ADICIONAR MASSA
+     ADICIONAR MASSA (RESET SÓ MASSA)
      =============================== */
   function adicionarMassa() {
     if (!layoutAtivo) return
@@ -52,22 +58,29 @@ export default function TIForm({ layouts, setLayouts }: Props) {
       )
     )
 
+    // nova massa vira ativa
     setMassaAtivaIndex(layoutAtivo.massas.length)
-    setFileKey(prev => prev + 1)
+
+    // reseta SOMENTE file da massa
+    setMassaFileKey(prev => prev + 1)
   }
 
   /* ===============================
      ATUALIZAÇÕES
      =============================== */
-  function updateLayout(field: keyof Layout, value: string) {
+  function updateLayoutObservacao(value: string) {
+    if (!layoutAtivo) return
+
     setLayouts(prev =>
       prev.map(l =>
-        l.id === layoutAtivoId ? { ...l, [field]: value } : l
+        l.id === layoutAtivo.id
+          ? { ...l, observacao: value }
+          : l
       )
     )
   }
 
-  function updateMassa(field: keyof Massa, value: string) {
+  function updateMassaObservacao(value: string) {
     if (!layoutAtivo || massaAtivaIndex === null) return
 
     setLayouts(prev =>
@@ -76,7 +89,9 @@ export default function TIForm({ layouts, setLayouts }: Props) {
           ? {
               ...l,
               massas: l.massas.map((m, i) =>
-                i === massaAtivaIndex ? { ...m, [field]: value } : m
+                i === massaAtivaIndex
+                  ? { ...m, observacao: value }
+                  : m
               )
             }
           : l
@@ -85,35 +100,21 @@ export default function TIForm({ layouts, setLayouts }: Props) {
   }
 
   /* ===============================
-     SALVAR (RESET TOTAL)
+     SALVAR (RESET TELA INICIAL)
      =============================== */
   function salvar() {
-    if (!layoutAtivo) return
+    // futuramente: chamada de API
 
-    // 🔥 limpa observações do layout e das massas
-    setLayouts(prev =>
-      prev.map(l =>
-        l.id === layoutAtivo.id
-          ? {
-              ...l,
-              observacao: '',
-              massas: l.massas.map(m => ({
-                ...m,
-                observacao: ''
-              }))
-            }
-          : l
-      )
-    )
-
-    // 🔥 reset geral do formulário
     setLayoutAtivoId(null)
     setMassaAtivaIndex(null)
-    setFileKey(prev => prev + 1)
+
+    setLayoutFileKey(prev => prev + 1)
+    setMassaFileKey(prev => prev + 1)
   }
 
   return (
     <form className="card form-card p-4">
+
       <h5 className="mb-3">TI – Layout e Forma de Envio</h5>
 
       {/* ===== LAYOUTS ===== */}
@@ -136,9 +137,10 @@ export default function TIForm({ layouts, setLayouts }: Props) {
 
       {layoutAtivo && (
         <>
+          {/* ===== LAYOUT FORM ===== */}
           <label className="mt-3">Arquivo Layout</label>
           <input
-            key={`layout-file-${fileKey}`}
+            key={`layout-file-${layoutFileKey}`}
             className="form-control"
             type="file"
           />
@@ -148,7 +150,7 @@ export default function TIForm({ layouts, setLayouts }: Props) {
             className="form-control"
             rows={3}
             value={layoutAtivo.observacao || ''}
-            onChange={e => updateLayout('observacao', e.target.value)}
+            onChange={e => updateLayoutObservacao(e.target.value)}
           />
 
           <hr className="my-4" />
@@ -176,7 +178,7 @@ export default function TIForm({ layouts, setLayouts }: Props) {
               <>
                 <label className="mt-3">Arquivo da Massa</label>
                 <input
-                  key={`massa-file-${fileKey}`}
+                  key={`massa-file-${massaFileKey}`}
                   className="form-control"
                   type="file"
                 />
@@ -189,7 +191,7 @@ export default function TIForm({ layouts, setLayouts }: Props) {
                     layoutAtivo.massas[massaAtivaIndex].observacao || ''
                   }
                   onChange={e =>
-                    updateMassa('observacao', e.target.value)
+                    updateMassaObservacao(e.target.value)
                   }
                 />
               </>
@@ -197,6 +199,7 @@ export default function TIForm({ layouts, setLayouts }: Props) {
         </>
       )}
 
+      {/* ===== AÇÕES ===== */}
       <div className="d-flex gap-2 mt-4">
         <button
           type="button"
@@ -212,12 +215,14 @@ export default function TIForm({ layouts, setLayouts }: Props) {
           onClick={() => {
             setLayoutAtivoId(null)
             setMassaAtivaIndex(null)
-            setFileKey(prev => prev + 1)
+            setLayoutFileKey(prev => prev + 1)
+            setMassaFileKey(prev => prev + 1)
           }}
         >
           Cancelar
         </button>
       </div>
+
     </form>
   )
 }
