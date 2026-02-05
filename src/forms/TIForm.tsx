@@ -7,9 +7,11 @@ type Props = {
 }
 
 export default function TIForm({ layouts, setLayouts }: Props) {
-
   const [layoutAtivoId, setLayoutAtivoId] = useState<string | null>(null)
   const [massaAtivaIndex, setMassaAtivaIndex] = useState<number | null>(null)
+
+  // 🔑 usado para resetar inputs type="file"
+  const [fileKey, setFileKey] = useState(0)
 
   const layoutAtivo = layouts.find(l => l.id === layoutAtivoId)
 
@@ -26,9 +28,12 @@ export default function TIForm({ layouts, setLayouts }: Props) {
 
     setLayouts(prev => [...prev, novoLayout])
 
-    // 🔑 RESET: troca layout ativo
+    // 🔑 layout recém-criado vira o ativo
     setLayoutAtivoId(novoLayout.id)
     setMassaAtivaIndex(null)
+
+    // 🔑 limpa inputs file
+    setFileKey(prev => prev + 1)
   }
 
   /* ===============================
@@ -51,14 +56,17 @@ export default function TIForm({ layouts, setLayouts }: Props) {
       )
     )
 
-    // 🔑 RESET: nova massa vira a ativa
+    // 🔑 nova massa vira a ativa
     setMassaAtivaIndex(layoutAtivo.massas.length)
+
+    // 🔑 limpa inputs file
+    setFileKey(prev => prev + 1)
   }
 
   /* ===============================
      ATUALIZAÇÕES
      =============================== */
-  function updateLayout(field: string, value: string) {
+  function updateLayout(field: keyof Layout, value: string) {
     setLayouts(prev =>
       prev.map(l =>
         l.id === layoutAtivoId ? { ...l, [field]: value } : l
@@ -66,7 +74,7 @@ export default function TIForm({ layouts, setLayouts }: Props) {
     )
   }
 
-  function updateMassa(field: string, value: string) {
+  function updateMassa(field: keyof Massa, value: string) {
     if (!layoutAtivo || massaAtivaIndex === null) return
 
     setLayouts(prev =>
@@ -109,7 +117,11 @@ export default function TIForm({ layouts, setLayouts }: Props) {
       {layoutAtivo && (
         <>
           <label className="mt-3">Arquivo Layout</label>
-          <input className="form-control" type="file" />
+          <input
+            key={`layout-file-${fileKey}`}
+            className="form-control"
+            type="file"
+          />
 
           <label className="mt-3">Observação</label>
           <textarea
@@ -139,28 +151,58 @@ export default function TIForm({ layouts, setLayouts }: Props) {
             </div>
           )}
 
-          {massaAtivaIndex !== null && layoutAtivo.massas[massaAtivaIndex] && (
-            <>
-              <label className="mt-3">Arquivo da Massa</label>
-              <input className="form-control" type="file" />
+          {massaAtivaIndex !== null &&
+            layoutAtivo.massas[massaAtivaIndex] && (
+              <>
+                <label className="mt-3">Arquivo da Massa</label>
+                <input
+                  key={`massa-file-${fileKey}`}
+                  className="form-control"
+                  type="file"
+                />
 
-              <label className="mt-3">Observação</label>
-              <textarea
-                className="form-control"
-                rows={3}
-                value={layoutAtivo.massas[massaAtivaIndex].observacao || ''}
-                onChange={e => updateMassa('observacao', e.target.value)}
-              />
-            </>
-          )}
+                <label className="mt-3">Observação</label>
+                <textarea
+                  className="form-control"
+                  rows={3}
+                  value={
+                    layoutAtivo.massas[massaAtivaIndex].observacao || ''
+                  }
+                  onChange={e =>
+                    updateMassa('observacao', e.target.value)
+                  }
+                />
+              </>
+            )}
         </>
       )}
 
       <div className="d-flex gap-2 mt-4">
-        <button type="button" className="btn btn-salvar">
+        <button
+          type="button"
+          className="btn btn-salvar"
+          onClick={() => {
+            // 🔑 futuramente: chamada da API aqui
+
+            // 🔑 reset REAL dos inputs file
+            setFileKey(prev => prev + 1)
+
+            // opcional: limpa massa ativa
+            setMassaAtivaIndex(null)
+          }}
+        >
           Salvar
         </button>
-        <button type="button" className="btn btn-cancelar">
+
+        <button
+          type="button"
+          className="btn btn-cancelar"
+          onClick={() => {
+            setLayoutAtivoId(null)
+            setMassaAtivaIndex(null)
+            setFileKey(prev => prev + 1)
+          }}
+        >
           Cancelar
         </button>
       </div>
