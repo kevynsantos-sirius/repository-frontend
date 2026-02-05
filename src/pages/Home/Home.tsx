@@ -1,30 +1,64 @@
 import { useState } from 'react'
-import AppLayout from '../../layouts/AppLayout'
 import SubmenuHeader from '../../components/SubmenuHeader/SubmenuHeader'
+import VersionsSidebar from '../../components/VersoesSidebar/VersionsSidebar'
 import IdentificacaoForm from '../../forms/IdentificacaoForm'
 import TIForm from '../../forms/TIForm'
 import ModeloForm from '../../forms/ModeloForm'
 
-type Aba = 'identificacao' | 'ti' | 'modelo'
+export type Massa = {
+  id?: number
+  nomeArquivo?: string
+}
+
+export type Layout = {
+  id?: number
+  nomeArquivo?: string
+  massas: Massa[]
+}
+
+type AbaAtiva = 'identificacao' | 'ti' | 'modelo'
 
 export default function Home() {
-  const [abaAtiva, setAbaAtiva] = useState<Aba>('identificacao')
 
-  function renderFormulario() {
-    if (abaAtiva === 'identificacao') return <IdentificacaoForm />
-    if (abaAtiva === 'ti') return <TIForm />
-    if (abaAtiva === 'modelo') return <ModeloForm />
-    return null
-  }
+  const [abaAtiva, setAbaAtiva] = useState<AbaAtiva>('identificacao')
+  const [layouts, setLayouts] = useState<Layout[]>([])
 
   return (
-    <AppLayout>
+    <div className="p-4">
+
+      {/* SUBMENU (ABAS) */}
       <SubmenuHeader
         active={abaAtiva}
         onChange={setAbaAtiva}
       />
 
-      {renderFormulario()}
-    </AppLayout>
+      <div className="d-flex mt-4">
+
+        {/* SIDEBAR DE VERSÕES – SOMENTE NA ABA TI */}
+        {abaAtiva === 'ti' && (
+          <VersionsSidebar layouts={layouts} />
+        )}
+
+        {/* CONTEÚDO PRINCIPAL */}
+        <div className="flex-fill ps-4">
+
+          {abaAtiva === 'identificacao' && (
+            <IdentificacaoForm />
+          )}
+
+          {abaAtiva === 'ti' && (
+            <TIForm
+              layouts={layouts}
+              setLayouts={setLayouts}
+            />
+          )}
+
+          {abaAtiva === 'modelo' && (
+            <ModeloForm />
+          )}
+
+        </div>
+      </div>
+    </div>
   )
 }
