@@ -6,7 +6,7 @@ type Props = {
 
 export default function VersionsSidebar({ layouts }: Props) {
   return (
-    <div className="versions-sidebar p-3 border-end">
+    <div className="versions-sidebar p-3 border-end" style={{ width: 260 }}>
 
       <h6 className="mb-3">Versões</h6>
 
@@ -15,16 +15,16 @@ export default function VersionsSidebar({ layouts }: Props) {
       )}
 
       {layouts.map(layout => (
-        <div key={layout.id ?? Math.random()} className="mb-2">
+        <div key={layout.id} className="mb-3">
 
           <strong className="d-block">
-            {layout.nomeArquivo || 'Layout sem nome'}
+            {layout.nomeArquivo || 'Layout'}
           </strong>
 
           <ul className="ps-3 mb-0">
             {layout.massas.map(m => (
-              <li key={m.id ?? Math.random()}>
-                {m.nomeArquivo || 'Massa sem nome'}
+              <li key={m.id}>
+                {m.nomeArquivo || 'Massa'}
               </li>
             ))}
           </ul>

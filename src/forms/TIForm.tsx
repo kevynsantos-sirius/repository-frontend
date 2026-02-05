@@ -1,95 +1,170 @@
-import type { Layout } from '../pages/Home/Home'
-import type { Dispatch, SetStateAction } from 'react'
+import { useState } from 'react'
+import type { Layout, Massa } from '../pages/Home/Home'
 
 type Props = {
   layouts: Layout[]
-  setLayouts: Dispatch<SetStateAction<Layout[]>>
+  setLayouts: React.Dispatch<React.SetStateAction<Layout[]>>
 }
 
 export default function TIForm({ layouts, setLayouts }: Props) {
 
+  const [layoutAtivoId, setLayoutAtivoId] = useState<string | null>(null)
+  const [massaAtivaIndex, setMassaAtivaIndex] = useState<number | null>(null)
+
+  const layoutAtivo = layouts.find(l => l.id === layoutAtivoId)
+
+  /* ===============================
+     ADICIONAR LAYOUT (RESET FORM)
+     =============================== */
   function adicionarLayout() {
-    setLayouts(prev => [
-      ...prev,
-      {
-        id: Date.now(),
-        nomeArquivo: `Layout ${prev.length + 1}`,
-        massas: []
-      }
-    ])
+    const novoLayout: Layout = {
+      id: crypto.randomUUID(),
+      nomeArquivo: '',
+      observacao: '',
+      massas: []
+    }
+
+    setLayouts(prev => [...prev, novoLayout])
+
+    // 🔑 RESET: troca layout ativo
+    setLayoutAtivoId(novoLayout.id)
+    setMassaAtivaIndex(null)
+  }
+
+  /* ===============================
+     ADICIONAR MASSA (RESET FORM)
+     =============================== */
+  function adicionarMassa() {
+    if (!layoutAtivo) return
+
+    const novaMassa: Massa = {
+      id: crypto.randomUUID(),
+      nomeArquivo: '',
+      observacao: ''
+    }
+
+    setLayouts(prev =>
+      prev.map(l =>
+        l.id === layoutAtivo.id
+          ? { ...l, massas: [...l.massas, novaMassa] }
+          : l
+      )
+    )
+
+    // 🔑 RESET: nova massa vira a ativa
+    setMassaAtivaIndex(layoutAtivo.massas.length)
+  }
+
+  /* ===============================
+     ATUALIZAÇÕES
+     =============================== */
+  function updateLayout(field: string, value: string) {
+    setLayouts(prev =>
+      prev.map(l =>
+        l.id === layoutAtivoId ? { ...l, [field]: value } : l
+      )
+    )
+  }
+
+  function updateMassa(field: string, value: string) {
+    if (!layoutAtivo || massaAtivaIndex === null) return
+
+    setLayouts(prev =>
+      prev.map(l =>
+        l.id === layoutAtivo.id
+          ? {
+              ...l,
+              massas: l.massas.map((m, i) =>
+                i === massaAtivaIndex ? { ...m, [field]: value } : m
+              )
+            }
+          : l
+      )
+    )
   }
 
   return (
-    <form className="card form-card p-3">
+    <form className="card form-card p-4">
 
-      <div className="card-header bg-white border-0 pb-0">
-        <h5 className="mb-0">TI – Layout e Forma de Envio</h5>
+      <h5 className="mb-3">TI – Layout e Forma de Envio</h5>
+
+      {/* ===== LAYOUTS ===== */}
+      <div className="d-flex justify-content-between mb-2">
+        <strong>Layouts</strong>
+        <button
+          type="button"
+          className="btn btn-sm btn-outline-primary"
+          onClick={adicionarLayout}
+        >
+          + Adicionar Layout
+        </button>
       </div>
 
-      <div className="card-body pt-3">
-
-        {/* TEM LAYOUT */}
-        <div className="form-switch m-3">
-          <input className="form-check-input" type="checkbox" defaultChecked />
-          <label className="form-check-label">Tem layout?</label>
+      {!layoutAtivo && (
+        <div className="border rounded p-3 text-muted">
+          Nenhum layout selecionado
         </div>
+      )}
 
-        {/* LISTA DE LAYOUTS */}
-        <div className="m-3">
+      {layoutAtivo && (
+        <>
+          <label className="mt-3">Arquivo Layout</label>
+          <input className="form-control" type="file" />
 
-          <div className="d-flex justify-content-between align-items-center mb-2">
-            <h6 className="mb-0">Layouts</h6>
+          <label className="mt-3">Observação</label>
+          <textarea
+            className="form-control"
+            rows={3}
+            value={layoutAtivo.observacao || ''}
+            onChange={e => updateLayout('observacao', e.target.value)}
+          />
+
+          <hr className="my-4" />
+
+          {/* ===== MASSAS ===== */}
+          <div className="d-flex justify-content-between mb-2">
+            <strong>Massas de Dados</strong>
             <button
               type="button"
-              className="btn btn-sm btn-outline-primary"
-              onClick={adicionarLayout}
+              className="btn btn-sm btn-outline-secondary"
+              onClick={adicionarMassa}
             >
-              + Adicionar Layout
+              + Adicionar Massa
             </button>
           </div>
 
-          {layouts.length === 0 && (
+          {massaAtivaIndex === null && (
             <div className="border rounded p-3 text-muted">
-              Nenhum layout adicionado
+              Nenhuma massa selecionada
             </div>
           )}
 
-          {layouts.map(layout => (
-            <div key={layout.id} className="border rounded p-3 mb-2">
-              <strong>{layout.nomeArquivo}</strong>
-              <small className="d-block text-muted">
-                {layout.massas.length} massas
-              </small>
-            </div>
-          ))}
+          {massaAtivaIndex !== null && layoutAtivo.massas[massaAtivaIndex] && (
+            <>
+              <label className="mt-3">Arquivo da Massa</label>
+              <input className="form-control" type="file" />
 
-        </div>
+              <label className="mt-3">Observação</label>
+              <textarea
+                className="form-control"
+                rows={3}
+                value={layoutAtivo.massas[massaAtivaIndex].observacao || ''}
+                onChange={e => updateMassa('observacao', e.target.value)}
+              />
+            </>
+          )}
+        </>
+      )}
 
-        <hr className="my-4" />
-
-        {/* FORMA DE ENVIO */}
-        <div className="m-3">
-          <label className="fw-semibold mb-2">Forma de envio</label>
-
-          <div className="d-flex gap-4 mt-2">
-            <div className="form-check">
-              <input className="form-check-input" type="checkbox" />
-              <label className="form-check-label">Via serviço</label>
-            </div>
-
-            <div className="form-check">
-              <input className="form-check-input" type="checkbox" />
-              <label className="form-check-label">Arquivo .txt</label>
-            </div>
-          </div>
-        </div>
-
-        <div className="d-flex gap-2 m-3">
-          <button type="button" className="btn btn-salvar">Salvar</button>
-          <button type="button" className="btn btn-cancelar">Cancelar</button>
-        </div>
-
+      <div className="d-flex gap-2 mt-4">
+        <button type="button" className="btn btn-salvar">
+          Salvar
+        </button>
+        <button type="button" className="btn btn-cancelar">
+          Cancelar
+        </button>
       </div>
+
     </form>
   )
 }

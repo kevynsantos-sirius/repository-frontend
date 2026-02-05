@@ -6,27 +6,29 @@ import TIForm from '../../forms/TIForm'
 import ModeloForm from '../../forms/ModeloForm'
 
 export type Massa = {
-  id?: number
+  id: string
   nomeArquivo?: string
+  arquivo?: File | null
+  observacao?: string
 }
 
 export type Layout = {
-  id?: number
+  id: string
   nomeArquivo?: string
+  arquivo?: File | null
+  observacao?: string
   massas: Massa[]
 }
 
 type AbaAtiva = 'identificacao' | 'ti' | 'modelo'
 
 export default function Home() {
-
   const [abaAtiva, setAbaAtiva] = useState<AbaAtiva>('identificacao')
   const [layouts, setLayouts] = useState<Layout[]>([])
 
   return (
     <div className="p-4">
 
-      {/* SUBMENU (ABAS) */}
       <SubmenuHeader
         active={abaAtiva}
         onChange={setAbaAtiva}
@@ -34,17 +36,13 @@ export default function Home() {
 
       <div className="d-flex mt-4">
 
-        {/* SIDEBAR DE VERSÕES – SOMENTE NA ABA TI */}
         {abaAtiva === 'ti' && (
           <VersionsSidebar layouts={layouts} />
         )}
 
-        {/* CONTEÚDO PRINCIPAL */}
         <div className="flex-fill ps-4">
 
-          {abaAtiva === 'identificacao' && (
-            <IdentificacaoForm />
-          )}
+          {abaAtiva === 'identificacao' && <IdentificacaoForm />}
 
           {abaAtiva === 'ti' && (
             <TIForm
@@ -53,9 +51,7 @@ export default function Home() {
             />
           )}
 
-          {abaAtiva === 'modelo' && (
-            <ModeloForm />
-          )}
+          {abaAtiva === 'modelo' && <ModeloForm />}
 
         </div>
       </div>
