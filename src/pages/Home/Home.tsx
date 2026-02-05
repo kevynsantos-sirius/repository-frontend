@@ -11,14 +11,10 @@ export default function Home() {
   const [abaAtiva, setAbaAtiva] = useState<Aba>('identificacao')
 
   function renderFormulario() {
-    switch (abaAtiva) {
-      case 'identificacao':
-        return <IdentificacaoForm />
-      case 'ti':
-        return <TIForm />
-      case 'modelo':
-        return <ModeloForm />
-    }
+    if (abaAtiva === 'identificacao') return <IdentificacaoForm />
+    if (abaAtiva === 'ti') return <TIForm />
+    if (abaAtiva === 'modelo') return <ModeloForm />
+    return null
   }
 
   return (

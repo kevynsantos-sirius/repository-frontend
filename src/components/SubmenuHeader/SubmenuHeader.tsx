@@ -1,35 +1,31 @@
 type Aba = 'identificacao' | 'ti' | 'modelo'
 
-type Props = {
+interface Props {
   active: Aba
-  onChange?: (value: Aba) => void
+  onChange: (aba: Aba) => void
 }
 
 export default function SubmenuHeader({ active, onChange }: Props) {
-  function handleChange(value: Aba) {
-    if (onChange) onChange(value)
-  }
-
   return (
     <div className="content-header">
       <div className="submenu-top">
         <button
           className={`submenu-item ${active === 'identificacao' ? 'active' : ''}`}
-          onClick={() => handleChange('identificacao')}
+          onClick={() => onChange('identificacao')}
         >
           Identificação
         </button>
 
         <button
           className={`submenu-item ${active === 'ti' ? 'active' : ''}`}
-          onClick={() => handleChange('ti')}
+          onClick={() => onChange('ti')}
         >
           TI
         </button>
 
         <button
           className={`submenu-item ${active === 'modelo' ? 'active' : ''}`}
-          onClick={() => handleChange('modelo')}
+          onClick={() => onChange('modelo')}
         >
           Modelo
         </button>
