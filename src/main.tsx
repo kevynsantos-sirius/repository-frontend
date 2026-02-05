@@ -5,8 +5,6 @@ import App from './App'
 import './assets/css/app.css'
 import './assets/css/dashboard.css'
 import './assets/css/login.css'
-import 'quill/dist/quill.snow.css'
-
 
 ReactDOM.createRoot(
   document.getElementById('root')!
