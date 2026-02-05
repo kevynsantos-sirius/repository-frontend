@@ -1,57 +1,34 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import AppLayout from '../../layouts/AppLayout'
 import SubmenuHeader from '../../components/SubmenuHeader/SubmenuHeader'
-import { buscarIdentificacao } from '../../services/identificacaoService'
-import { buscarTI } from '../../services/tiService'
-import { buscarModelos } from '../../services/modeloService'
+import IdentificacaoForm from '../../forms/IdentificacaoForm'
+import TIForm from '../../forms/TIForm'
+import ModeloForm from '../../forms/ModeloForm'
+
+type Aba = 'identificacao' | 'ti' | 'modelo'
 
 export default function Home() {
-  const [dados, setDados] = useState<any>({
-    identificacao: null,
-    ti: null,
-    modelo: null
-  })
+  const [abaAtiva, setAbaAtiva] = useState<Aba>('identificacao')
 
-  useEffect(() => {
-    async function carregar() {
-      const [identificacao, ti, modelo] = await Promise.all([
-        buscarIdentificacao(),
-        buscarTI(),
-        buscarModelos()
-      ])
-
-      setDados({ identificacao, ti, modelo })
+  function renderFormulario() {
+    switch (abaAtiva) {
+      case 'identificacao':
+        return <IdentificacaoForm />
+      case 'ti':
+        return <TIForm />
+      case 'modelo':
+        return <ModeloForm />
     }
-
-    carregar()
-  }, [])
+  }
 
   return (
     <AppLayout>
-      <SubmenuHeader active="identificacao" />
+      <SubmenuHeader
+        active={abaAtiva}
+        onChange={setAbaAtiva}
+      />
 
-      <div className="row g-3">
-        <div className="col-md-4">
-          <div className="card p-3">
-            <h6>Identificação</h6>
-            <pre>{JSON.stringify(dados.identificacao, null, 2)}</pre>
-          </div>
-        </div>
-
-        <div className="col-md-4">
-          <div className="card p-3">
-            <h6>TI</h6>
-            <pre>{JSON.stringify(dados.ti, null, 2)}</pre>
-          </div>
-        </div>
-
-        <div className="col-md-4">
-          <div className="card p-3">
-            <h6>Modelo</h6>
-            <pre>{JSON.stringify(dados.modelo, null, 2)}</pre>
-          </div>
-        </div>
-      </div>
+      {renderFormulario()}
     </AppLayout>
   )
 }

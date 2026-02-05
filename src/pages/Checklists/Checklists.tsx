@@ -5,7 +5,12 @@ export default function Checklists() {
   return (
     <AppLayout>
 
-      <SubmenuHeader active="ti" />
+
+      <SubmenuHeader
+        active="ti"
+        onChange={() => {}}
+      />
+
 
       <div className="card p-4">
 
