@@ -5,6 +5,7 @@ import App from './App'
 import './assets/css/app.css'
 import './assets/css/dashboard.css'
 import './assets/css/login.css'
+import './assets/css/versoes-checklistbar.css'
 
 ReactDOM.createRoot(
   document.getElementById('root')!
