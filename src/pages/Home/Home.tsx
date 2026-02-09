@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 import SubmenuHeader from '../../components/SubmenuHeader/SubmenuHeader'
 import VersionsSidebar from '../../components/VersoesSidebar/VersionsSidebar'
@@ -26,10 +27,14 @@ export type Layout = {
 type AbaAtiva = 'identificacao' | 'ti' | 'modelo'
 
 export default function Home() {
+  const { id } = useParams()
+
+  const isNovo = id === 'novo'
+
   const [abaAtiva, setAbaAtiva] = useState<AbaAtiva>('identificacao')
   const [layouts, setLayouts] = useState<Layout[]>([])
 
-  // 🔥 controla sidebar da direita
+  // 🔥 sidebar direita (versões)
   const [versoesAberto, setVersoesAberto] = useState(false)
 
   return (
@@ -43,12 +48,14 @@ export default function Home() {
         />
 
         {/* BOTÃO VERSÕES */}
-        <button
-          className="btn btn-outline-primary"
-          onClick={() => setVersoesAberto(true)}
-        >
-          Versões
-        </button>
+        {!isNovo && (
+          <button
+            className="btn btn-outline-primary"
+            onClick={() => setVersoesAberto(true)}
+          >
+            Versões
+          </button>
+        )}
       </div>
 
       <div className="d-flex mt-4">
@@ -60,7 +67,10 @@ export default function Home() {
 
         {/* CONTEÚDO */}
         <div className="flex-fill ps-4">
-          {abaAtiva === 'identificacao' && <IdentificacaoForm />}
+
+          {abaAtiva === 'identificacao' && (
+            <IdentificacaoForm />
+          )}
 
           {abaAtiva === 'ti' && (
             <TIForm
@@ -69,25 +79,30 @@ export default function Home() {
             />
           )}
 
-          {abaAtiva === 'modelo' && <ModeloForm />}
+          {abaAtiva === 'modelo' && (
+            <ModeloForm />
+          )}
+
         </div>
       </div>
 
-      {/* SIDEBAR DIREITA – VERSÕES */}
-      <VersoesCheckListbar
-        aberto={versoesAberto}
-        onClose={() => setVersoesAberto(false)}
-        onSelectVersao={(layoutsDaVersao) => {
-          // 🔑 carrega dados da versão
-          setLayouts(layoutsDaVersao)
+      {/* SIDEBAR DIREITA – VERSÕES (SÓ SE NÃO FOR NOVO) */}
+      {!isNovo && (
+        <VersoesCheckListbar
+          aberto={versoesAberto}
+          onClose={() => setVersoesAberto(false)}
+          onSelectVersao={(layoutsDaVersao) => {
+            // 🔑 carrega layouts da versão
+            setLayouts(layoutsDaVersao)
 
-          // 🔑 vai direto para TI
-          setAbaAtiva('ti')
+            // 🔑 vai direto para TI
+            setAbaAtiva('ti')
 
-          // 🔑 fecha sidebar
-          setVersoesAberto(false)
-        }}
-      />
+            // 🔑 fecha sidebar
+            setVersoesAberto(false)
+          }}
+        />
+      )}
     </div>
   )
 }
