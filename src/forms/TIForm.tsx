@@ -68,7 +68,12 @@ export default function TIForm({ modo, layout, massa, onSalvarLayout, onSalvarMa
     return (
       <form className="card p-4">
         <h5 className="mb-3">Massa</h5>
-
+        <label className="form-label">Nome da Massa</label>
+        <input
+          type="text"
+          className="form-control mb-3"
+          value={massa.nomeArquivo}
+        />
         <label className="form-label">Arquivo da Massa</label>
         <input type="file" className="form-control mb-3" />
 
