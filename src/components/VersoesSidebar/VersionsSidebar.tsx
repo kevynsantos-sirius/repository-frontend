@@ -46,16 +46,18 @@ export default function VersionsSidebar({
         <div key={layout.id} className="mb-3">
           <div className="d-flex justify-content-between align-items-center">
             <div
-              className={`fw-semibold cursor-pointer ${
+              className={`fw-semibold cursor-pointer text-truncate me-2 ${
                 layout.id === layoutSelecionadoId ? 'text-primary' : ''
               }`}
               onClick={() => onSelectLayout(layout.id)}
+              style={{ maxWidth: 'calc(100% - 30px)', wordBreak: 'break-word' }}
+              title={layout.nomeLayout}
             >
               {layout.nomeLayout || 'Novo Layout'}
             </div>
             <button
               type="button"
-              className="btn btn-sm btn-outline-danger"
+              className="btn btn-sm btn-outline-danger flex-shrink-0"
               onClick={() => onRemoverLayout(layout.id)}
             >
               x
@@ -64,18 +66,25 @@ export default function VersionsSidebar({
 
           <ul className="ps-3 mt-1">
             {layout.massas.map(massa => (
-              <li key={massa.id} className="d-flex justify-content-between align-items-center">
+              <li
+                key={massa.id}
+                className="d-flex justify-content-between align-items-center"
+              >
                 <span
-                  className={`cursor-pointer ${
-                    massa.id === massaSelecionadaId ? 'text-primary fw-semibold' : ''
+                  className={`cursor-pointer text-truncate me-2 ${
+                    massa.id === massaSelecionadaId
+                      ? 'text-primary fw-semibold'
+                      : ''
                   }`}
                   onClick={() => onSelectMassa(layout.id, massa.id)}
+                  style={{ maxWidth: 'calc(100% - 30px)', wordBreak: 'break-word' }}
+                  title={massa.nomeArquivo}
                 >
                   {massa.nomeArquivo || 'Nova Massa'}
                 </span>
                 <button
                   type="button"
-                  className="btn btn-sm btn-outline-danger"
+                  className="btn btn-sm btn-outline-danger flex-shrink-0"
                   onClick={() => onRemoverMassa(layout.id, massa.id)}
                 >
                   x
