@@ -1,4 +1,4 @@
-import type { Massa } from '../pages/Home/Home'
+import type {  Massa } from '../types/types'
 
 type Props = {
   massa: Massa

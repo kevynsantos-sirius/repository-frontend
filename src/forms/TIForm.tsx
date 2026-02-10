@@ -1,87 +1,110 @@
-import LayoutForm from '../layouts/LayoutForm'
-import type { Layout } from '../pages/Home/Home'
-import type { ChecklistVersaoDTO } from '../dto/ChecklistVersaoDTO'
+import type { Layout, Massa } from '../types/types'
 
 type Props = {
-  checklist: ChecklistVersaoDTO | null
-  layouts: Layout[]
-  setLayouts: React.Dispatch<React.SetStateAction<Layout[]>>
+  modo: 'layout' | 'massa' | null
+  layout: Layout | null
+  massa: Massa | null
 }
 
 export default function TIForm({
-  checklist,
-  layouts,
-  setLayouts
+  modo,
+  layout,
+  massa
 }: Props) {
 
-  if (!checklist) {
+  if (!modo) {
     return (
-      <div className="card p-3">
-        <strong>Carregando dados de TI...</strong>
+      <div className="card p-4 text-muted">
+        Selecione um layout ou uma massa ao lado
       </div>
     )
   }
 
-  function adicionarLayout() {
-    const novoLayout: Layout = {
-      id: crypto.randomUUID(),
-      nomeLayout: '',
-      observacao: '',
-      massas: []
-    }
+  /* =========================
+     FORM LAYOUT
+     ========================= */
+  if (modo === 'layout' && layout) {
+    return (
+      <form className="card p-4">
+        <h5 className="mb-3">Layout</h5>
 
-    setLayouts(prev => [...prev, novoLayout])
-  }
-
-  function atualizarLayout(index: number, layout: Layout) {
-    setLayouts(prev =>
-      prev.map((l, i) => (i === index ? layout : l))
-    )
-  }
-
-  function removerLayout(index: number) {
-    setLayouts(prev => prev.filter((_, i) => i !== index))
-  }
-
-  return (
-    <form className="card p-4">
-
-      <h5 className="mb-3">
-        TI – Layout e Forma de Envio
-      </h5>
-
-      <div className="d-flex justify-content-between mb-3">
-        <strong>Layouts</strong>
-        <button
-          type="button"
-          className="btn btn-sm btn-outline-primary"
-          onClick={adicionarLayout}
-        >
-          + Layout
-        </button>
-      </div>
-
-      {layouts.length === 0 && (
-        <div className="border rounded p-3 text-muted">
-          Nenhum layout cadastrado
-        </div>
-      )}
-
-      {layouts.map((layout, index) => (
-        <LayoutForm
-          key={layout.id}
-          layout={layout}
-          onUpdate={l => atualizarLayout(index, l)}
-          onRemove={() => removerLayout(index)}
+        <label className="form-label">
+          Nome do Layout
+        </label>
+        <input
+          type="text"
+          className="form-control mb-3"
+          value={layout.nomeLayout}
+          onChange={() => {}}
         />
-      ))}
 
-      <div className="d-flex gap-2 mt-3">
-        <button type="button" className="btn btn-salvar">
-          Salvar
-        </button>
-      </div>
+        <label className="form-label">
+          Arquivo do Layout
+        </label>
+        <input
+          type="file"
+          className="form-control mb-3"
+        />
 
-    </form>
-  )
+        <label className="form-label">
+          Observação
+        </label>
+        <textarea
+          className="form-control"
+          rows={4}
+          value={layout.observacao}
+          onChange={() => {}}
+        />
+
+        <div className="mt-3">
+          <button
+            type="button"
+            className="btn btn-primary"
+          >
+            Salvar Layout
+          </button>
+        </div>
+      </form>
+    )
+  }
+
+  /* =========================
+     FORM MASSA
+     ========================= */
+  if (modo === 'massa' && massa) {
+    return (
+      <form className="card p-4">
+        <h5 className="mb-3">Massa</h5>
+
+        <label className="form-label">
+          Arquivo da Massa
+        </label>
+        <input
+          type="file"
+          className="form-control mb-3"
+        />
+
+        <label className="form-label">
+          Observação
+        </label>
+        <textarea
+          className="form-control"
+          rows={4}
+          value={massa.observacao}
+          onChange={() => {}}
+        />
+
+        <div className="mt-3">
+          <button
+            type="button"
+            className="btn btn-primary"
+          >
+            Salvar Massa
+          </button>
+        </div>
+      </form>
+    )
+  }
+
+  return null
 }

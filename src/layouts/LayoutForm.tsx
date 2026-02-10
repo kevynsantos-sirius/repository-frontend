@@ -1,4 +1,4 @@
-import type { Layout, Massa } from '../pages/Home/Home'
+import type { Layout, Massa } from '../types/types'
 import MassaForm from './MassaForm'
 
 type Props = {

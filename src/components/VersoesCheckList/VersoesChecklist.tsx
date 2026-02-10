@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { buscarVersoes } from '../../services/versoes.service'
 import type { Versao } from '../../services/versoes.service'
-import type { Layout } from '../../pages/Home/Home'
+import type { Layout } from '../../types/types'
 
 type Props = {
   aberto: boolean

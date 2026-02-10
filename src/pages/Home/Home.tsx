@@ -11,30 +11,13 @@ import ModeloForm from '../../forms/ModeloForm'
 
 import { buscarChecklistPorId } from '../../services/checklist.service'
 import type { ChecklistVersaoDTO } from '../../dto/ChecklistVersaoDTO'
-
-/* =========================
-   TIPOS DO FRONT
-   ========================= */
-
-export type Massa = {
-  id: string
-  nomeArquivo: string
-  observacao: string
-}
-
-export type Layout = {
-  id: string
-  nomeLayout: string
-  observacao: string
-  massas: Massa[]
-}
+import type { Layout } from '../../types/types'
 
 type AbaAtiva = 'identificacao' | 'ti' | 'modelo'
 
 /* =========================
    MAPEADOR BACK → FRONT
    ========================= */
-
 function mapLayoutsFromBackend(layoutsBackend: any[]): Layout[] {
   return layoutsBackend.map(layout => ({
     id: String(layout.id),
@@ -53,46 +36,105 @@ function mapLayoutsFromBackend(layoutsBackend: any[]): Layout[] {
 /* =========================
    COMPONENTE
    ========================= */
-
 export default function Home() {
   const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
 
-  const isNovo = id === 'novo'
+  const isNovo = !id || id === 'novo'
 
   const [abaAtiva, setAbaAtiva] = useState<AbaAtiva>('identificacao')
   const [layouts, setLayouts] = useState<Layout[]>([])
   const [checklist, setChecklist] = useState<ChecklistVersaoDTO | null>(null)
   const [loading, setLoading] = useState(false)
 
+  /* ===== CONTROLE TI ===== */
+  const [layoutSelecionadoId, setLayoutSelecionadoId] = useState<string | null>(null)
+  const [massaSelecionadaId, setMassaSelecionadaId] = useState<string | null>(null)
+  const [modoTI, setModoTI] = useState<'layout' | 'massa' | null>(null)
+
   const [versoesAberto, setVersoesAberto] = useState(false)
 
-useEffect(() => {
-  if (!id || isNovo) return
+  const layoutSelecionado =
+    layouts.find(l => l.id === layoutSelecionadoId) || null
 
-  const checklistId: string = id
+  const massaSelecionada =
+    layoutSelecionado?.massas.find(m => m.id === massaSelecionadaId) || null
 
-  async function carregarChecklist() {
-    try {
-      setLoading(true)
+  /* =========================
+     LOAD
+     ========================= */
+  useEffect(() => {
+    if (isNovo) return
 
-      const data = await buscarChecklistPorId(checklistId)
-      setChecklist(data)
+    async function carregarChecklist(checklistId: string) {
+      try {
+        setLoading(true)
+        const data = await buscarChecklistPorId(checklistId)
+        setChecklist(data)
 
-      if (Array.isArray((data as any).layouts)) {
-        setLayouts(mapLayoutsFromBackend((data as any).layouts))
+        if (Array.isArray((data as any).layouts)) {
+          setLayouts(mapLayoutsFromBackend((data as any).layouts))
+        }
+      } finally {
+        setLoading(false)
       }
-
-    } catch (error) {
-      console.error('Erro ao carregar checklist', error)
-    } finally {
-      setLoading(false)
     }
+
+    carregarChecklist(id!)
+  }, [id, isNovo])
+
+  /* =========================
+     HANDLERS TI
+     ========================= */
+  function onNovoLayout() {
+    const novoId = crypto.randomUUID()
+
+    setLayouts(prev => [
+      ...prev,
+      { id: novoId, nomeLayout: '', observacao: '', massas: [] }
+    ])
+
+    setLayoutSelecionadoId(novoId)
+    setMassaSelecionadaId(null)
+    setModoTI('layout')
   }
 
-  carregarChecklist()
-}, [id, isNovo])
+  function onNovaMassa() {
+    if (!layoutSelecionadoId) return
 
+    const novoId = crypto.randomUUID()
+
+    setLayouts(prev =>
+      prev.map(l =>
+        l.id === layoutSelecionadoId
+          ? {
+              ...l,
+              massas: [
+                ...l.massas,
+                { id: novoId, nomeArquivo: '', observacao: '' }
+              ]
+            }
+          : l
+      )
+    )
+
+    setMassaSelecionadaId(novoId)
+    setModoTI('massa')
+  }
+
+  function onSelectLayout(id: string) {
+    setLayoutSelecionadoId(id)
+    setMassaSelecionadaId(null)
+    setModoTI('layout')
+  }
+
+  function onSelectMassa(layoutId: string, massaId: string) {
+    setLayoutSelecionadoId(layoutId)
+    setMassaSelecionadaId(massaId)
+    setModoTI('massa')
+  }
+
+  /* ========================= */
 
   if (loading) {
     return (
@@ -105,50 +147,11 @@ useEffect(() => {
   return (
     <>
       <div className="px-4">
-
         <div className="d-flex justify-content-between align-items-center">
-          <SubmenuHeader
-            active={abaAtiva}
-            onChange={setAbaAtiva}
-          />
-
-          {!isNovo && (
-            <button
-              className="btn btn-outline-primary"
-              onClick={() => setVersoesAberto(true)}
-            >
-              Versões
-            </button>
-          )}
+          <SubmenuHeader active={abaAtiva} onChange={setAbaAtiva} />
         </div>
 
-        <div className="d-flex mt-4">
-
-          {abaAtiva === 'ti' && (
-            <VersionsSidebar layouts={layouts} />
-          )}
-
-          <div className="flex-fill ps-4">
-
-            {abaAtiva === 'identificacao' && (
-              <IdentificacaoForm checklist={checklist} />
-            )}
-
-            {abaAtiva === 'ti' && (
-              <TIForm
-                checklist={checklist}
-                layouts={layouts}
-                setLayouts={setLayouts}
-              />
-            )}
-
-            {abaAtiva === 'modelo' && (
-              <ModeloForm checklist={checklist} />
-            )}
-
-          </div>
-        </div>
-
+        {/* CHECKLIST BAR (OUTRA FUNCIONALIDADE) */}
         {!isNovo && (
           <VersoesCheckListbar
             aberto={versoesAberto}
@@ -160,6 +163,38 @@ useEffect(() => {
             }}
           />
         )}
+
+        <div className="d-flex mt-4">
+          {abaAtiva === 'ti' && (
+            <VersionsSidebar
+              layouts={layouts}
+              layoutSelecionadoId={layoutSelecionadoId}
+              massaSelecionadaId={massaSelecionadaId}
+              onNovoLayout={onNovoLayout}
+              onNovaMassa={onNovaMassa}
+              onSelectLayout={onSelectLayout}
+              onSelectMassa={onSelectMassa}
+            />
+          )}
+
+          <div className="flex-fill ps-4">
+            {abaAtiva === 'identificacao' && (
+              <IdentificacaoForm checklist={checklist} />
+            )}
+
+            {abaAtiva === 'ti' && (
+              <TIForm
+                modo={modoTI}
+                layout={layoutSelecionado}
+                massa={massaSelecionada}
+              />
+            )}
+
+            {abaAtiva === 'modelo' && (
+              <ModeloForm checklist={checklist} />
+            )}
+          </div>
+        </div>
       </div>
 
       <button
