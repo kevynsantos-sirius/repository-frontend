@@ -18,13 +18,13 @@ export default function VersionsSidebar({ layouts }: Props) {
         <div key={layout.id} className="mb-3">
 
           <strong className="d-block">
-            {layout.nomeLayout || 'Layout'}
+            {layout.nomeLayout || 'Novo Layout'}
           </strong>
 
           <ul className="ps-3 mb-0">
             {(layout.massas ?? []).map(m => (
               <li key={m.id}>
-                {m.nomeArquivo || 'Massa'}
+                {m.nomeArquivo || 'Nova Massa'}
               </li>
             ))}
           </ul>
