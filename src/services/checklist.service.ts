@@ -1,4 +1,5 @@
 import { api } from './api'
+import type { ChecklistVersaoDTO } from '../dto/ChecklistVersaoDTO'
 
 /* =========================
    TIPOS
@@ -6,6 +7,7 @@ import { api } from './api'
 
 export type Checklist = {
   idChecklist: string
+  idChecklistVersao: string
   nomeDocumento: string
   nomeRamo: string
   usuario: any
@@ -32,12 +34,16 @@ export async function buscarChecklists(
   const response = await api.get<ChecklistPaginadoResponse>(
     '/api/checklists/list',
     {
-      params: {
-        page,
-        size
-      }
+      params: { page, size }
     }
   )
 
+  return response.data
+}
+
+export async function buscarChecklistPorId(
+  idStr: string
+): Promise<ChecklistVersaoDTO> {
+  const response = await api.get(`/api/Checklists/${idStr}`)
   return response.data
 }

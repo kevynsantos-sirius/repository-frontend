@@ -4,6 +4,7 @@ import { buscarChecklists } from '../../services/checklist.service'
 
 type Documento = {
   idChecklist: string
+  idChecklistVersao: string
   nomeDocumento: string
   nomeRamo: string
   usuario: any
@@ -82,7 +83,7 @@ export default function DocumentsList() {
 
                   <tbody>
                     {docs.map(doc => (
-                      <tr key={doc.idChecklist}>
+                      <tr key={doc.idChecklistVersao}>
                         <td>{doc.nomeDocumento}</td>
                         <td>{doc.nomeRamo}</td>
                         <td>{doc.usuario.nomeUsuario}</td>
@@ -105,7 +106,7 @@ export default function DocumentsList() {
                         <td className="text-end">
                           <button
                             className="btn btn-sm btn-outline-primary"
-                            onClick={() => abrirDocumento(doc.idChecklist)}
+                            onClick={() => abrirDocumento(doc.idChecklistVersao)}
                           >
                             Abrir
                           </button>

@@ -1,24 +1,35 @@
 import { useState } from 'react'
 import type { Layout, Massa } from '../pages/Home/Home'
+import type { ChecklistVersaoDTO } from '../dto/ChecklistVersaoDTO'
 
 type Props = {
+  checklist: ChecklistVersaoDTO | null
   layouts: Layout[]
   setLayouts: React.Dispatch<React.SetStateAction<Layout[]>>
 }
 
-export default function TIForm({ layouts, setLayouts }: Props) {
+export default function TIForm({
+  checklist,
+  layouts,
+  setLayouts
+}: Props) {
+
+  if (!checklist) {
+    return (
+      <div className="card p-3">
+        <strong>Carregando dados de TI...</strong>
+      </div>
+    )
+  }
+
   const [layoutAtivoId, setLayoutAtivoId] = useState<string | null>(null)
   const [massaAtivaIndex, setMassaAtivaIndex] = useState<number | null>(null)
 
-  // 🔑 keys SEPARADAS para resetar inputs file corretamente
   const [layoutFileKey, setLayoutFileKey] = useState(0)
   const [massaFileKey, setMassaFileKey] = useState(0)
 
   const layoutAtivo = layouts.find(l => l.id === layoutAtivoId)
 
-  /* ===============================
-     ADICIONAR LAYOUT (RESET TOTAL)
-     =============================== */
   function adicionarLayout() {
     const novoLayout: Layout = {
       id: crypto.randomUUID(),
@@ -28,19 +39,13 @@ export default function TIForm({ layouts, setLayouts }: Props) {
     }
 
     setLayouts(prev => [...prev, novoLayout])
-
-    // layout recém-criado vira o ativo
     setLayoutAtivoId(novoLayout.id)
     setMassaAtivaIndex(null)
 
-    // reset total dos files
     setLayoutFileKey(prev => prev + 1)
     setMassaFileKey(prev => prev + 1)
   }
 
-  /* ===============================
-     ADICIONAR MASSA (RESET SÓ MASSA)
-     =============================== */
   function adicionarMassa() {
     if (!layoutAtivo) return
 
@@ -58,16 +63,10 @@ export default function TIForm({ layouts, setLayouts }: Props) {
       )
     )
 
-    // nova massa vira ativa
     setMassaAtivaIndex(layoutAtivo.massas.length)
-
-    // reseta SOMENTE file da massa
     setMassaFileKey(prev => prev + 1)
   }
 
-  /* ===============================
-     ATUALIZAÇÕES
-     =============================== */
   function updateLayoutObservacao(value: string) {
     if (!layoutAtivo) return
 
@@ -99,15 +98,9 @@ export default function TIForm({ layouts, setLayouts }: Props) {
     )
   }
 
-  /* ===============================
-     SALVAR (RESET TELA INICIAL)
-     =============================== */
   function salvar() {
-    // futuramente: chamada de API
-
     setLayoutAtivoId(null)
     setMassaAtivaIndex(null)
-
     setLayoutFileKey(prev => prev + 1)
     setMassaFileKey(prev => prev + 1)
   }
@@ -115,9 +108,10 @@ export default function TIForm({ layouts, setLayouts }: Props) {
   return (
     <form className="card form-card p-4">
 
-      <h5 className="mb-3">TI – Layout e Forma de Envio</h5>
+      <h5 className="mb-3">
+        TI – Layout e Forma de Envio
+      </h5>
 
-      {/* ===== LAYOUTS ===== */}
       <div className="d-flex justify-content-between mb-2">
         <strong>Layouts</strong>
         <button
@@ -137,7 +131,6 @@ export default function TIForm({ layouts, setLayouts }: Props) {
 
       {layoutAtivo && (
         <>
-          {/* ===== LAYOUT FORM ===== */}
           <label className="mt-3">Arquivo Layout</label>
           <input
             key={`layout-file-${layoutFileKey}`}
@@ -155,7 +148,6 @@ export default function TIForm({ layouts, setLayouts }: Props) {
 
           <hr className="my-4" />
 
-          {/* ===== MASSAS ===== */}
           <div className="d-flex justify-content-between mb-2">
             <strong>Massas de Dados</strong>
             <button
@@ -199,7 +191,6 @@ export default function TIForm({ layouts, setLayouts }: Props) {
         </>
       )}
 
-      {/* ===== AÇÕES ===== */}
       <div className="d-flex gap-2 mt-4">
         <button
           type="button"

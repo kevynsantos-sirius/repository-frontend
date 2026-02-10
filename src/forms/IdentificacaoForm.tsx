@@ -1,4 +1,18 @@
-export default function IdentificacaoForm() {
+import type { ChecklistVersaoDTO } from '../dto/ChecklistVersaoDTO'
+
+type Props = {
+  checklist: ChecklistVersaoDTO | null
+}
+
+export default function IdentificacaoForm({ checklist }: Props) {
+  if (!checklist) {
+    return (
+      <div className="card p-3">
+        <strong>Carregando identificação...</strong>
+      </div>
+    )
+  }
+
   return (
     <form
       id="formIdentificacao"
@@ -23,6 +37,7 @@ export default function IdentificacaoForm() {
               className="form-control"
               maxLength={50}
               required
+              defaultValue={checklist.nomeDocumento ?? ''}
             />
           </div>
 
@@ -32,8 +47,9 @@ export default function IdentificacaoForm() {
             </label>
             <select
               id="ramo"
-              className="form-control filter-option-inner"
+              className="form-control"
               required
+              defaultValue={checklist.idRamo ?? ''}
             >
               <option value="">Selecione</option>
               <option value="1">CAPITALIZAÇÃO</option>
@@ -54,6 +70,7 @@ export default function IdentificacaoForm() {
               id="statusDocumento"
               className="form-control"
               required
+              defaultValue={checklist.status ?? ''}
             >
               <option value="">Selecione</option>
               <option value="1">1 - Ativo</option>
@@ -71,6 +88,7 @@ export default function IdentificacaoForm() {
               className="form-control"
               maxLength={5}
               required
+              defaultValue={checklist.centroCusto ?? ''}
             />
           </div>
         </div>
@@ -82,11 +100,9 @@ export default function IdentificacaoForm() {
               Responsável <span className="text-danger">*</span>
             </label>
 
-            <span className="form-control" id="responsavelNome">
-              Administrador
+            <span className="form-control">
+              {checklist.usuario?.nomeUsuario ?? '—'}
             </span>
-
-            <input type="hidden" id="responsavel" value="1" />
           </div>
 
           <div className="col-md-6">
@@ -99,6 +115,7 @@ export default function IdentificacaoForm() {
               className="form-control"
               maxLength={50}
               required
+              defaultValue={checklist.idDemanda ?? ''}
             />
           </div>
         </div>
@@ -111,9 +128,9 @@ export default function IdentificacaoForm() {
               <input
                 type="checkbox"
                 className="form-check-input"
-                id="isIcatu"
+                defaultChecked={checklist.icatu}
               />
-              <label className="form-check-label ms-2" htmlFor="isIcatu">
+              <label className="form-check-label ms-2">
                 Documento Icatu?
               </label>
             </div>
@@ -122,9 +139,9 @@ export default function IdentificacaoForm() {
               <input
                 type="checkbox"
                 className="form-check-input"
-                id="isRG"
+                defaultChecked={checklist.rioGrande}
               />
-              <label className="form-check-label ms-2" htmlFor="isRG">
+              <label className="form-check-label ms-2">
                 Documento Rio Grande?
               </label>
             </div>
@@ -133,9 +150,9 @@ export default function IdentificacaoForm() {
               <input
                 type="checkbox"
                 className="form-check-input"
-                id="isCaixa"
+                defaultChecked={checklist.caixa}
               />
-              <label className="form-check-label ms-2" htmlFor="isCaixa">
+              <label className="form-check-label ms-2">
                 Documento Caixa?
               </label>
             </div>
