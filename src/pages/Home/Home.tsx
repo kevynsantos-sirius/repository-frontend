@@ -149,6 +149,14 @@ export default function Home() {
       <div className="px-4">
         <div className="d-flex justify-content-between align-items-center">
           <SubmenuHeader active={abaAtiva} onChange={setAbaAtiva} />
+          {!isNovo && (
+            <button
+              className="btn btn-outline-primary"
+              onClick={() => setVersoesAberto(true)}
+            >
+              Versões
+            </button>
+          )}
         </div>
 
         {/* CHECKLIST BAR (OUTRA FUNCIONALIDADE) */}
