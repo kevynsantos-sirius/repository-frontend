@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import SubmenuHeader from '../../components/SubmenuHeader/SubmenuHeader'
 import VersionsSidebar from '../../components/VersoesSidebar/VersionsSidebar'
@@ -27,6 +28,8 @@ export type Layout = {
 type AbaAtiva = 'identificacao' | 'ti' | 'modelo'
 
 export default function Home() {
+
+  const navigate = useNavigate()
   const { id } = useParams()
 
   const isNovo = id === 'novo'
@@ -38,71 +41,75 @@ export default function Home() {
   const [versoesAberto, setVersoesAberto] = useState(false)
 
   return (
-    <div className="p-4">
+    <>
+        <div className="px-4">
 
-      {/* SUBMENU */}
-      <div className="d-flex justify-content-between align-items-center">
-        <SubmenuHeader
-          active={abaAtiva}
-          onChange={setAbaAtiva}
-        />
+          {/* SUBMENU */}
+          <div className="d-flex justify-content-between align-items-center">
+            <SubmenuHeader
+              active={abaAtiva}
+              onChange={setAbaAtiva}
+            />
+            
 
-        {/* BOTÃO VERSÕES */}
-        {!isNovo && (
-          <button
-            className="btn btn-outline-primary"
-            onClick={() => setVersoesAberto(true)}
-          >
-            Versões
-          </button>
-        )}
-      </div>
+            {/* BOTÃO VERSÕES */}
+            {!isNovo && (
+              <button
+                className="btn btn-outline-primary"
+                onClick={() => setVersoesAberto(true)}
+              >
+                Versões
+              </button>
+            )}
+          </div>
 
-      <div className="d-flex mt-4">
+          <div className="d-flex mt-4">
 
-        {/* SIDEBAR ESQUERDA – somente TI */}
-        {abaAtiva === 'ti' && (
-          <VersionsSidebar layouts={layouts} />
-        )}
+            {/* SIDEBAR ESQUERDA – somente TI */}
+            {abaAtiva === 'ti' && (
+              <VersionsSidebar layouts={layouts} />
+            )}
 
-        {/* CONTEÚDO */}
-        <div className="flex-fill ps-4">
+            {/* CONTEÚDO */}
+            <div className="flex-fill ps-4">
 
-          {abaAtiva === 'identificacao' && (
-            <IdentificacaoForm />
-          )}
+              {abaAtiva === 'identificacao' && (
+                <IdentificacaoForm />
+              )}
 
-          {abaAtiva === 'ti' && (
-            <TIForm
-              layouts={layouts}
-              setLayouts={setLayouts}
+              {abaAtiva === 'ti' && (
+                <TIForm
+                  layouts={layouts}
+                  setLayouts={setLayouts}
+                />
+              )}
+
+              {abaAtiva === 'modelo' && (
+                <ModeloForm />
+              )}
+
+            </div>
+          </div>
+
+          {/* SIDEBAR DIREITA – VERSÕES (SÓ SE NÃO FOR NOVO) */}
+          {!isNovo && (
+            <VersoesCheckListbar
+              aberto={versoesAberto}
+              onClose={() => setVersoesAberto(false)}
+              onSelectVersao={(layoutsDaVersao) => {
+                // 🔑 carrega layouts da versão
+                setLayouts(layoutsDaVersao)
+
+                // 🔑 vai direto para TI
+                setAbaAtiva('ti')
+
+                // 🔑 fecha sidebar
+                setVersoesAberto(false)
+              }}
             />
           )}
-
-          {abaAtiva === 'modelo' && (
-            <ModeloForm />
-          )}
-
         </div>
-      </div>
-
-      {/* SIDEBAR DIREITA – VERSÕES (SÓ SE NÃO FOR NOVO) */}
-      {!isNovo && (
-        <VersoesCheckListbar
-          aberto={versoesAberto}
-          onClose={() => setVersoesAberto(false)}
-          onSelectVersao={(layoutsDaVersao) => {
-            // 🔑 carrega layouts da versão
-            setLayouts(layoutsDaVersao)
-
-            // 🔑 vai direto para TI
-            setAbaAtiva('ti')
-
-            // 🔑 fecha sidebar
-            setVersoesAberto(false)
-          }}
-        />
-      )}
-    </div>
+        <button className='ms-5 mt-2 btn btn-outline-primary' onClick={() => navigate('/home')}>Voltar</button>
+      </>
   )
 }
