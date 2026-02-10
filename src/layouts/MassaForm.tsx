@@ -25,7 +25,9 @@ export default function MassaForm({
           Remover
         </button>
       </div>
-
+      <label className="d-block fw-semibold">
+        {massa.nomeArquivo}
+      </label>
       <label>Arquivo da Massa</label>
       <input type="file" className="form-control" />
 
@@ -33,7 +35,7 @@ export default function MassaForm({
       <textarea
         className="form-control"
         rows={2}
-        value={massa.observacao || ''}
+        value={massa.observacao}
         onChange={e =>
           onUpdate({ ...massa, observacao: e.target.value })
         }

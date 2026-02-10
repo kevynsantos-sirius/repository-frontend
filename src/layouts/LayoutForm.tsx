@@ -13,17 +13,12 @@ export default function LayoutForm({
   onRemove
 }: Props) {
 
-  // 🔒 Blindagem: garante que massas SEMPRE seja um array
   const massas: Massa[] = Array.isArray(layout.massas)
     ? layout.massas
     : []
 
   function atualizarObservacao(value: string) {
-    onUpdate({
-      ...layout,
-      observacao: value,
-      massas
-    })
+    onUpdate({ ...layout, observacao: value })
   }
 
   function adicionarMassa() {
@@ -60,7 +55,6 @@ export default function LayoutForm({
 
       <div className="d-flex justify-content-between mb-2">
         <strong>Layout</strong>
-
         <button
           type="button"
           className="btn btn-sm btn-outline-danger"
@@ -69,18 +63,19 @@ export default function LayoutForm({
           Remover
         </button>
       </div>
-      <label className='d-block'>{layout.nomeLayout || ''}</label>
+
+      <label className="d-block fw-semibold">
+        {layout.nomeLayout}
+      </label>
+
       <label>Arquivo Layout</label>
-      <input
-        type="file"
-        className="form-control"
-      />
+      <input type="file" className="form-control" />
 
       <label className="mt-2">Observação</label>
       <textarea
         className="form-control"
         rows={3}
-        value={layout.observacao || ''}
+        value={layout.observacao}
         onChange={e => atualizarObservacao(e.target.value)}
       />
 
@@ -88,7 +83,6 @@ export default function LayoutForm({
 
       <div className="d-flex justify-content-between mb-2">
         <strong>Massas</strong>
-
         <button
           type="button"
           className="btn btn-sm btn-outline-secondary"

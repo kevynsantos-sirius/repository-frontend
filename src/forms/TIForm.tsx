@@ -25,7 +25,7 @@ export default function TIForm({
   function adicionarLayout() {
     const novoLayout: Layout = {
       id: crypto.randomUUID(),
-      nomeArquivo: '',
+      nomeLayout: '',
       observacao: '',
       massas: []
     }

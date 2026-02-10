@@ -18,7 +18,7 @@ export default function VersionsSidebar({ layouts }: Props) {
         <div key={layout.id} className="mb-3">
 
           <strong className="d-block">
-            {layout.nomeArquivo || 'Layout'}
+            {layout.nomeLayout || 'Layout'}
           </strong>
 
           <ul className="ps-3 mb-0">
