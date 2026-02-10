@@ -28,6 +28,7 @@ export type Layout = {
   nomeArquivo?: string
   arquivo?: File | null
   observacao?: string
+  nomeLayout?: string
   massas: Massa[]
 }
 

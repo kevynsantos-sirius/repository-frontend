@@ -69,7 +69,7 @@ export default function LayoutForm({
           Remover
         </button>
       </div>
-
+      <label className='d-block'>{layout.nomeLayout || ''}</label>
       <label>Arquivo Layout</label>
       <input
         type="file"
