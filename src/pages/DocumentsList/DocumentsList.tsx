@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { buscarChecklists } from '../../services/checklist.service'
 
 type Documento = {
-  id: string
+  idChecklist: string
   nomeDocumento: string
   nomeRamo: string
   usuario: any
@@ -32,7 +32,6 @@ export default function DocumentsList() {
       .then(res => {
         setDocs(res.content)
         setTotalPaginas(res.totalPages)
-        console.log(res.content);
       })
       .finally(() => setLoading(false))
   }, [paginaAtual, itensPorPagina])
@@ -83,7 +82,7 @@ export default function DocumentsList() {
 
                   <tbody>
                     {docs.map(doc => (
-                      <tr key={doc.id}>
+                      <tr key={doc.idChecklist}>
                         <td>{doc.nomeDocumento}</td>
                         <td>{doc.nomeRamo}</td>
                         <td>{doc.usuario.nomeUsuario}</td>
@@ -106,7 +105,7 @@ export default function DocumentsList() {
                         <td className="text-end">
                           <button
                             className="btn btn-sm btn-outline-primary"
-                            onClick={() => abrirDocumento(doc.id)}
+                            onClick={() => abrirDocumento(doc.idChecklist)}
                           >
                             Abrir
                           </button>

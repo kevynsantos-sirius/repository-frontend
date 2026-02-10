@@ -5,7 +5,7 @@ import { api } from './api'
    ========================= */
 
 export type Checklist = {
-  id: string
+  idChecklist: string
   nomeDocumento: string
   nomeRamo: string
   usuario: any
