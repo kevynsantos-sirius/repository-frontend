@@ -134,6 +134,30 @@ export default function Home() {
     setModoTI('massa')
   }
 
+  function onRemoverLayout(layoutId: string) {
+  setLayouts(prev => prev.filter(l => l.id !== layoutId))
+  if (layoutSelecionadoId === layoutId) {
+    setLayoutSelecionadoId(null)
+    setMassaSelecionadaId(null)
+    setModoTI(null)
+  }
+}
+
+function onRemoverMassa(layoutId: string, massaId: string) {
+  setLayouts(prev =>
+    prev.map(l =>
+      l.id === layoutId
+        ? { ...l, massas: l.massas.filter(m => m.id !== massaId) }
+        : l
+    )
+  )
+  if (massaSelecionadaId === massaId) {
+    setMassaSelecionadaId(null)
+    setModoTI(null)
+  }
+}
+
+
   /* ========================= */
 
   if (loading) {
@@ -180,9 +204,12 @@ export default function Home() {
               massaSelecionadaId={massaSelecionadaId}
               onNovoLayout={onNovoLayout}
               onNovaMassa={onNovaMassa}
+              onRemoverLayout={onRemoverLayout}       // <- aqui
+              onRemoverMassa={onRemoverMassa}         // <- e aqui
               onSelectLayout={onSelectLayout}
               onSelectMassa={onSelectMassa}
             />
+
           )}
 
           <div className="flex-fill ps-4">
