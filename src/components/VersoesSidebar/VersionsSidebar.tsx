@@ -22,7 +22,7 @@ export default function VersionsSidebar({ layouts }: Props) {
           </strong>
 
           <ul className="ps-3 mb-0">
-            {layout.massas.map(m => (
+            {(layout.massas ?? []).map(m => (
               <li key={m.id}>
                 {m.nomeArquivo || 'Massa'}
               </li>

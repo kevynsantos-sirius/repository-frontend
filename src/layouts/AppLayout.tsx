@@ -1,10 +1,12 @@
 import { Outlet, useNavigate } from 'react-router-dom'
+import { logout } from '../services/authService'
 
 export default function AppLayout() {
   const navigate = useNavigate()
 
-  function logout() {
+  function logoutUser() {
     // limpar token, session, etc
+    logout();
     navigate('/login')
   }
 
@@ -17,7 +19,7 @@ export default function AppLayout() {
           <span>Administrador</span>
           <button
             className="btn btn-outline-danger btn-sm"
-            onClick={logout}
+            onClick={logoutUser}
           >
             Sair
           </button>
