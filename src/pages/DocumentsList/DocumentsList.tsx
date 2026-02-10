@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { buscarChecklists } from '../../services/checklist.service'
 
 type Documento = {
   id: string
-  nome: string
-  unidade: string
-  responsavel: string
-  demanda: string
+  nomeDocumento: string
+  nomeRamo: string
+  usuario: any
+  idDemanda: string
   situacao: 'PRD' | 'DEV' | 'RASCUNHO'
 }
 
@@ -16,82 +17,29 @@ export default function DocumentsList() {
   const [docs, setDocs] = useState<Documento[]>([])
   const [loading, setLoading] = useState(true)
 
-  // 🔹 paginação
+  // 🔹 paginação (controlada pelo back-end)
   const [paginaAtual, setPaginaAtual] = useState(1)
   const [itensPorPagina, setItensPorPagina] = useState(5)
+  const [totalPaginas, setTotalPaginas] = useState(0)
 
+  /* ===============================
+     BUSCA BACK-END
+     =============================== */
   useEffect(() => {
-    // 🔹 simula chamada de API
-    new Promise<Documento[]>(resolve => {
-      setTimeout(() => {
-        resolve([
-          {
-            id: '1',
-            nome: 'Carta Premiados aderente',
-            unidade: 'CAPITALIZAÇÃO',
-            responsavel: 'Carlos Alves',
-            demanda: 'Doc 00778555 Desenvolvimento',
-            situacao: 'PRD'
-          },
-          {
-            id: '2',
-            nome: 'Carta Premiados',
-            unidade: 'CAPITALIZAÇÃO',
-            responsavel: 'Administrador',
-            demanda: 'Doc 4951 - exclusão massa',
-            situacao: 'PRD'
-          },
-          {
-            id: '3',
-            nome: 'Carta de Cosseguro de Sinistro',
-            unidade: 'SEGUROS',
-            responsavel: 'Administrador',
-            demanda: 'DOC - 5552 Inclusão Layout',
-            situacao: 'DEV'
-          },
-          {
-            id: '4',
-            nome: 'Extrato Previdência',
-            unidade: 'PREVIDÊNCIA',
-            responsavel: 'Administrador',
-            demanda: 'Doc 000991 Exclusão de massa',
-            situacao: 'PRD'
-          },
-          {
-            id: '5',
-            nome: 'Boleto Cap',
-            unidade: 'CAPITALIZAÇÃO',
-            responsavel: 'Carlos Alves',
-            demanda: 'DS - 56677 - Incluir logo Boleto',
-            situacao: 'PRD'
-          },
-          {
-            id: '6',
-            nome: 'Carta Sinistro',
-            unidade: 'SEGUROS',
-            responsavel: 'Administrador',
-            demanda: 'DOC - 00222',
-            situacao: 'DEV'
-          }
-        ])
-      }, 600)
-    }).then(data => {
-      setDocs(data)
-      setLoading(false)
-    })
-  }, [])
+    setLoading(true)
+
+    buscarChecklists(paginaAtual - 1, itensPorPagina)
+      .then(res => {
+        setDocs(res.content)
+        setTotalPaginas(res.totalPages)
+        console.log(res.content);
+      })
+      .finally(() => setLoading(false))
+  }, [paginaAtual, itensPorPagina])
 
   function abrirDocumento(id: string) {
     navigate(`/home/${id}`)
   }
-
-  /* ===============================
-     PAGINAÇÃO
-     =============================== */
-  const totalPaginas = Math.ceil(docs.length / itensPorPagina)
-  const inicio = (paginaAtual - 1) * itensPorPagina
-  const fim = inicio + itensPorPagina
-  const docsPaginados = docs.slice(inicio, fim)
 
   return (
     <div className="p-4">
@@ -134,31 +82,24 @@ export default function DocumentsList() {
                   </thead>
 
                   <tbody>
-                    {docsPaginados.map(doc => (
+                    {docs.map(doc => (
                       <tr key={doc.id}>
-                        <td>{doc.nome}</td>
-                        <td>{doc.unidade}</td>
-                        <td>{doc.responsavel}</td>
+                        <td>{doc.nomeDocumento}</td>
+                        <td>{doc.nomeRamo}</td>
+                        <td>{doc.usuario.nomeUsuario}</td>
 
                         <td
                           className="text-truncate"
                           style={{ maxWidth: 320 }}
-                          title={doc.demanda}
+                          title={doc.idDemanda}
                         >
-                          {doc.demanda}
+                          {doc.idDemanda}
                         </td>
 
                         <td>
                           <span
-                            className={`badge ${
-                              doc.situacao === 'PRD'
-                                ? 'bg-success'
-                                : doc.situacao === 'DEV'
-                                ? 'bg-warning text-dark'
-                                : 'bg-secondary'
-                            }`}
                           >
-                            {doc.situacao}
+                            PRD
                           </span>
                         </td>
 
@@ -173,7 +114,7 @@ export default function DocumentsList() {
                       </tr>
                     ))}
 
-                    {docsPaginados.length === 0 && (
+                    {docs.length === 0 && (
                       <tr>
                         <td colSpan={6} className="text-center text-muted p-4">
                           Nenhum documento encontrado
@@ -196,7 +137,7 @@ export default function DocumentsList() {
                     value={itensPorPagina}
                     onChange={e => {
                       setItensPorPagina(Number(e.target.value))
-                      setPaginaAtual(1) // 🔑 reset página
+                      setPaginaAtual(1)
                     }}
                   >
                     <option value={5}>5</option>
