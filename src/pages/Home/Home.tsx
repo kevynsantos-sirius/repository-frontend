@@ -57,6 +57,8 @@ export default function Home() {
   const [filesLayout, setFilesLayout] = useState<File[]>([])
   const [filesMassas, setFilesMassas] = useState<File[]>([])
 
+  const [novoLayout,setNovoLayout] =  useState(false)
+
 
   const layoutSelecionado =
     layouts.find(l => l.id === layoutSelecionadoId) || null
@@ -101,6 +103,7 @@ export default function Home() {
     setLayoutSelecionadoId(novoId)
     setMassaSelecionadaId(null)
     setModoTI('layout')
+    setNovoLayout(true);
   }
 
   function montarPayloadEnvio(
@@ -146,7 +149,7 @@ async function onSalvarChecklist() {
   try {
     const payload = montarPayloadEnvio(checklist, layouts)
 
-    if (isNovo) {
+    if (novoLayout) {
       await salvarChecklist(
         payload,
         filesLayout,
@@ -199,12 +202,14 @@ async function onSalvarChecklist() {
     setLayoutSelecionadoId(id)
     setMassaSelecionadaId(null)
     setModoTI('layout')
+    setNovoLayout(false)
   }
 
   function onSelectMassa(layoutId: string, massaId: string) {
     setLayoutSelecionadoId(layoutId)
     setMassaSelecionadaId(massaId)
     setModoTI('massa')
+    setNovoLayout(false)
   }
 
   function onRemoverLayout(layoutId: string) {
