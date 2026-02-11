@@ -9,9 +9,9 @@ import IdentificacaoForm from '../../forms/IdentificacaoForm'
 import TIForm from '../../forms/TIForm'
 import ModeloForm from '../../forms/ModeloForm'
 
-import { buscarChecklistPorId } from '../../services/checklist.service'
+import { buscarChecklistPorId, atualizarChecklist, salvarChecklist } from '../../services/checklist.service'
 import type { ChecklistVersaoDTO } from '../../dto/ChecklistVersaoDTO'
-import type { Layout } from '../../types/types'
+import type { Layout,Massa } from '../../types/types'
 
 type AbaAtiva = 'identificacao' | 'ti' | 'modelo'
 
@@ -53,6 +53,10 @@ export default function Home() {
   const [modoTI, setModoTI] = useState<'layout' | 'massa' | null>(null)
 
   const [versoesAberto, setVersoesAberto] = useState(false)
+
+  const [filesLayout, setFilesLayout] = useState<File[]>([])
+  const [filesMassas, setFilesMassas] = useState<File[]>([])
+
 
   const layoutSelecionado =
     layouts.find(l => l.id === layoutSelecionadoId) || null
@@ -99,6 +103,75 @@ export default function Home() {
     setModoTI('layout')
   }
 
+  function montarPayloadEnvio(
+  checklist: ChecklistVersaoDTO,
+  layouts: Layout[]
+) {
+  return {
+    idChecklist: checklist.idChecklist?.toString(),
+    idChecklistVersao: checklist.idChecklistVersao?.toString(),
+
+    nomeDocumento: checklist.nomeDocumento,
+    idRamo: checklist.idRamo,
+    centroCusto: checklist.centroCusto,
+    status: checklist.status,
+    idUsuario: checklist.idUsuario,
+
+    icatu: checklist.icatu,
+    caixa: checklist.caixa,
+    rioGrande: checklist.rioGrande,
+
+    idDemanda: checklist.idDemanda,
+
+    temLayout: checklist.temLayout,
+    viaServico: checklist.viaServico,
+    viaTxt: checklist.viaTxt,
+
+    layouts: layouts.map(l => ({
+      id: l.id,
+      nomeLayout: l.nomeLayout,
+      observacao: l.observacao,
+      massasDados: l.massas.map(m => ({
+        id: m.id,
+        nomeMassaDados: m.nomeArquivo,
+        observacao: m.observacao
+      }))
+    }))
+  }
+}
+
+async function onSalvarChecklist() {
+  if (!checklist) return
+
+  try {
+    const payload = montarPayloadEnvio(checklist, layouts)
+
+    if (isNovo) {
+      await salvarChecklist(
+        payload,
+        filesLayout,
+        filesMassas
+      )
+      alert('Checklist salvo com sucesso!')
+    } else {
+      await atualizarChecklist(
+        checklist.idChecklistVersao.toString(),
+        payload,
+        filesLayout,
+        filesMassas
+      )
+      alert('Checklist atualizado com sucesso!')
+    }
+
+  } catch (error) {
+    console.error(error)
+    alert('Erro ao salvar checklist')
+  }
+}
+
+
+
+
   function onNovaMassa() {
     if (!layoutSelecionadoId) return
 
@@ -142,6 +215,28 @@ export default function Home() {
     setModoTI(null)
   }
 }
+
+function atualizarLayout(updated: Layout) {
+  setLayouts(prev =>
+    prev.map(l => l.id === updated.id ? updated : l)
+  )
+}
+
+function atualizarMassa(layoutId: string, updated: Massa) {
+  setLayouts(prev =>
+    prev.map(l =>
+      l.id === layoutId
+        ? {
+            ...l,
+            massas: l.massas.map(m =>
+              m.id === updated.id ? updated : m
+            )
+          }
+        : l
+    )
+  )
+}
+
 
 function onRemoverMassa(layoutId: string, massaId: string) {
   setLayouts(prev =>
@@ -222,7 +317,15 @@ function onRemoverMassa(layoutId: string, massaId: string) {
                 modo={modoTI}
                 layout={layoutSelecionado}
                 massa={massaSelecionada}
+                onChangeLayout={atualizarLayout}
+                onChangeMassa={atualizarMassa}
+                onRemoverLayout={onRemoverLayout}
+                onRemoverMassa={onRemoverMassa}
+                onSalvarLayout={onSalvarChecklist}
+                setFilesLayout={setFilesLayout}
+                setFilesMassas={setFilesMassas}
               />
+
             )}
 
             {abaAtiva === 'modelo' && (

@@ -1,14 +1,30 @@
 import type { Layout, Massa } from '../types/types'
+import type { Dispatch, SetStateAction } from 'react'
+
 
 type Props = {
   modo: 'layout' | 'massa' | null
   layout: Layout | null
   massa: Massa | null
   onSalvarLayout?(layout: Layout): void
-  onSalvarMassa?(massa: Massa): void
+  onChangeLayout(layout: Layout): void
+  onChangeMassa(layoutId: string, massa: Massa): void
+  onRemoverLayout(layoutId: string): void
+  onRemoverMassa(layoutId: string, massaId: string): void
+  setFilesLayout: Dispatch<SetStateAction<File[]>>
+  setFilesMassas: Dispatch<SetStateAction<File[]>>
 }
 
-export default function TIForm({ modo, layout, massa, onSalvarLayout, onSalvarMassa }: Props) {
+export default function TIForm({ modo,
+   layout,
+    massa,
+    onChangeLayout,
+  onChangeMassa,
+     onSalvarLayout,
+      onRemoverLayout,
+       onRemoverMassa,
+      setFilesLayout,
+                setFilesMassas }: Props) {
   if (!modo) {
     return (
       <div className="card p-4 text-muted">
@@ -29,17 +45,33 @@ export default function TIForm({ modo, layout, massa, onSalvarLayout, onSalvarMa
           className="form-control mb-3"
           value={layout.nomeLayout}
           onChange={(e) => layout.nomeLayout = e.target.value}
+          disabled
         />
 
         <label className="form-label">Arquivo do Layout</label>
-        <input type="file" className="form-control mb-3" />
+        <input
+          type="file"
+          className="form-control mb-3"
+          onChange={(e) => {
+            const file = e.target.files?.[0]
+            if (!file) return
+
+            setFilesLayout(prev => [...prev, file])
+          }}
+        />
+
 
         <label className="form-label">Observação</label>
         <textarea
           className="form-control"
           rows={4}
           value={layout.observacao}
-          onChange={(e) => layout.observacao = e.target.value}
+          onChange={(e) =>
+            onChangeLayout({
+              ...layout,
+              observacao: e.target.value
+            })
+          }
         />
 
         <div className="mt-3 d-flex gap-2">
@@ -54,7 +86,7 @@ export default function TIForm({ modo, layout, massa, onSalvarLayout, onSalvarMa
           <button
             type="button"
             className="btn btn-outline-danger"
-            onClick={() => console.log('Remover Layout:', layout.id)}
+            onClick={() => onRemoverLayout(layout.id)}
           >
             Remover Layout
           </button>
@@ -64,7 +96,7 @@ export default function TIForm({ modo, layout, massa, onSalvarLayout, onSalvarMa
   }
 
   /* ========================= FORM MASSA ========================= */
-  if (modo === 'massa' && massa) {
+  if (modo === 'massa' && massa && layout) {
     return (
       <form className="card p-4">
         <h5 className="mb-3">Massa</h5>
@@ -73,31 +105,53 @@ export default function TIForm({ modo, layout, massa, onSalvarLayout, onSalvarMa
           type="text"
           className="form-control mb-3"
           value={massa.nomeArquivo}
+          disabled
         />
         <label className="form-label">Arquivo da Massa</label>
-        <input type="file" className="form-control mb-3" />
+        <input
+          type="file"
+          className="form-control mb-3"
+          onChange={(e) => {
+            const file = e.target.files?.[0]
+            if (!file) return
+
+            setFilesMassas(prev => [...prev, file])
+          }}
+        />
 
         <label className="form-label">Observação</label>
         <textarea
           className="form-control"
           rows={4}
           value={massa.observacao}
-          onChange={(e) => massa.observacao = e.target.value}
+          onChange={(e) =>
+            onChangeMassa(layout.id, {
+              ...massa,
+              observacao: e.target.value
+            })
+          }
         />
 
         <div className="mt-3 d-flex gap-2">
           <button
             type="button"
             className="btn btn-primary"
-            onClick={() => onSalvarMassa && onSalvarMassa(massa)}
+            onClick={() => {
+              if (layout) {
+                onSalvarLayout && onSalvarLayout(layout)
+              }
+            }}
           >
             Salvar Massa
           </button>
-
           <button
             type="button"
             className="btn btn-outline-danger"
-            onClick={() => console.log('Remover Massa:', massa.id)}
+            onClick={() => {
+              if (layout) {
+                onRemoverMassa(layout.id, massa.id)
+              }
+            }}
           >
             Remover Massa
           </button>
