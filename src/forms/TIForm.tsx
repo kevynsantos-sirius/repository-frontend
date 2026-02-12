@@ -44,7 +44,6 @@ export default function TIForm({ modo,
           type="text"
           className="form-control mb-3"
           value={layout.nomeLayout}
-          onChange={(e) => layout.nomeLayout = e.target.value}
           disabled
         />
 

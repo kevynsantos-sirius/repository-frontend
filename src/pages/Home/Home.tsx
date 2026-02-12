@@ -32,11 +32,17 @@ function mapLayoutsFromBackend(layoutsBackend: any[]): Layout[] {
       : []
   }))
 }
-
+type HomeProps = {
+  novoLayout: boolean
+  setNovoLayout: React.Dispatch<React.SetStateAction<boolean>>
+}
 /* =========================
    COMPONENTE
    ========================= */
-export default function Home() {
+export default function Home({
+  novoLayout,
+  setNovoLayout
+}: HomeProps) {
   const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
   const {idVersao} = useParams<{idVersao: string}>()
@@ -57,8 +63,6 @@ export default function Home() {
 
   const [filesLayout, setFilesLayout] = useState<File[]>([])
   const [filesMassas, setFilesMassas] = useState<File[]>([])
-
-  const [novoLayout,setNovoLayout] =  useState(false)
 
 
   const layoutSelecionado =
@@ -317,7 +321,12 @@ function onRemoverMassa(layoutId: string, massaId: string) {
 
           <div className="flex-fill ps-4">
             {abaAtiva === 'identificacao' && (
-              <IdentificacaoForm checklist={checklist} />
+              <IdentificacaoForm
+                checklist={checklist}
+                isNovo={isNovo}
+                onChangeChecklist={setChecklist}
+              />
+
             )}
 
             {abaAtiva === 'ti' && (

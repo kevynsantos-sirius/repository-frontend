@@ -2,14 +2,36 @@ import type { ChecklistVersaoDTO } from '../dto/ChecklistVersaoDTO'
 
 type Props = {
   checklist: ChecklistVersaoDTO | null
+  isNovo: boolean
+  onChangeChecklist: React.Dispatch<
+    React.SetStateAction<ChecklistVersaoDTO | null>
+  >
 }
 
-export default function IdentificacaoForm({ checklist }: Props) {
-  if (!checklist) {
+export default function IdentificacaoForm({
+  checklist,
+  isNovo,
+  onChangeChecklist
+}: Props) {
+
+  // Loading somente quando estiver editando e ainda não carregou
+  if (!checklist && !isNovo) {
     return (
       <div className="card p-3">
         <strong>Carregando identificação...</strong>
       </div>
+    )
+  }
+
+  // Garante objeto sempre existente
+  const checklistForm: ChecklistVersaoDTO = checklist as ChecklistVersaoDTO
+
+  function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
+    campo: K,
+    valor: ChecklistVersaoDTO[K]
+  ) {
+    onChangeChecklist(prev =>
+      prev ? { ...prev, [campo]: valor } : prev
     )
   }
 
@@ -33,11 +55,13 @@ export default function IdentificacaoForm({ checklist }: Props) {
             </label>
             <input
               type="text"
-              id="nomeDocumento"
               className="form-control"
               maxLength={50}
               required
-              defaultValue={checklist.nomeDocumento ?? ''}
+              value={checklistForm?.nomeDocumento ?? ''}
+              onChange={(e) =>
+                atualizarCampo('nomeDocumento', e.target.value)
+              }
             />
           </div>
 
@@ -46,10 +70,12 @@ export default function IdentificacaoForm({ checklist }: Props) {
               Ramo <span className="text-danger">*</span>
             </label>
             <select
-              id="ramo"
               className="form-control"
               required
-              defaultValue={checklist.idRamo ?? ''}
+              value={checklistForm?.idRamo ?? ''}
+              onChange={(e) =>
+                atualizarCampo('idRamo', Number(e.target.value))
+              }
             >
               <option value="">Selecione</option>
               <option value="1">CAPITALIZAÇÃO</option>
@@ -67,10 +93,12 @@ export default function IdentificacaoForm({ checklist }: Props) {
               Status <span className="text-danger">*</span>
             </label>
             <select
-              id="statusDocumento"
               className="form-control"
               required
-              defaultValue={checklist.status ?? ''}
+              value={checklistForm?.status ?? ''}
+              onChange={(e) =>
+                atualizarCampo('status', Number(e.target.value))
+              }
             >
               <option value="">Selecione</option>
               <option value="1">1 - Ativo</option>
@@ -84,11 +112,13 @@ export default function IdentificacaoForm({ checklist }: Props) {
             </label>
             <input
               type="text"
-              id="centroCusto"
               className="form-control"
               maxLength={5}
               required
-              defaultValue={checklist.centroCusto ?? ''}
+              value={checklistForm?.centroCusto ?? ''}
+              onChange={(e) =>
+                atualizarCampo('centroCusto', e.target.value)
+              }
             />
           </div>
         </div>
@@ -100,8 +130,8 @@ export default function IdentificacaoForm({ checklist }: Props) {
               Responsável <span className="text-danger">*</span>
             </label>
 
-            <span className="form-control">
-              {checklist.usuario?.nomeUsuario ?? '—'}
+            <span className="form-control h-50">
+              {checklistForm?.usuario?.nomeUsuario || ''}
             </span>
           </div>
 
@@ -111,11 +141,13 @@ export default function IdentificacaoForm({ checklist }: Props) {
             </label>
             <input
               type="text"
-              id="demanda"
               className="form-control"
               maxLength={50}
               required
-              defaultValue={checklist.idDemanda ?? ''}
+              value={checklistForm?.idDemanda ?? ''}
+              onChange={(e) =>
+                atualizarCampo('idDemanda', e.target.value)
+              }
             />
           </div>
         </div>
@@ -124,33 +156,42 @@ export default function IdentificacaoForm({ checklist }: Props) {
         <div className="row m-5">
           <div className="col-md-6">
 
-            <div className="form-label">
+            <div className="form-check mb-2">
               <input
                 type="checkbox"
                 className="form-check-input"
-                defaultChecked={checklist.icatu}
+                checked={checklistForm?.icatu ?? false}
+                onChange={(e) =>
+                  atualizarCampo('icatu', e.target.checked)
+                }
               />
               <label className="form-check-label ms-2">
                 Documento Icatu?
               </label>
             </div>
 
-            <div className="form-label">
+            <div className="form-check mb-2">
               <input
                 type="checkbox"
                 className="form-check-input"
-                defaultChecked={checklist.rioGrande}
+                checked={checklistForm?.rioGrande ?? false}
+                onChange={(e) =>
+                  atualizarCampo('rioGrande', e.target.checked)
+                }
               />
               <label className="form-check-label ms-2">
                 Documento Rio Grande?
               </label>
             </div>
 
-            <div className="form-label">
+            <div className="form-check">
               <input
                 type="checkbox"
                 className="form-check-input"
-                defaultChecked={checklist.caixa}
+                checked={checklistForm?.caixa ?? false}
+                onChange={(e) =>
+                  atualizarCampo('caixa', e.target.checked)
+                }
               />
               <label className="form-check-label ms-2">
                 Documento Caixa?

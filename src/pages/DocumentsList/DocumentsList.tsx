@@ -12,7 +12,13 @@ type Documento = {
   situacao: 'PRD' | 'DEV' | 'RASCUNHO'
 }
 
-export default function DocumentsList() {
+type DocumentsProps = {
+  setNovoLayout: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export default function DocumentsList({
+  setNovoLayout
+}: DocumentsProps) {
   const navigate = useNavigate()
 
   const [docs, setDocs] = useState<Documento[]>([])
@@ -50,7 +56,7 @@ export default function DocumentsList() {
 
         <button
           className="btn btn-primary"
-          onClick={() => navigate('/home/novo')}
+          onClick={() => {    setNovoLayout(true); navigate('/home/novo/registro');} }
         >
           Novo documento
         </button>
