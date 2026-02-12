@@ -19,7 +19,7 @@ export default function App() {
         <Route path="/home" element={<DocumentsList />} />
 
         {/* EDIÇÃO / VISUALIZAÇÃO */}
-        <Route path="/home/:id" element={<Home />} />
+        <Route path="/home/:id/:idVersao" element={<Home />} />
 
         <Route path="/checklists" element={<Checklists />} />
 

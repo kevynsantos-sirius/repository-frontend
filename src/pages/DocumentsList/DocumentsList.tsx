@@ -37,8 +37,8 @@ export default function DocumentsList() {
       .finally(() => setLoading(false))
   }, [paginaAtual, itensPorPagina])
 
-  function abrirDocumento(id: string) {
-    navigate(`/home/${id}`)
+  function abrirDocumento(id: string,idVersao: string) {
+    navigate(`/home/${id}/${idVersao}`)
   }
 
   return (
@@ -106,7 +106,7 @@ export default function DocumentsList() {
                         <td className="text-end">
                           <button
                             className="btn btn-sm btn-outline-primary"
-                            onClick={() => abrirDocumento(doc.idChecklistVersao)}
+                            onClick={() => abrirDocumento(doc.idChecklistVersao,doc.idChecklist)}
                           >
                             Abrir
                           </button>

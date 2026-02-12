@@ -39,6 +39,7 @@ function mapLayoutsFromBackend(layoutsBackend: any[]): Layout[] {
 export default function Home() {
   const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
+  const {idVersao} = useParams<{idVersao: string}>()
 
   const isNovo = !id || id === 'novo'
 
@@ -284,7 +285,7 @@ function onRemoverMassa(layoutId: string, massaId: string) {
         </div>
 
         {/* CHECKLIST BAR (OUTRA FUNCIONALIDADE) */}
-        {!isNovo && (
+        {!isNovo && idVersao && (
           <VersoesCheckListbar
             aberto={versoesAberto}
             onClose={() => setVersoesAberto(false)}
@@ -293,8 +294,10 @@ function onRemoverMassa(layoutId: string, massaId: string) {
               setAbaAtiva('ti')
               setVersoesAberto(false)
             }}
+            idVersao={idVersao}
           />
         )}
+
 
         <div className="d-flex mt-4">
           {abaAtiva === 'ti' && (
