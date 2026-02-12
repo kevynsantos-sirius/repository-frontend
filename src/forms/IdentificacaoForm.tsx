@@ -1,5 +1,6 @@
 import type { ChecklistVersaoDTO } from '../dto/ChecklistVersaoDTO'
 import type { UsuarioDTO } from '../dto/UsuarioDTO'
+import type { Layout } from '../types/types'
 
 type Props = {
   checklist: ChecklistVersaoDTO | null
@@ -8,13 +9,17 @@ type Props = {
   onChangeChecklist: React.Dispatch<
     React.SetStateAction<ChecklistVersaoDTO | null>
   >
+  layout: Layout | null
+  onSalvarLayout?(layout: Layout): void
 }
 
 export default function IdentificacaoForm({
   checklist,
   user,
   isNovo,
-  onChangeChecklist
+  onChangeChecklist,
+  layout,
+  onSalvarLayout
 }: Props) {
 
   // Loading somente quando estiver editando e ainda não carregou
@@ -241,7 +246,8 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
 
         {/* Ações */}
         <div className="d-flex gap-2 m-3">
-          <button type="button" className="btn btn-salvar">
+          <button type="button" className="btn btn-salvar"
+           onClick={() => onSalvarLayout && layout && onSalvarLayout(layout)}>
             Salvar
           </button>
 

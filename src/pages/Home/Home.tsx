@@ -327,9 +327,11 @@ function onRemoverMassa(layoutId: string, massaId: string) {
             {abaAtiva === 'identificacao' && (
               <IdentificacaoForm
                 checklist={checklist}
+                layout={layoutSelecionado}
                 isNovo={isNovo}
                 onChangeChecklist={setChecklist}
                 user={user}
+                 onSalvarLayout={onSalvarChecklist}
               />
 
             )}
