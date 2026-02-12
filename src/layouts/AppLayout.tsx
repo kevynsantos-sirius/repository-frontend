@@ -1,26 +1,27 @@
 import { Outlet, useNavigate } from 'react-router-dom'
 import { logout } from '../services/authService'
 import { useEffect } from 'react'
-import { getUserName } from '../services/authService'
+import { getUser } from '../services/authService'
+import type { UsuarioDTO } from '../dto/UsuarioDTO'
 
 type AppLayoutProps = {
-  userName: string
-  setUserName: React.Dispatch<React.SetStateAction<string>>
+  user: UsuarioDTO | null
+  setUser: React.Dispatch<React.SetStateAction<UsuarioDTO | null>>
 }
 
 export default function AppLayout({
-  userName,
-  setUserName
+  user,
+  setUser
 }: AppLayoutProps) {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const carregarNome = async () => {
-      const name = await getUserName();
-      setUserName(name);
+    const carregarUsuario = async () => {
+      const user = await getUser();
+      setUser(user);
     };
 
-    carregarNome();
+    carregarUsuario();
   }, []);
 
 
@@ -36,7 +37,7 @@ export default function AppLayout({
         <strong>Meu Sistema</strong>
 
         <div className="d-flex align-items-center gap-3">
-          <span>{userName}</span>
+          <span>{user?.nomeUsuario}</span>
           <button
             className="btn btn-outline-danger btn-sm"
             onClick={logoutUser}

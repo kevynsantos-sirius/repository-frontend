@@ -13,7 +13,7 @@ export async function logout() {
   await api.post('/api/auth/logout')
 }
 
-export async function getUserName() {
-  const res = await api.get('/api/checklists/user/name')
+export async function getUser() {
+  const res = await api.get('/api/checklists/user/')
   return res.data;
 }

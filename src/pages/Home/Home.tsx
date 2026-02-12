@@ -12,6 +12,7 @@ import ModeloForm from '../../forms/ModeloForm'
 import { buscarChecklistPorId, atualizarChecklist, salvarChecklist } from '../../services/checklist.service'
 import type { ChecklistVersaoDTO } from '../../dto/ChecklistVersaoDTO'
 import type { Layout,Massa } from '../../types/types'
+import type { UsuarioDTO } from '../../dto/UsuarioDTO'
 
 type AbaAtiva = 'identificacao' | 'ti' | 'modelo'
 
@@ -34,7 +35,7 @@ function mapLayoutsFromBackend(layoutsBackend: any[]): Layout[] {
 }
 type HomeProps = {
   novoLayout: boolean
-  userName: string
+  user: UsuarioDTO | null
   setNovoLayout: React.Dispatch<React.SetStateAction<boolean>>
 }
 /* =========================
@@ -42,7 +43,7 @@ type HomeProps = {
    ========================= */
 export default function Home({
   novoLayout,
-  userName,
+  user,
   setNovoLayout
 }: HomeProps) {
   const navigate = useNavigate()
@@ -157,6 +158,7 @@ async function onSalvarChecklist() {
     const payload = montarPayloadEnvio(checklist, layouts)
 
     if (novoLayout) {
+      payload.idUsuario = Number(user?.id);
       await salvarChecklist(
         payload,
         filesLayout,
@@ -327,7 +329,7 @@ function onRemoverMassa(layoutId: string, massaId: string) {
                 checklist={checklist}
                 isNovo={isNovo}
                 onChangeChecklist={setChecklist}
-                userName={userName}
+                user={user}
               />
 
             )}

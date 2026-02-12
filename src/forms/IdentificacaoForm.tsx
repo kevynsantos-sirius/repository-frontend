@@ -1,8 +1,9 @@
 import type { ChecklistVersaoDTO } from '../dto/ChecklistVersaoDTO'
+import type { UsuarioDTO } from '../dto/UsuarioDTO'
 
 type Props = {
   checklist: ChecklistVersaoDTO | null
-  userName: string
+  user: UsuarioDTO | null
   isNovo: boolean
   onChangeChecklist: React.Dispatch<
     React.SetStateAction<ChecklistVersaoDTO | null>
@@ -11,7 +12,7 @@ type Props = {
 
 export default function IdentificacaoForm({
   checklist,
-  userName,
+  user,
   isNovo,
   onChangeChecklist
 }: Props) {
@@ -28,14 +29,49 @@ export default function IdentificacaoForm({
   // Garante objeto sempre existente
   const checklistForm: ChecklistVersaoDTO = checklist as ChecklistVersaoDTO
 
-  function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
-    campo: K,
-    valor: ChecklistVersaoDTO[K]
-  ) {
-    onChangeChecklist(prev =>
-      prev ? { ...prev, [campo]: valor } : prev
-    )
-  }
+function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
+  campo: K,
+  valor: ChecklistVersaoDTO[K]
+) {
+  onChangeChecklist(prev => {
+    const base: ChecklistVersaoDTO = prev ?? {
+      idChecklistVersao: 0,
+      idChecklist: 0,
+      nomeDocumento: '',
+      idRamo: 0,
+      nomeRamo: null,
+      centroCusto: '',
+      status: 0,
+      idUsuario: 0,
+
+      icatu: false,
+      caixa: false,
+      rioGrande: false,
+
+      idDemanda: '',
+
+      temLayout: false,
+      viaServico: false,
+      viaTxt: false,
+
+      checklistDTO: null,
+
+      usuario: {
+        id: user?.id ?? 0,
+        nomeUsuario: user?.nomeUsuario ?? ''
+      },
+
+      layouts: []
+    }
+
+    return {
+      ...base,
+      [campo]: valor
+    }
+  })
+}
+
+
 
   return (
     <form
@@ -133,7 +169,7 @@ export default function IdentificacaoForm({
             </label>
 
             <span className="form-control">
-              {checklistForm?.usuario?.nomeUsuario || userName}
+              {checklistForm?.usuario?.nomeUsuario || user?.nomeUsuario}
             </span>
           </div>
 

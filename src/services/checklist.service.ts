@@ -58,6 +58,7 @@ export async function salvarChecklist(
   filesMassas: File[] = []
 ) {
   const formData = new FormData()
+  console.log(payload);
 
   // 🔹 JSON como string (porque backend recebe String dadosJson)
   formData.append("dados", JSON.stringify(payload))
