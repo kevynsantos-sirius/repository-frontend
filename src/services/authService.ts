@@ -12,3 +12,8 @@ export async function login(usuario: string, senha: string) {
 export async function logout() {
   await api.post('/api/auth/logout')
 }
+
+export async function getUserName() {
+  const res = await api.get('/api/checklists/user/name')
+  return res.data;
+}

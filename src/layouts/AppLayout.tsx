@@ -1,8 +1,28 @@
 import { Outlet, useNavigate } from 'react-router-dom'
 import { logout } from '../services/authService'
+import { useEffect } from 'react'
+import { getUserName } from '../services/authService'
 
-export default function AppLayout() {
+type AppLayoutProps = {
+  userName: string
+  setUserName: React.Dispatch<React.SetStateAction<string>>
+}
+
+export default function AppLayout({
+  userName,
+  setUserName
+}: AppLayoutProps) {
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const carregarNome = async () => {
+      const name = await getUserName();
+      setUserName(name);
+    };
+
+    carregarNome();
+  }, []);
+
 
   function logoutUser() {
     // limpar token, session, etc
@@ -16,7 +36,7 @@ export default function AppLayout() {
         <strong>Meu Sistema</strong>
 
         <div className="d-flex align-items-center gap-3">
-          <span>Administrador</span>
+          <span>{userName}</span>
           <button
             className="btn btn-outline-danger btn-sm"
             onClick={logoutUser}

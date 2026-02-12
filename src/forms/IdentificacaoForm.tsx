@@ -2,6 +2,7 @@ import type { ChecklistVersaoDTO } from '../dto/ChecklistVersaoDTO'
 
 type Props = {
   checklist: ChecklistVersaoDTO | null
+  userName: string
   isNovo: boolean
   onChangeChecklist: React.Dispatch<
     React.SetStateAction<ChecklistVersaoDTO | null>
@@ -10,6 +11,7 @@ type Props = {
 
 export default function IdentificacaoForm({
   checklist,
+  userName,
   isNovo,
   onChangeChecklist
 }: Props) {
@@ -130,8 +132,8 @@ export default function IdentificacaoForm({
               Responsável <span className="text-danger">*</span>
             </label>
 
-            <span className="form-control h-50">
-              {checklistForm?.usuario?.nomeUsuario || ''}
+            <span className="form-control">
+              {checklistForm?.usuario?.nomeUsuario || userName}
             </span>
           </div>
 

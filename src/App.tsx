@@ -7,7 +7,11 @@ import Checklists from './pages/Checklists/Checklists'
 import { useState } from 'react'
 
 export default function App() {
-  const [novoLayout,setNovoLayout] =  useState(false)
+
+  const [novoLayout,setNovoLayout] =  useState(false);
+  const [userName,setUserName] =  useState("Sem sessão");
+
+  
   return (
     <Routes>
 
@@ -15,13 +19,13 @@ export default function App() {
       <Route path="/login" element={<Login />} />
 
       {/* ÁREA LOGADA */}
-      <Route element={<AppLayout />}>
+      <Route element={<AppLayout setUserName={setUserName} userName={userName} />}>
 
         {/* LISTAGEM */}
         <Route path="/home" element={<DocumentsList setNovoLayout={setNovoLayout} />} />
 
         {/* EDIÇÃO / VISUALIZAÇÃO */}
-        <Route path="/home/:id/:idVersao" element={<Home novoLayout={novoLayout} setNovoLayout={setNovoLayout} />} />
+        <Route path="/home/:id/:idVersao" element={<Home novoLayout={novoLayout} setNovoLayout={setNovoLayout} userName={userName} />} />
 
         <Route path="/checklists" element={<Checklists />} />
 

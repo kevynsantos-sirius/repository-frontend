@@ -34,6 +34,7 @@ function mapLayoutsFromBackend(layoutsBackend: any[]): Layout[] {
 }
 type HomeProps = {
   novoLayout: boolean
+  userName: string
   setNovoLayout: React.Dispatch<React.SetStateAction<boolean>>
 }
 /* =========================
@@ -41,6 +42,7 @@ type HomeProps = {
    ========================= */
 export default function Home({
   novoLayout,
+  userName,
   setNovoLayout
 }: HomeProps) {
   const navigate = useNavigate()
@@ -325,6 +327,7 @@ function onRemoverMassa(layoutId: string, massaId: string) {
                 checklist={checklist}
                 isNovo={isNovo}
                 onChangeChecklist={setChecklist}
+                userName={userName}
               />
 
             )}
