@@ -13,6 +13,7 @@ import { buscarChecklistPorId, atualizarChecklist, salvarChecklist } from '../..
 import type { ChecklistVersaoDTO } from '../../dto/ChecklistVersaoDTO'
 import type { Layout,Massa } from '../../types/types'
 import type { UsuarioDTO } from '../../dto/UsuarioDTO'
+import ChecklistDocPreviewModal from "../../view/ChecklistDocPreviewModal"
 
 type AbaAtiva = 'identificacao' | 'ti' | 'modelo'
 
@@ -66,6 +67,9 @@ export default function Home({
 
   const [filesLayout, setFilesLayout] = useState<File[]>([])
   const [filesMassas, setFilesMassas] = useState<File[]>([])
+  const [abrirPreview, setAbrirPreview] = useState(false)
+  const [dadosPreview, setDadosPreview] = useState<ChecklistVersaoDTO | null>(null)
+
 
 
   const layoutSelecionado =
@@ -206,6 +210,12 @@ async function onSalvarChecklist() {
     setMassaSelecionadaId(novoId)
     setModoTI('massa')
   }
+
+  function visualizarDocumento(checklist: ChecklistVersaoDTO) {
+  setDadosPreview(checklist)
+  setAbrirPreview(true)
+}
+
 
   function onSelectLayout(id: string) {
     setLayoutSelecionadoId(id)
@@ -358,6 +368,13 @@ function onRemoverMassa(layoutId: string, massaId: string) {
           </div>
         </div>
       </div>
+      <button
+        disabled={!checklist}
+        onClick={() => checklist && visualizarDocumento(checklist)}
+      >
+        Visualizar Documento
+      </button>
+
 
       <button
         className="ms-5 mt-2 btn btn-outline-primary"
@@ -365,6 +382,15 @@ function onRemoverMassa(layoutId: string, massaId: string) {
       >
         Voltar
       </button>
+
+      {dadosPreview && (
+        <ChecklistDocPreviewModal
+          aberto={abrirPreview}
+          onClose={() => setAbrirPreview(false)}
+          data={dadosPreview}
+        />
+      )}
+
     </>
   )
 }
