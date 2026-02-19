@@ -250,10 +250,6 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
            onClick={() => onSalvarLayout && layout && onSalvarLayout(layout)}>
             Salvar
           </button>
-
-          <button type="button" className="btn btn-cancelar">
-            Cancelar
-          </button>
         </div>
 
       </div>
