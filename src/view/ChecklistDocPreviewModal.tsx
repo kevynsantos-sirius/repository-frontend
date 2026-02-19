@@ -44,7 +44,7 @@ export default function ChecklistDocPreviewModal({
               new Paragraph(`Nome: ${data.nomeDocumento}`),
               new Paragraph(`Ramo: ${data.nomeRamo ?? "-"}`),
               new Paragraph(`Centro de custo: ${data.centroCusto}`),
-              new Paragraph(`Status: ${data.status}`),
+              new Paragraph(`Status: ${data.status === 1 ? 'Ativo' : 'Inativo'}`),
               new Paragraph(`Responsável: ${data.usuario?.nomeUsuario}`),
               new Paragraph(`Demanda: ${data.idDemanda}`),
 
