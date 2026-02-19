@@ -158,8 +158,8 @@ export default function ChecklistDocPreviewModal({
         />
 
         <div style={{ display: "flex", gap: 10 }}>
-          <button onClick={baixar}>Baixar DOCX</button>
-          <button onClick={onClose}>Fechar</button>
+          <button className="btn btn-outline-primary" onClick={baixar}>Baixar DOCX</button>
+          <button className="btn btn-outline-primary" onClick={onClose}>Fechar</button>
         </div>
       </div>
     </div>
