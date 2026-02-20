@@ -43,7 +43,6 @@ type HomeProps = {
    COMPONENTE
    ========================= */
 export default function Home({
-  novoLayout,
   user,
   setNovoLayout
 }: HomeProps) {
@@ -160,8 +159,7 @@ async function onSalvarChecklist() {
 
   try {
     const payload = montarPayloadEnvio(checklist, layouts)
-
-    if (novoLayout) {
+    if (isNovo) {
       payload.idUsuario = Number(user?.id);
       await salvarChecklist(
         payload,

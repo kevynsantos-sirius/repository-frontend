@@ -10,7 +10,7 @@ type Props = {
     React.SetStateAction<ChecklistVersaoDTO | null>
   >
   layout: Layout | null
-  onSalvarLayout?(layout: Layout): void
+  onSalvarLayout?(layout: Layout | null): void
 }
 
 export default function IdentificacaoForm({
@@ -233,8 +233,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
                 className="form-check-input"
                 checked={checklistForm?.caixa ?? false}
                 onChange={(e) =>
-                  atualizarCampo('caixa', e.target.checked)
-                }
+                  atualizarCampo('caixa', e.target.checked)}
               />
               <label className="form-check-label ms-2">
                 Documento Caixa?
@@ -247,7 +246,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
         {/* Ações */}
         <div className="d-flex gap-2 m-3">
           <button type="button" className="btn btn-salvar"
-           onClick={() => onSalvarLayout && layout && onSalvarLayout(layout)}>
+           onClick={() => onSalvarLayout && onSalvarLayout(layout)}>
             Salvar
           </button>
         </div>
