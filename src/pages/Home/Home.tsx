@@ -174,6 +174,7 @@ async function onSalvarChecklist() {
       )
 
       alert('Checklist salvo com sucesso!')
+      navigate('/home')
     } else {
       await atualizarChecklist(
         checklist.idChecklistVersao.toString(),
@@ -183,6 +184,7 @@ async function onSalvarChecklist() {
       )
 
       alert('Checklist atualizado com sucesso!')
+      navigate('/home')
     }
 
   } catch (error) {
