@@ -1,7 +1,6 @@
 import type { Layout, Massa } from '../types/types'
 import type { Dispatch, SetStateAction } from 'react'
 
-
 type Props = {
   modo: 'layout' | 'massa' | null
   layout: Layout | null
@@ -11,20 +10,29 @@ type Props = {
   onChangeMassa(layoutId: string, massa: Massa): void
   onRemoverLayout(layoutId: string): void
   onRemoverMassa(layoutId: string, massaId: string): void
-  setFilesLayout: Dispatch<SetStateAction<File[]>>
-  setFilesMassas: Dispatch<SetStateAction<File[]>>
+
+  filesLayout: Record<string, File[]>
+  filesMassas: Record<string, File[]>
+
+  setFilesLayout: Dispatch<SetStateAction<Record<string, File[]>>>
+  setFilesMassas: Dispatch<SetStateAction<Record<string, File[]>>>
 }
 
-export default function TIForm({ modo,
-   layout,
-    massa,
-    onChangeLayout,
+export default function TIForm({
+  modo,
+  layout,
+  massa,
+  onChangeLayout,
   onChangeMassa,
-     onSalvarLayout,
-      onRemoverLayout,
-       onRemoverMassa,
-      setFilesLayout,
-                setFilesMassas }: Props) {
+  onSalvarLayout,
+  onRemoverLayout,
+  onRemoverMassa,
+  filesLayout,
+  filesMassas,
+  setFilesLayout,
+  setFilesMassas
+}: Props) {
+
   if (!modo) {
     return (
       <div className="card p-4 text-muted">
@@ -33,8 +41,11 @@ export default function TIForm({ modo,
     )
   }
 
-  /* ========================= FORM LAYOUT ========================= */
+  /* ========================= LAYOUT ========================= */
   if (modo === 'layout' && layout) {
+
+    const arquivos = filesLayout[layout.id] || []
+
     return (
       <form className="card p-4">
         <h5 className="mb-3">Layout</h5>
@@ -50,15 +61,32 @@ export default function TIForm({ modo,
         <label className="form-label">Arquivo do Layout</label>
         <input
           type="file"
-          className="form-control mb-3"
+          className="form-control mb-2"
           onChange={(e) => {
             const file = e.target.files?.[0]
             if (!file) return
 
-            setFilesLayout(prev => [...prev, file])
+            setFilesLayout(prev => ({
+              ...prev,
+              [layout.id]: [...(prev[layout.id] || []), file]
+            }))
+
+            // 🔥 RESET DO INPUT
+            e.target.value = ''
           }}
         />
 
+        {/* 🔥 LISTA DE ARQUIVOS ANEXADOS */}
+        {arquivos.length > 0 && (
+          <div className="mb-3">
+            <strong>Arquivos anexados:</strong>
+            <ul className="mt-2">
+              {arquivos.map((f, i) => (
+                <li key={i}>{f.name}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <label className="form-label">Observação</label>
         <textarea
@@ -94,11 +122,15 @@ export default function TIForm({ modo,
     )
   }
 
-  /* ========================= FORM MASSA ========================= */
+  /* ========================= MASSA ========================= */
   if (modo === 'massa' && massa && layout) {
+
+    const arquivos = filesMassas[massa.id] || []
+
     return (
       <form className="card p-4">
         <h5 className="mb-3">Massa</h5>
+
         <label className="form-label">Nome da Massa</label>
         <input
           type="text"
@@ -106,17 +138,36 @@ export default function TIForm({ modo,
           value={massa.nomeArquivo}
           disabled
         />
+
         <label className="form-label">Arquivo da Massa</label>
         <input
           type="file"
-          className="form-control mb-3"
+          className="form-control mb-2"
           onChange={(e) => {
             const file = e.target.files?.[0]
             if (!file) return
 
-            setFilesMassas(prev => [...prev, file])
+            setFilesMassas(prev => ({
+              ...prev,
+              [massa.id]: [...(prev[massa.id] || []), file]
+            }))
+
+            // 🔥 RESET DO INPUT
+            e.target.value = ''
           }}
         />
+
+        {/* 🔥 LISTA DE ARQUIVOS ANEXADOS */}
+        {arquivos.length > 0 && (
+          <div className="mb-3">
+            <strong>Arquivos anexados:</strong>
+            <ul className="mt-2">
+              {arquivos.map((f, i) => (
+                <li key={i}>{f.name}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <label className="form-label">Observação</label>
         <textarea
@@ -135,22 +186,15 @@ export default function TIForm({ modo,
           <button
             type="button"
             className="btn btn-primary"
-            onClick={() => {
-              if (layout) {
-                onSalvarLayout && onSalvarLayout(layout)
-              }
-            }}
+            onClick={() => onSalvarLayout && onSalvarLayout(layout)}
           >
             Salvar Massa
           </button>
+
           <button
             type="button"
             className="btn btn-outline-danger"
-            onClick={() => {
-              if (layout) {
-                onRemoverMassa(layout.id, massa.id)
-              }
-            }}
+            onClick={() => onRemoverMassa(layout.id, massa.id)}
           >
             Remover Massa
           </button>

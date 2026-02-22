@@ -64,8 +64,9 @@ export default function Home({
 
   const [versoesAberto, setVersoesAberto] = useState(false)
 
-  const [filesLayout, setFilesLayout] = useState<File[]>([])
-  const [filesMassas, setFilesMassas] = useState<File[]>([])
+ // 🔥 STATES DE ARQUIVOS (por ID)
+const [filesLayout, setFilesLayout] = useState<Record<string, File[]>>({})
+const [filesMassas, setFilesMassas] = useState<Record<string, File[]>>({})
   const [abrirPreview, setAbrirPreview] = useState(false)
   const [dadosPreview, setDadosPreview] = useState<ChecklistVersaoDTO | null>(null)
 
@@ -159,21 +160,28 @@ async function onSalvarChecklist() {
 
   try {
     const payload = montarPayloadEnvio(checklist, layouts)
+
+    const arquivosLayouts = Object.values(filesLayout).flat()
+    const arquivosMassas = Object.values(filesMassas).flat()
+
     if (isNovo) {
-      payload.idUsuario = Number(user?.id);
+      payload.idUsuario = Number(user?.id)
+
       await salvarChecklist(
         payload,
-        filesLayout,
-        filesMassas
+        arquivosLayouts,
+        arquivosMassas
       )
+
       alert('Checklist salvo com sucesso!')
     } else {
       await atualizarChecklist(
         checklist.idChecklistVersao.toString(),
         payload,
-        filesLayout,
-        filesMassas
+        arquivosLayouts,
+        arquivosMassas
       )
+
       alert('Checklist atualizado com sucesso!')
     }
 
@@ -354,9 +362,12 @@ function onRemoverMassa(layoutId: string, massaId: string) {
                 onRemoverLayout={onRemoverLayout}
                 onRemoverMassa={onRemoverMassa}
                 onSalvarLayout={onSalvarChecklist}
+                filesLayout={filesLayout}
+                filesMassas={filesMassas}
                 setFilesLayout={setFilesLayout}
                 setFilesMassas={setFilesMassas}
               />
+
 
             )}
 
