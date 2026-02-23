@@ -105,7 +105,15 @@ export default function TIForm({
           <button
             type="button"
             className="btn btn-primary"
-            onClick={() => onSalvarLayout && onSalvarLayout(layout)}
+            onClick={() => {
+
+              if (arquivos.length === 0) {
+                alert('Anexe um arquivo para o layout.')
+                return
+              }
+
+              onSalvarLayout && onSalvarLayout(layout)
+            }}
           >
             Salvar Layout
           </button>
@@ -186,7 +194,15 @@ export default function TIForm({
           <button
             type="button"
             className="btn btn-primary"
-            onClick={() => onSalvarLayout && onSalvarLayout(layout)}
+            onClick={() => {
+
+              if (arquivos.length === 0) {
+                alert('Anexe um arquivo para a massa.')
+                return
+              }
+
+              onSalvarLayout && onSalvarLayout(layout)
+            }}
           >
             Salvar Massa
           </button>

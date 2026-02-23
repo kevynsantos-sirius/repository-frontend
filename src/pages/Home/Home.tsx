@@ -34,18 +34,18 @@ function mapLayoutsFromBackend(layoutsBackend: any[]): Layout[] {
       : []
   }))
 }
+
 type HomeProps = {
   novoLayout: boolean
   user: UsuarioDTO | null
   setNovoLayout: React.Dispatch<React.SetStateAction<boolean>>
 }
-/* =========================
-   COMPONENTE
-   ========================= */
+
 export default function Home({
   user,
   setNovoLayout
 }: HomeProps) {
+
   const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
   const {idVersao} = useParams<{idVersao: string}>()
@@ -57,20 +57,17 @@ export default function Home({
   const [checklist, setChecklist] = useState<ChecklistVersaoDTO | null>(null)
   const [loading, setLoading] = useState(false)
 
-  /* ===== CONTROLE TI ===== */
   const [layoutSelecionadoId, setLayoutSelecionadoId] = useState<string | null>(null)
   const [massaSelecionadaId, setMassaSelecionadaId] = useState<string | null>(null)
   const [modoTI, setModoTI] = useState<'layout' | 'massa' | null>(null)
 
   const [versoesAberto, setVersoesAberto] = useState(false)
 
- // 🔥 STATES DE ARQUIVOS (por ID)
-const [filesLayout, setFilesLayout] = useState<Record<string, File[]>>({})
-const [filesMassas, setFilesMassas] = useState<Record<string, File[]>>({})
+  const [filesLayout, setFilesLayout] = useState<Record<string, File[]>>({})
+  const [filesMassas, setFilesMassas] = useState<Record<string, File[]>>({})
+
   const [abrirPreview, setAbrirPreview] = useState(false)
   const [dadosPreview, setDadosPreview] = useState<ChecklistVersaoDTO | null>(null)
-
-
 
   const layoutSelecionado =
     layouts.find(l => l.id === layoutSelecionadoId) || null
@@ -100,6 +97,70 @@ const [filesMassas, setFilesMassas] = useState<Record<string, File[]>>({})
 
     carregarChecklist(id!)
   }, [id, isNovo])
+
+  function validarArquivosTI(): boolean {
+
+  // 🔎 Se não há layouts → usuário nunca entrou no TI
+  if (layouts.length === 0) return true
+
+  const arquivosLayouts = Object.values(filesLayout).flat()
+  const arquivosMassas = Object.values(filesMassas).flat()
+
+  // 🔎 Verifica se algum layout/massa exige arquivo
+  const existeAlgumFormularioTI =
+    layouts.length > 0 ||
+    layouts.some(l => l.massas.length > 0)
+
+  if (!existeAlgumFormularioTI) return true
+
+  const totalArquivos = arquivosLayouts.length + arquivosMassas.length
+
+  if (totalArquivos === 0) {
+    alert('Você criou Layout/Massa mas não anexou nenhum arquivo.')
+    setAbaAtiva('ti')
+    return false
+  }
+
+  return true
+}
+
+
+  /* =========================
+     🔥 VALIDAÇÃO IDENTIFICAÇÃO
+     ========================= */
+  function validarIdentificacao(checklist: ChecklistVersaoDTO | null): boolean {
+    if (!checklist) {
+      alert('Preencha a identificação')
+      return false
+    }
+
+    if (!checklist.nomeDocumento?.trim()) {
+      alert('Informe o nome do documento')
+      return false
+    }
+
+    if (!checklist.idRamo) {
+      alert('Selecione o ramo')
+      return false
+    }
+
+    if (!checklist.status) {
+      alert('Selecione o status')
+      return false
+    }
+
+    if (!checklist.centroCusto?.trim()) {
+      alert('Informe o centro de custo')
+      return false
+    }
+
+    if (!checklist.idDemanda?.trim()) {
+      alert('Informe a identificação da demanda')
+      return false
+    }
+
+    return true
+  }
 
   /* =========================
      HANDLERS TI
@@ -156,7 +217,14 @@ const [filesMassas, setFilesMassas] = useState<Record<string, File[]>>({})
 }
 
 async function onSalvarChecklist() {
+
+  // 🔥 Validação Identificação
+  if (!validarIdentificacao(checklist)) return
+
   if (!checklist) return
+
+  // 🔥 Validação TI (somente se abriu)
+  if (!validarArquivosTI()) return
 
   try {
     const payload = montarPayloadEnvio(checklist, layouts)
@@ -194,8 +262,6 @@ async function onSalvarChecklist() {
 }
 
 
-
-
   function onNovaMassa() {
     if (!layoutSelecionadoId) return
 
@@ -220,10 +286,9 @@ async function onSalvarChecklist() {
   }
 
   function visualizarDocumento(checklist: ChecklistVersaoDTO) {
-  setDadosPreview(checklist)
-  setAbrirPreview(true)
-}
-
+    setDadosPreview(checklist)
+    setAbrirPreview(true)
+  }
 
   function onSelectLayout(id: string) {
     setLayoutSelecionadoId(id)
@@ -240,52 +305,48 @@ async function onSalvarChecklist() {
   }
 
   function onRemoverLayout(layoutId: string) {
-  setLayouts(prev => prev.filter(l => l.id !== layoutId))
-  if (layoutSelecionadoId === layoutId) {
-    setLayoutSelecionadoId(null)
-    setMassaSelecionadaId(null)
-    setModoTI(null)
+    setLayouts(prev => prev.filter(l => l.id !== layoutId))
+    if (layoutSelecionadoId === layoutId) {
+      setLayoutSelecionadoId(null)
+      setMassaSelecionadaId(null)
+      setModoTI(null)
+    }
   }
-}
 
-function atualizarLayout(updated: Layout) {
-  setLayouts(prev =>
-    prev.map(l => l.id === updated.id ? updated : l)
-  )
-}
-
-function atualizarMassa(layoutId: string, updated: Massa) {
-  setLayouts(prev =>
-    prev.map(l =>
-      l.id === layoutId
-        ? {
-            ...l,
-            massas: l.massas.map(m =>
-              m.id === updated.id ? updated : m
-            )
-          }
-        : l
+  function atualizarLayout(updated: Layout) {
+    setLayouts(prev =>
+      prev.map(l => l.id === updated.id ? updated : l)
     )
-  )
-}
-
-
-function onRemoverMassa(layoutId: string, massaId: string) {
-  setLayouts(prev =>
-    prev.map(l =>
-      l.id === layoutId
-        ? { ...l, massas: l.massas.filter(m => m.id !== massaId) }
-        : l
-    )
-  )
-  if (massaSelecionadaId === massaId) {
-    setMassaSelecionadaId(null)
-    setModoTI(null)
   }
-}
 
+  function atualizarMassa(layoutId: string, updated: Massa) {
+    setLayouts(prev =>
+      prev.map(l =>
+        l.id === layoutId
+          ? {
+              ...l,
+              massas: l.massas.map(m =>
+                m.id === updated.id ? updated : m
+              )
+            }
+          : l
+      )
+    )
+  }
 
-  /* ========================= */
+  function onRemoverMassa(layoutId: string, massaId: string) {
+    setLayouts(prev =>
+      prev.map(l =>
+        l.id === layoutId
+          ? { ...l, massas: l.massas.filter(m => m.id !== massaId) }
+          : l
+      )
+    )
+    if (massaSelecionadaId === massaId) {
+      setMassaSelecionadaId(null)
+      setModoTI(null)
+    }
+  }
 
   if (loading) {
     return (
@@ -310,7 +371,6 @@ function onRemoverMassa(layoutId: string, massaId: string) {
           )}
         </div>
 
-        {/* CHECKLIST BAR (OUTRA FUNCIONALIDADE) */}
         {!isNovo && idVersao && (
           <VersoesCheckListbar
             aberto={versoesAberto}
@@ -324,7 +384,6 @@ function onRemoverMassa(layoutId: string, massaId: string) {
           />
         )}
 
-
         <div className="d-flex mt-4">
           {abaAtiva === 'ti' && (
             <VersionsSidebar
@@ -333,12 +392,11 @@ function onRemoverMassa(layoutId: string, massaId: string) {
               massaSelecionadaId={massaSelecionadaId}
               onNovoLayout={onNovoLayout}
               onNovaMassa={onNovaMassa}
-              onRemoverLayout={onRemoverLayout}       // <- aqui
-              onRemoverMassa={onRemoverMassa}         // <- e aqui
+              onRemoverLayout={onRemoverLayout}
+              onRemoverMassa={onRemoverMassa}
               onSelectLayout={onSelectLayout}
               onSelectMassa={onSelectMassa}
             />
-
           )}
 
           <div className="flex-fill ps-4">
@@ -349,9 +407,8 @@ function onRemoverMassa(layoutId: string, massaId: string) {
                 isNovo={isNovo}
                 onChangeChecklist={setChecklist}
                 user={user}
-                 onSalvarLayout={onSalvarChecklist}
+                onSalvarLayout={onSalvarChecklist}
               />
-
             )}
 
             {abaAtiva === 'ti' && (
@@ -369,8 +426,6 @@ function onRemoverMassa(layoutId: string, massaId: string) {
                 setFilesLayout={setFilesLayout}
                 setFilesMassas={setFilesMassas}
               />
-
-
             )}
 
             {abaAtiva === 'modelo' && (
@@ -379,13 +434,14 @@ function onRemoverMassa(layoutId: string, massaId: string) {
           </div>
         </div>
       </div>
-      <button className='btn btn-outline-primary'
+
+      <button
+        className='btn btn-outline-primary'
         disabled={!checklist}
         onClick={() => checklist && visualizarDocumento(checklist)}
       >
         Visualizar Documento
       </button>
-
 
       <button
         className="ms-5 mt-2 btn btn-outline-primary"
@@ -401,7 +457,6 @@ function onRemoverMassa(layoutId: string, massaId: string) {
           data={dadosPreview}
         />
       )}
-
     </>
   )
 }
