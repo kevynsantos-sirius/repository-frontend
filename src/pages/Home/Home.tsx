@@ -272,6 +272,8 @@ async function onSalvarChecklist() {
 function onNovaMassa() {
   if (!layoutSelecionadoId) return
 
+  setMassaSelecionadaId(null)   // ⭐ ESSENCIAL
+
   setDraftMassa({
     id: crypto.randomUUID(),
     nomeArquivo: '',
@@ -280,6 +282,7 @@ function onNovaMassa() {
 
   setModoTI('massa')
 }
+
 
 function adicionarLayout(layout: Layout) {
   setLayouts(prev => [...prev, layout])
@@ -310,18 +313,26 @@ function adicionarMassa(layoutId: string, massa: Massa) {
   }
 
   function onSelectLayout(id: string) {
+    setDraftLayout(null)      // ⭐ LIMPA NOVO LAYOUT
+    setDraftMassa(null)       // ⭐ LIMPA NOVA MASSA
+
     setLayoutSelecionadoId(id)
     setMassaSelecionadaId(null)
     setModoTI('layout')
     setNovoLayout(false)
   }
 
+
   function onSelectMassa(layoutId: string, massaId: string) {
+    setDraftMassa(null)        // ⭐ LIMPA NOVA MASSA
+    setDraftLayout(null)       // ⭐ segurança extra
+
     setLayoutSelecionadoId(layoutId)
     setMassaSelecionadaId(massaId)
     setModoTI('massa')
     setNovoLayout(false)
   }
+
 
   function onRemoverLayout(layoutId: string) {
     setLayouts(prev => prev.filter(l => l.id !== layoutId))
