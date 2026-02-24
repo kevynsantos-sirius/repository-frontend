@@ -6,7 +6,6 @@ type Props = {
   layout: Layout | null
   massa: Massa | null
 
-  // ✅ NOVO — indica se é rascunho
   isDraftLayout: boolean
   isDraftMassa: boolean
 
@@ -53,15 +52,15 @@ export default function TIForm({
   if (modo === 'layout' && layout) {
 
     const arquivo = filesLayout[layout.id]?.[0]
-
-    // ✅ AGORA CORRETO
     const isNovo = isDraftLayout
+
+    const inputId = `layout-file-${layout.id}`
 
     return (
       <form className="card p-4">
         <h5>Layout</h5>
 
-        <label>Arquivo do Layout</label>
+        <label htmlFor={inputId}>Arquivo do Layout</label>
 
         {arquivo && (
           <div className="mb-2 text-primary fw-semibold">
@@ -70,6 +69,8 @@ export default function TIForm({
         )}
 
         <input
+          key={`layout-${layout.id}`}
+          id={inputId}
           type="file"
           className="form-control mb-3"
           onChange={(e) => {
@@ -81,12 +82,10 @@ export default function TIForm({
               [layout.id]: [file]
             }))
 
-            const updatedLayout = {
+            onChangeLayout({
               ...layout,
               nomeLayout: file.name
-            }
-
-            onChangeLayout(updatedLayout)
+            })
           }}
         />
 
@@ -104,7 +103,6 @@ export default function TIForm({
         />
 
         <div className="mt-3 d-flex gap-2">
-
           {isNovo ? (
             <button
               type="button"
@@ -123,7 +121,6 @@ export default function TIForm({
               Remover Layout
             </button>
           )}
-
         </div>
       </form>
     )
@@ -134,15 +131,15 @@ export default function TIForm({
   if (modo === 'massa' && massa && layout) {
 
     const arquivo = filesMassas[massa.id]?.[0]
-
-    // ✅ AGORA CORRETO
     const isNovo = isDraftMassa
+
+    const inputId = `massa-file-${massa.id}`
 
     return (
       <form className="card p-4">
         <h5>Massa</h5>
 
-        <label>Arquivo da Massa</label>
+        <label htmlFor={inputId}>Arquivo da Massa</label>
 
         {arquivo && (
           <div className="mb-2 text-primary fw-semibold">
@@ -151,6 +148,8 @@ export default function TIForm({
         )}
 
         <input
+          key={`massa-${massa.id}`}
+          id={inputId}
           type="file"
           className="form-control mb-3"
           onChange={(e) => {
@@ -162,12 +161,10 @@ export default function TIForm({
               [massa.id]: [file]
             }))
 
-            const updatedMassa = {
+            onChangeMassa(layout.id, {
               ...massa,
               nomeArquivo: file.name
-            }
-
-            onChangeMassa(layout.id, updatedMassa)
+            })
           }}
         />
 
@@ -185,7 +182,6 @@ export default function TIForm({
         />
 
         <div className="mt-3 d-flex gap-2">
-
           {isNovo ? (
             <button
               type="button"
@@ -204,7 +200,6 @@ export default function TIForm({
               Remover Massa
             </button>
           )}
-
         </div>
       </form>
     )

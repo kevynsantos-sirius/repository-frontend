@@ -347,7 +347,15 @@ function adicionarMassa(layoutId: string, massa: Massa) {
  }
 
 
-  function atualizarMassa(layoutId: string, updated: Massa) {
+function atualizarMassa(layoutId: string, updated: Massa) {
+
+  // 🔹 Se for massa draft → atualizar draft
+  if (draftMassa && draftMassa.id === updated.id) {
+    setDraftMassa(updated)
+    return
+  }
+
+  // 🔹 Massa existente
   setLayouts(prev =>
     prev.map(l =>
       l.id === layoutId
@@ -360,7 +368,8 @@ function adicionarMassa(layoutId: string, massa: Massa) {
         : l
     )
   )
- }
+}
+
 
 
   function onRemoverMassa(layoutId: string, massaId: string) {
