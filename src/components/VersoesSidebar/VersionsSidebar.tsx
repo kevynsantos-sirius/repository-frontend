@@ -49,11 +49,16 @@ export default function VersionsSidebar({
           <div className="d-flex justify-content-between align-items-center">
             <a href='#' onClick={(e) => e.preventDefault()}>
               <div
-                className={`fw-semibold cursor-pointer text-truncate me-2 ${
+                className={`fw-semibold cursor-pointer me-2 ${
                   layout.id === layoutSelecionadoId ? 'text-primary' : ''
                 }`}
                 onClick={() => onSelectLayout(layout.id)}
-                style={{ maxWidth: 'calc(100% - 30px)', wordBreak: 'break-word' }}
+                style={{
+                  maxWidth: 'calc(100% - 30px)',
+                  whiteSpace: 'normal',
+                  overflowWrap: 'break-word',
+                  wordBreak: 'break-word'
+                }}
                 title={layout.nomeLayout}
               >
                 {layout.nomeLayout || 'Novo Layout'}
@@ -78,17 +83,23 @@ export default function VersionsSidebar({
               >
                 <a href='#' onClick={(e) => e.preventDefault()}>
                   <span
-                    className={`cursor-pointer text-truncate me-2 ${
+                    className={`cursor-pointer me-2 ${
                       massa.id === massaSelecionadaId
                         ? 'text-primary fw-semibold'
                         : ''
                     }`}
                     onClick={() => onSelectMassa(layout.id, massa.id)}
-                    style={{ maxWidth: 'calc(100% - 30px)', wordBreak: 'break-word' }}
+                    style={{
+                      maxWidth: 'calc(100% - 30px)',
+                      whiteSpace: 'normal',
+                      overflowWrap: 'break-word',
+                      wordBreak: 'break-word'
+                    }}
                     title={massa.nomeArquivo}
                   >
                     {massa.nomeArquivo || 'Nova Massa'}
                   </span>
+
                 </a>
                 <a href='#' onClick={(e) => e.preventDefault()}>
                   <button
