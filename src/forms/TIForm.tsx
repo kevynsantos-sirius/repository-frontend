@@ -62,11 +62,16 @@ export default function TIForm({
 
         <label htmlFor={inputId}>Arquivo do Layout</label>
 
-        {arquivo && (
+        {arquivo ? (
           <div className="mb-2 text-primary fw-semibold">
-            {arquivo.name}
+            📄 {arquivo.name}
           </div>
-        )}
+        ) : layout.nomeLayout ? (
+          <div className="mb-2 text-muted">
+            📄 {layout.nomeLayout} (arquivo já enviado)
+          </div>
+        ) : null}
+
 
         <input
           key={`layout-${layout.id}`}
@@ -141,11 +146,16 @@ export default function TIForm({
 
         <label htmlFor={inputId}>Arquivo da Massa</label>
 
-        {arquivo && (
+        {arquivo ? (
           <div className="mb-2 text-primary fw-semibold">
-            {arquivo.name}
+            📄 {arquivo.name}
           </div>
-        )}
+        ) : massa.nomeArquivo ? (
+          <div className="mb-2 text-muted">
+            📄 {massa.nomeArquivo} (arquivo já enviado)
+          </div>
+        ) : null}
+
 
         <input
           key={`massa-${massa.id}`}
