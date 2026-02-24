@@ -29,7 +29,7 @@ export default function VersionsSidebar({
     <div className="versions-sidebar p-3 border-end" style={{ width: 280 }}>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <strong>Layouts</strong>
-        <a href='#'>
+        <a href='#' onClick={(e) => e.preventDefault()}>
           <button
             type="button"
             className="btn btn-sm btn-outline-primary"
@@ -47,7 +47,7 @@ export default function VersionsSidebar({
       {layouts.map(layout => (
         <div key={layout.id} className="mb-3">
           <div className="d-flex justify-content-between align-items-center">
-            <a href='#'>
+            <a href='#' onClick={(e) => e.preventDefault()}>
               <div
                 className={`fw-semibold cursor-pointer text-truncate me-2 ${
                   layout.id === layoutSelecionadoId ? 'text-primary' : ''
@@ -59,7 +59,7 @@ export default function VersionsSidebar({
                 {layout.nomeLayout || 'Novo Layout'}
               </div>
             </a>
-            <a href='#'>
+            <a href='#' onClick={(e) => e.preventDefault()}>
               <button
                 type="button"
                 className="btn btn-sm btn-outline-danger flex-shrink-0"
@@ -76,7 +76,7 @@ export default function VersionsSidebar({
                 key={massa.id}
                 className="d-flex justify-content-between align-items-center"
               >
-                <a href='#'>
+                <a href='#' onClick={(e) => e.preventDefault()}>
                   <span
                     className={`cursor-pointer text-truncate me-2 ${
                       massa.id === massaSelecionadaId
@@ -90,7 +90,7 @@ export default function VersionsSidebar({
                     {massa.nomeArquivo || 'Nova Massa'}
                   </span>
                 </a>
-                <a href='#'>
+                <a href='#' onClick={(e) => e.preventDefault()}>
                   <button
                     type="button"
                     className="btn btn-sm btn-outline-danger flex-shrink-0"
@@ -103,7 +103,7 @@ export default function VersionsSidebar({
             ))}
 
             {layout.id === layoutSelecionadoId && (
-              <a href='#'>
+              <a href='#' onClick={(e) => e.preventDefault()}>
                 <li
                   className="text-muted cursor-pointer"
                   onClick={onNovaMassa}

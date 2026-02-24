@@ -333,25 +333,35 @@ function adicionarMassa(layoutId: string, massa: Massa) {
   }
 
   function atualizarLayout(updated: Layout) {
-    setLayouts(prev =>
-      prev.map(l => l.id === updated.id ? updated : l)
-    )
+
+  // 🔹 Se for layout ainda não adicionado → atualizar draft
+  if (draftLayout && draftLayout.id === updated.id) {
+    setDraftLayout(updated)
+    return
   }
 
+  // 🔹 Layout já existente
+  setLayouts(prev =>
+    prev.map(l => l.id === updated.id ? updated : l)
+  )
+ }
+
+
   function atualizarMassa(layoutId: string, updated: Massa) {
-    setLayouts(prev =>
-      prev.map(l =>
-        l.id === layoutId
-          ? {
-              ...l,
-              massas: l.massas.map(m =>
-                m.id === updated.id ? updated : m
-              )
-            }
-          : l
-      )
+  setLayouts(prev =>
+    prev.map(l =>
+      l.id === layoutId
+        ? {
+            ...l,
+            massas: l.massas.map(m =>
+              m.id === updated.id ? updated : m
+            )
+          }
+        : l
     )
-  }
+  )
+ }
+
 
   function onRemoverMassa(layoutId: string, massaId: string) {
     setLayouts(prev =>
@@ -404,15 +414,19 @@ function adicionarMassa(layoutId: string, massa: Massa) {
         )}
 
         <div className="d-flex mt-4">
+
+          {/* 🔵 SIDEBAR LAYOUT → MASSA */}
           {abaAtiva === 'ti' && (
             <VersionsSidebar
               layouts={layouts}
               layoutSelecionadoId={layoutSelecionadoId}
               massaSelecionadaId={massaSelecionadaId}
+
               onNovoLayout={onNovoLayout}
               onNovaMassa={onNovaMassa}
               onRemoverLayout={onRemoverLayout}
               onRemoverMassa={onRemoverMassa}
+
               onSelectLayout={onSelectLayout}
               onSelectMassa={onSelectMassa}
             />
@@ -433,6 +447,11 @@ function adicionarMassa(layoutId: string, massa: Massa) {
                 modo={modoTI}
                 layout={draftLayout || layoutSelecionado}
                 massa={draftMassa || massaSelecionada}
+
+                // ✅ NOVAS FLAGS (ESSENCIAL)
+                isDraftLayout={!!draftLayout}
+                isDraftMassa={!!draftMassa}
+
                 onAddLayout={adicionarLayout}
                 onAddMassa={adicionarMassa}
                 onChangeLayout={atualizarLayout}
@@ -444,7 +463,6 @@ function adicionarMassa(layoutId: string, massa: Massa) {
                 setFilesLayout={setFilesLayout}
                 setFilesMassas={setFilesMassas}
               />
-
             )}
 
             {abaAtiva === 'modelo' && (

@@ -6,6 +6,10 @@ type Props = {
   layout: Layout | null
   massa: Massa | null
 
+  // ✅ NOVO — indica se é rascunho
+  isDraftLayout: boolean
+  isDraftMassa: boolean
+
   onAddLayout(layout: Layout): void
   onAddMassa(layoutId: string, massa: Massa): void
 
@@ -26,6 +30,8 @@ export default function TIForm({
   modo,
   layout,
   massa,
+  isDraftLayout,
+  isDraftMassa,
   onAddLayout,
   onAddMassa,
   onChangeLayout,
@@ -48,7 +54,8 @@ export default function TIForm({
 
     const arquivo = filesLayout[layout.id]?.[0]
 
-    const isNovo = !layout.nomeLayout
+    // ✅ AGORA CORRETO
+    const isNovo = isDraftLayout
 
     return (
       <form className="card p-4">
@@ -69,18 +76,17 @@ export default function TIForm({
             const file = e.target.files?.[0]
             if (!file) return
 
-            // 🔥 SOBRESCREVE — apenas 1 arquivo
             setFilesLayout(prev => ({
               ...prev,
               [layout.id]: [file]
             }))
 
-            if (isNovo) {
-              onChangeLayout({
-                ...layout,
-                nomeLayout: file.name
-              })
+            const updatedLayout = {
+              ...layout,
+              nomeLayout: file.name
             }
+
+            onChangeLayout(updatedLayout)
           }}
         />
 
@@ -90,7 +96,10 @@ export default function TIForm({
           rows={4}
           value={layout.observacao}
           onChange={(e) =>
-            onChangeLayout({ ...layout, observacao: e.target.value })
+            onChangeLayout({
+              ...layout,
+              observacao: e.target.value
+            })
           }
         />
 
@@ -125,7 +134,9 @@ export default function TIForm({
   if (modo === 'massa' && massa && layout) {
 
     const arquivo = filesMassas[massa.id]?.[0]
-    const isNovo = !massa.nomeArquivo
+
+    // ✅ AGORA CORRETO
+    const isNovo = isDraftMassa
 
     return (
       <form className="card p-4">
@@ -151,12 +162,12 @@ export default function TIForm({
               [massa.id]: [file]
             }))
 
-            if (isNovo) {
-              onChangeMassa(layout.id, {
-                ...massa,
-                nomeArquivo: file.name
-              })
+            const updatedMassa = {
+              ...massa,
+              nomeArquivo: file.name
             }
+
+            onChangeMassa(layout.id, updatedMassa)
           }}
         />
 
