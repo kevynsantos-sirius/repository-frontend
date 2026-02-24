@@ -5,8 +5,13 @@ type Props = {
   modo: 'layout' | 'massa' | null
   layout: Layout | null
   massa: Massa | null
+
+  onAddLayout(layout: Layout): void
+  onAddMassa(layoutId: string, massa: Massa): void
+
   onChangeLayout(layout: Layout): void
   onChangeMassa(layoutId: string, massa: Massa): void
+
   onRemoverLayout(layoutId: string): void
   onRemoverMassa(layoutId: string, massaId: string): void
 
@@ -21,6 +26,8 @@ export default function TIForm({
   modo,
   layout,
   massa,
+  onAddLayout,
+  onAddMassa,
   onChangeLayout,
   onChangeMassa,
   onRemoverLayout,
@@ -32,135 +39,128 @@ export default function TIForm({
 }: Props) {
 
   if (!modo) {
-    return (
-      <div className="card p-4 text-muted">
-        Selecione um layout ou uma massa ao lado
-      </div>
-    )
+    return <div className="card p-4 text-muted">Selecione um layout ou uma massa</div>
   }
 
-  /* ========================= LAYOUT ========================= */
+  /* ================= LAYOUT ================= */
+
   if (modo === 'layout' && layout) {
 
-    const arquivos = filesLayout[layout.id] || []
+    const arquivo = filesLayout[layout.id]?.[0]
+
+    const isNovo = !layout.nomeLayout
 
     return (
       <form className="card p-4">
-        <h5 className="mb-3">Layout</h5>
+        <h5>Layout</h5>
 
-        <label className="form-label">Nome do Layout</label>
-        <input
-          type="text"
-          className="form-control mb-3"
-          value={layout.nomeLayout}
-          disabled
-        />
+        <label>Arquivo do Layout</label>
 
-        <label className="form-label">Arquivo do Layout</label>
+        {arquivo && (
+          <div className="mb-2 text-primary fw-semibold">
+            {arquivo.name}
+          </div>
+        )}
+
         <input
           type="file"
-          className="form-control mb-2"
+          className="form-control mb-3"
           onChange={(e) => {
             const file = e.target.files?.[0]
             if (!file) return
 
+            // 🔥 SOBRESCREVE — apenas 1 arquivo
             setFilesLayout(prev => ({
               ...prev,
-              [layout.id]: [...(prev[layout.id] || []), file]
+              [layout.id]: [file]
             }))
 
-            // 🔥 RESET DO INPUT
-            e.target.value = ''
+            if (isNovo) {
+              onChangeLayout({
+                ...layout,
+                nomeLayout: file.name
+              })
+            }
           }}
         />
 
-        {/* 🔥 LISTA DE ARQUIVOS ANEXADOS */}
-        {arquivos.length > 0 && (
-          <div className="mb-3">
-            <strong>Arquivos anexados:</strong>
-            <ul className="mt-2">
-              {arquivos.map((f, i) => (
-                <li key={i}>{f.name}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        <label className="form-label">Observação</label>
+        <label>Observação</label>
         <textarea
           className="form-control"
           rows={4}
           value={layout.observacao}
           onChange={(e) =>
-            onChangeLayout({
-              ...layout,
-              observacao: e.target.value
-            })
+            onChangeLayout({ ...layout, observacao: e.target.value })
           }
         />
 
         <div className="mt-3 d-flex gap-2">
 
-          <button
-            type="button"
-            className="btn btn-outline-danger"
-            onClick={() => onRemoverLayout(layout.id)}
-          >
-            Remover Layout
-          </button>
+          {isNovo ? (
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={!arquivo}
+              onClick={() => onAddLayout(layout)}
+            >
+              Adicionar Layout
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-outline-danger"
+              onClick={() => onRemoverLayout(layout.id)}
+            >
+              Remover Layout
+            </button>
+          )}
+
         </div>
       </form>
     )
   }
 
-  /* ========================= MASSA ========================= */
+  /* ================= MASSA ================= */
+
   if (modo === 'massa' && massa && layout) {
 
-    const arquivos = filesMassas[massa.id] || []
+    const arquivo = filesMassas[massa.id]?.[0]
+    const isNovo = !massa.nomeArquivo
 
     return (
       <form className="card p-4">
-        <h5 className="mb-3">Massa</h5>
+        <h5>Massa</h5>
 
-        <label className="form-label">Nome da Massa</label>
-        <input
-          type="text"
-          className="form-control mb-3"
-          value={massa.nomeArquivo}
-          disabled
-        />
+        <label>Arquivo da Massa</label>
 
-        <label className="form-label">Arquivo da Massa</label>
+        {arquivo && (
+          <div className="mb-2 text-primary fw-semibold">
+            {arquivo.name}
+          </div>
+        )}
+
         <input
           type="file"
-          className="form-control mb-2"
+          className="form-control mb-3"
           onChange={(e) => {
             const file = e.target.files?.[0]
             if (!file) return
 
             setFilesMassas(prev => ({
               ...prev,
-              [massa.id]: [...(prev[massa.id] || []), file]
+              [massa.id]: [file]
             }))
 
-            // 🔥 RESET DO INPUT
-            e.target.value = ''
+            if (isNovo) {
+              onChangeMassa(layout.id, {
+                ...massa,
+                nomeArquivo: file.name
+              })
+            }
           }}
         />
 
-        {/* 🔥 LISTA DE ARQUIVOS ANEXADOS */}
-        {arquivos.length > 0 && (
-          <div className="mb-3">
-            <strong>Arquivos anexados:</strong>
-            <ul className="mt-2">
-              {arquivos.map((f, i) => (
-                <li key={i}>{f.name}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        <label className="form-label">Observação</label>
+        <label>Observação</label>
         <textarea
           className="form-control"
           rows={4}
@@ -175,13 +175,25 @@ export default function TIForm({
 
         <div className="mt-3 d-flex gap-2">
 
-          <button
-            type="button"
-            className="btn btn-outline-danger"
-            onClick={() => onRemoverMassa(layout.id, massa.id)}
-          >
-            Remover Massa
-          </button>
+          {isNovo ? (
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={!arquivo}
+              onClick={() => onAddMassa(layout.id, massa)}
+            >
+              Adicionar Massa
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-outline-danger"
+              onClick={() => onRemoverMassa(layout.id, massa.id)}
+            >
+              Remover Massa
+            </button>
+          )}
+
         </div>
       </form>
     )

@@ -57,6 +57,12 @@ export default function Home({
   const [checklist, setChecklist] = useState<ChecklistVersaoDTO | null>(null)
   const [loading, setLoading] = useState(false)
 
+  // 🔹 ADICIONE ESTES ESTADOS junto aos outros
+
+  const [draftLayout, setDraftLayout] = useState<Layout | null>(null)
+  const [draftMassa, setDraftMassa] = useState<Massa | null>(null)
+
+
   const [layoutSelecionadoId, setLayoutSelecionadoId] = useState<string | null>(null)
   const [massaSelecionadaId, setMassaSelecionadaId] = useState<string | null>(null)
   const [modoTI, setModoTI] = useState<'layout' | 'massa' | null>(null)
@@ -165,19 +171,20 @@ export default function Home({
   /* =========================
      HANDLERS TI
      ========================= */
-  function onNovoLayout() {
-    const novoId = crypto.randomUUID()
+function onNovoLayout() {
+  setDraftLayout({
+    id: crypto.randomUUID(),
+    nomeLayout: '',
+    observacao: '',
+    massas: []
+  })
 
-    setLayouts(prev => [
-      ...prev,
-      { id: novoId, nomeLayout: '', observacao: '', massas: [] }
-    ])
+  setLayoutSelecionadoId(null)
+  setMassaSelecionadaId(null)
+  setModoTI('layout')
+  setNovoLayout(true)
+}
 
-    setLayoutSelecionadoId(novoId)
-    setMassaSelecionadaId(null)
-    setModoTI('layout')
-    setNovoLayout(true);
-  }
 
   function montarPayloadEnvio(
   checklist: ChecklistVersaoDTO,
@@ -262,28 +269,40 @@ async function onSalvarChecklist() {
 }
 
 
-  function onNovaMassa() {
-    if (!layoutSelecionadoId) return
+function onNovaMassa() {
+  if (!layoutSelecionadoId) return
 
-    const novoId = crypto.randomUUID()
+  setDraftMassa({
+    id: crypto.randomUUID(),
+    nomeArquivo: '',
+    observacao: ''
+  })
 
-    setLayouts(prev =>
-      prev.map(l =>
-        l.id === layoutSelecionadoId
-          ? {
-              ...l,
-              massas: [
-                ...l.massas,
-                { id: novoId, nomeArquivo: '', observacao: '' }
-              ]
-            }
-          : l
-      )
+  setModoTI('massa')
+}
+
+function adicionarLayout(layout: Layout) {
+  setLayouts(prev => [...prev, layout])
+  setDraftLayout(null)
+  setLayoutSelecionadoId(layout.id)
+  setModoTI('layout')
+}
+
+function adicionarMassa(layoutId: string, massa: Massa) {
+  setLayouts(prev =>
+    prev.map(l =>
+      l.id === layoutId
+        ? { ...l, massas: [...l.massas, massa] }
+        : l
     )
+  )
 
-    setMassaSelecionadaId(novoId)
-    setModoTI('massa')
-  }
+  setDraftMassa(null)
+  setMassaSelecionadaId(massa.id)
+  setModoTI('massa')
+}
+
+
 
   function visualizarDocumento(checklist: ChecklistVersaoDTO) {
     setDadosPreview(checklist)
@@ -412,8 +431,10 @@ async function onSalvarChecklist() {
             {abaAtiva === 'ti' && (
               <TIForm
                 modo={modoTI}
-                layout={layoutSelecionado}
-                massa={massaSelecionada}
+                layout={draftLayout || layoutSelecionado}
+                massa={draftMassa || massaSelecionada}
+                onAddLayout={adicionarLayout}
+                onAddMassa={adicionarMassa}
                 onChangeLayout={atualizarLayout}
                 onChangeMassa={atualizarMassa}
                 onRemoverLayout={onRemoverLayout}
@@ -423,6 +444,7 @@ async function onSalvarChecklist() {
                 setFilesLayout={setFilesLayout}
                 setFilesMassas={setFilesMassas}
               />
+
             )}
 
             {abaAtiva === 'modelo' && (
