@@ -431,28 +431,40 @@ async function onSalvarChecklist() {
           </div>
         </div>
       </div>
+      <div className="container-fluid mt-3">
+        <div className="row justify-content-center g-2">
 
-      <button
-        className='btn btn-outline-primary'
-        disabled={!checklist}
-        onClick={() => checklist && visualizarDocumento(checklist)}
-      >
-        Visualizar Documento
-      </button>
+          <div className="col-auto">
+            <button
+              className="btn btn-outline-primary px-4"
+              disabled={!checklist}
+              onClick={() => checklist && visualizarDocumento(checklist)}
+            >
+              Visualizar Documento
+            </button>
+          </div>
 
-      <button
-        className="btn btn-primary"
-        onClick={onSalvarChecklist}
-      >
-        Salvar
-      </button>
+          <div className="col-auto">
+            <button
+              className="btn btn-primary px-5"
+              onClick={onSalvarChecklist}
+            >
+              Salvar
+            </button>
+          </div>
 
-      <button
-        className="ms-5 mt-2 btn btn-outline-primary"
-        onClick={() => navigate('/home')}
-      >
-        Voltar
-      </button>
+          <div className="col-auto">
+            <button
+              className="btn btn-outline-primary px-4"
+              onClick={() => navigate('/home')}
+            >
+              Voltar
+            </button>
+          </div>
+
+        </div>
+      </div>
+
 
       {dadosPreview && (
         <ChecklistDocPreviewModal
