@@ -50,7 +50,7 @@ export default function VersionsSidebar({
             <a href='#' onClick={(e) => e.preventDefault()}>
               <div
                 className={`fw-semibold cursor-pointer me-2 ${
-                  layout.id === layoutSelecionadoId ? 'text-primary-emphasis fw-bold' : ''
+                  layout.id === layoutSelecionadoId ? 'text-danger fw-bold' : 'text-primary-emphasis fw-bold'
                 }`}
                 onClick={() => onSelectLayout(layout.id)}
                 style={{
