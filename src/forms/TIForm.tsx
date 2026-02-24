@@ -5,7 +5,6 @@ type Props = {
   modo: 'layout' | 'massa' | null
   layout: Layout | null
   massa: Massa | null
-  onSalvarLayout?(layout: Layout): void
   onChangeLayout(layout: Layout): void
   onChangeMassa(layoutId: string, massa: Massa): void
   onRemoverLayout(layoutId: string): void
@@ -24,7 +23,6 @@ export default function TIForm({
   massa,
   onChangeLayout,
   onChangeMassa,
-  onSalvarLayout,
   onRemoverLayout,
   onRemoverMassa,
   filesLayout,
@@ -102,21 +100,6 @@ export default function TIForm({
         />
 
         <div className="mt-3 d-flex gap-2">
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() => {
-
-              if (arquivos.length === 0) {
-                alert('Anexe um arquivo para o layout.')
-                return
-              }
-
-              onSalvarLayout && onSalvarLayout(layout)
-            }}
-          >
-            Salvar Layout
-          </button>
 
           <button
             type="button"
@@ -191,21 +174,6 @@ export default function TIForm({
         />
 
         <div className="mt-3 d-flex gap-2">
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() => {
-
-              if (arquivos.length === 0) {
-                alert('Anexe um arquivo para a massa.')
-                return
-              }
-
-              onSalvarLayout && onSalvarLayout(layout)
-            }}
-          >
-            Salvar Massa
-          </button>
 
           <button
             type="button"

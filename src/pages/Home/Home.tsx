@@ -403,11 +403,9 @@ async function onSalvarChecklist() {
             {abaAtiva === 'identificacao' && (
               <IdentificacaoForm
                 checklist={checklist}
-                layout={layoutSelecionado}
                 isNovo={isNovo}
                 onChangeChecklist={setChecklist}
                 user={user}
-                onSalvarLayout={onSalvarChecklist}
               />
             )}
 
@@ -420,7 +418,6 @@ async function onSalvarChecklist() {
                 onChangeMassa={atualizarMassa}
                 onRemoverLayout={onRemoverLayout}
                 onRemoverMassa={onRemoverMassa}
-                onSalvarLayout={onSalvarChecklist}
                 filesLayout={filesLayout}
                 filesMassas={filesMassas}
                 setFilesLayout={setFilesLayout}
@@ -441,6 +438,13 @@ async function onSalvarChecklist() {
         onClick={() => checklist && visualizarDocumento(checklist)}
       >
         Visualizar Documento
+      </button>
+
+      <button
+        className="btn btn-primary"
+        onClick={onSalvarChecklist}
+      >
+        Salvar
       </button>
 
       <button
