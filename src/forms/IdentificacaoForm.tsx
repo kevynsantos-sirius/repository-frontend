@@ -93,6 +93,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
             </label>
             <input
               type="text"
+              disabled={!isNovo}
               className="form-control"
               maxLength={50}
               required
@@ -101,6 +102,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
                 atualizarCampo('nomeDocumento', e.target.value)
               }
             />
+
           </div>
 
           <div className="col-md-6">
@@ -108,6 +110,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
               Ramo <span className="text-danger">*</span>
             </label>
             <select
+              disabled={!isNovo}
               className="form-control"
               required
               value={checklistForm?.idRamo ?? ''}
