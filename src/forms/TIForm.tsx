@@ -78,6 +78,24 @@ export default function TIForm({
           id={inputId}
           type="file"
           className="form-control mb-3"
+
+          onClick={(e) => {
+            const input = e.currentTarget as HTMLInputElement
+            input.value = ''
+
+            // 🔥 limpa o state ANTES da seleção
+            setFilesLayout(prev => {
+              const copy = { ...prev }
+              delete copy[layout.id]
+              return copy
+            })
+
+            onChangeLayout({
+              ...layout,
+              nomeLayout: ''
+            })
+          }}
+
           onChange={(e) => {
             const file = e.target.files?.[0]
             if (!file) return
@@ -93,6 +111,8 @@ export default function TIForm({
             })
           }}
         />
+
+
 
         <label>Observação</label>
         <textarea
@@ -162,6 +182,23 @@ export default function TIForm({
           id={inputId}
           type="file"
           className="form-control mb-3"
+
+          onClick={(e) => {
+            const input = e.currentTarget as HTMLInputElement
+            input.value = ''
+
+            setFilesMassas(prev => {
+              const copy = { ...prev }
+              delete copy[massa.id]
+              return copy
+            })
+
+            onChangeMassa(layout.id, {
+              ...massa,
+              nomeArquivo: ''
+            })
+          }}
+
           onChange={(e) => {
             const file = e.target.files?.[0]
             if (!file) return
@@ -177,6 +214,8 @@ export default function TIForm({
             })
           }}
         />
+
+
 
         <label>Observação</label>
         <textarea
