@@ -23,6 +23,8 @@ type Props = {
 
   setFilesLayout: Dispatch<SetStateAction<Record<string, File[]>>>
   setFilesMassas: Dispatch<SetStateAction<Record<string, File[]>>>
+
+  onCancelar(): void
 }
 
 export default function TIForm({
@@ -40,7 +42,8 @@ export default function TIForm({
   filesLayout,
   filesMassas,
   setFilesLayout,
-  setFilesMassas
+  setFilesMassas,
+  onCancelar
 }: Props) {
 
   if (!modo) {
@@ -128,6 +131,7 @@ export default function TIForm({
         />
 
         <div className="mt-3 d-flex gap-2">
+
           {isNovo ? (
             <button
               type="button"
@@ -146,6 +150,15 @@ export default function TIForm({
               Remover Layout
             </button>
           )}
+
+          <button
+            type="button"
+            className="btn btn-outline-danger"
+            onClick={onCancelar}
+          >
+            Cancelar
+          </button>
+
         </div>
       </form>
     )
@@ -249,6 +262,14 @@ export default function TIForm({
               Remover Massa
             </button>
           )}
+
+          <button
+            type="button"
+            className="btn btn-outline-danger"
+            onClick={onCancelar}
+          >
+            Cancelar
+          </button>
         </div>
       </form>
     )

@@ -268,6 +268,15 @@ async function onSalvarChecklist() {
   }
 }
 
+function onCancelarTI() {
+  setModoTI(null)
+  setDraftLayout(null)
+  setDraftMassa(null)
+  setLayoutSelecionadoId(null)
+  setMassaSelecionadaId(null)
+}
+
+
 
 function onNovaMassa() {
   if (!layoutSelecionadoId) return
@@ -482,6 +491,7 @@ function atualizarMassa(layoutId: string, updated: Massa) {
                 filesMassas={filesMassas}
                 setFilesLayout={setFilesLayout}
                 setFilesMassas={setFilesMassas}
+                onCancelar={onCancelarTI}
               />
             )}
 
