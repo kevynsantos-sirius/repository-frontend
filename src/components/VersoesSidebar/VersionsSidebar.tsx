@@ -26,7 +26,7 @@ export default function VersionsSidebar({
   onSelectMassa
 }: Props) {
   return (
-    <div className="versions-sidebar p-3 border-end" style={{ width: 280 }}>
+    <div className="versions-sidebar p-3 border-end">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <strong>Layouts</strong>
         <a href='#' onClick={(e) => e.preventDefault()}>
