@@ -142,24 +142,35 @@ export default function TIForm({
               Adicionar Layout
             </button>
           ) : (
-            <button
-              type="button"
-              className="btn btn-outline-danger"
-              onClick={() => onRemoverLayout(layout.id)}
-            >
-              Remover Layout
-            </button>
+            <>
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={() => {onChangeLayout(layout); onCancelar();}}
+              >
+                Atualizar Layout
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-outline-danger"
+                onClick={() => onRemoverLayout(layout.id)}
+              >
+                Remover Layout
+              </button>
+            </>
           )}
 
           <button
             type="button"
-            className="btn btn-outline-danger"
+            className="btn btn-secondary"
             onClick={onCancelar}
           >
             Cancelar
           </button>
 
         </div>
+
       </form>
     )
   }
@@ -244,6 +255,7 @@ export default function TIForm({
         />
 
         <div className="mt-3 d-flex gap-2">
+
           {isNovo ? (
             <button
               type="button"
@@ -254,23 +266,35 @@ export default function TIForm({
               Adicionar Massa
             </button>
           ) : (
-            <button
-              type="button"
-              className="btn btn-outline-danger"
-              onClick={() => onRemoverMassa(layout.id, massa.id)}
-            >
-              Remover Massa
-            </button>
+            <>
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={() => {onChangeMassa(layout.id, massa); onCancelar(); }}
+              >
+                Atualizar Massa
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-outline-danger"
+                onClick={() => onRemoverMassa(layout.id, massa.id)}
+              >
+                Remover Massa
+              </button>
+            </>
           )}
 
           <button
             type="button"
-            className="btn btn-outline-danger"
+            className="btn btn-secondary"
             onClick={onCancelar}
           >
             Cancelar
           </button>
+
         </div>
+
       </form>
     )
   }
