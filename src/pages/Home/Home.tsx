@@ -11,6 +11,7 @@ import ModeloForm from '../../forms/ModeloForm'
 
 import { buscarChecklistPorId, atualizarChecklist, salvarChecklist } from '../../services/checklist.service'
 import type { ChecklistVersaoDTO } from '../../dto/ChecklistVersaoDTO'
+import type{ChecklistEnvioDTO} from '../../dto/ChecklistEnvioDTO'
 import type { Layout,Massa } from '../../types/types'
 import type { UsuarioDTO } from '../../dto/UsuarioDTO'
 import ChecklistDocPreviewModal from "../../view/ChecklistDocPreviewModal"
@@ -199,7 +200,16 @@ function onNovoLayout() {
   function montarPayloadEnvio(
   checklist: ChecklistVersaoDTO,
   layouts: Layout[]
-) {
+): ChecklistEnvioDTO {
+
+  function layoutTemArquivoNovo(layoutId: string): boolean {
+    return !!filesLayout[layoutId]?.length
+  }
+
+  function massaTemArquivoNovo(massaId: string): boolean {
+    return !!filesMassas[massaId]?.length
+  }
+
   return {
     idChecklist: checklist.idChecklist?.toString(),
     idChecklistVersao: checklist.idChecklistVersao?.toString(),
@@ -224,14 +234,22 @@ function onNovoLayout() {
       id: l.id,
       nomeLayout: l.nomeLayout,
       observacao: l.observacao,
+
+      // 🔥 FLAG DO LAYOUT
+      temArquivo: layoutTemArquivoNovo(l.id),
+
       massasDados: l.massas.map(m => ({
         id: m.id,
         nomeMassaDados: m.nomeArquivo,
-        observacao: m.observacao
+        observacao: m.observacao,
+
+        // 🔥 FLAG DA MASSA
+        temArquivo: massaTemArquivoNovo(m.id)
       }))
     }))
   }
 }
+
 
 async function onSalvarChecklist() {
 

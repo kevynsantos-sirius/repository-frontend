@@ -2,6 +2,7 @@ export type MassaEnvioDTO = {
   id?: string
   nomeMassaDados: string
   observacao: string | null
+  temArquivo: boolean
 }
 
 export type LayoutEnvioDTO = {
@@ -9,6 +10,7 @@ export type LayoutEnvioDTO = {
   nomeLayout: string
   observacao: string | null
   massasDados: MassaEnvioDTO[]
+  temArquivo: boolean
 }
 
 export type ChecklistEnvioDTO = {
