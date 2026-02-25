@@ -137,7 +137,7 @@ export default function TIForm({
               type="button"
               className="btn btn-primary"
               disabled={!arquivo}
-              onClick={() => onAddLayout(layout)}
+              onClick={() => {onAddLayout(layout); onCancelar();}}
             >
               Adicionar Layout
             </button>
@@ -261,7 +261,7 @@ export default function TIForm({
               type="button"
               className="btn btn-primary"
               disabled={!arquivo}
-              onClick={() => onAddMassa(layout.id, massa)}
+              onClick={() => {onAddMassa(layout.id, massa); onCancelar(); }}
             >
               Adicionar Massa
             </button>
