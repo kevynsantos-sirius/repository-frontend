@@ -7,34 +7,60 @@ import Checklists from './pages/Checklists/Checklists'
 import { useState } from 'react'
 import type { UsuarioDTO } from './dto/UsuarioDTO'
 
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 export default function App() {
 
-  const [novoLayout,setNovoLayout] =  useState(false);
-  const [user, setUser] = useState<UsuarioDTO | null>(null);
+  const [novoLayout, setNovoLayout] = useState(false)
+  const [user, setUser] = useState<UsuarioDTO | null>(null)
 
-  
   return (
-    <Routes>
+    <>
+      <Routes>
 
-      {/* ROTA PÚBLICA */}
-      <Route path="/login" element={<Login />} />
+        {/* ROTA PÚBLICA */}
+        <Route path="/login" element={<Login />} />
 
-      {/* ÁREA LOGADA */}
-      <Route element={<AppLayout setUser={setUser} user={user} />}>
+        {/* ÁREA LOGADA */}
+        <Route element={<AppLayout setUser={setUser} user={user} />}>
 
-        {/* LISTAGEM */}
-        <Route path="/home" element={<DocumentsList setNovoLayout={setNovoLayout} />} />
+          {/* LISTAGEM */}
+          <Route
+            path="/home"
+            element={<DocumentsList setNovoLayout={setNovoLayout} />}
+          />
 
-        {/* EDIÇÃO / VISUALIZAÇÃO */}
-        <Route path="/home/:id/:idVersao" element={<Home novoLayout={novoLayout} setNovoLayout={setNovoLayout} user={user} />} />
+          {/* EDIÇÃO / VISUALIZAÇÃO */}
+          <Route
+            path="/home/:id/:idVersao"
+            element={
+              <Home
+                novoLayout={novoLayout}
+                setNovoLayout={setNovoLayout}
+                user={user}
+              />
+            }
+          />
 
-        <Route path="/checklists" element={<Checklists />} />
+          <Route path="/checklists" element={<Checklists />} />
 
-      </Route>
+        </Route>
 
-      {/* FALLBACK */}
-      <Route path="*" element={<Navigate to="/login" />} />
+        {/* FALLBACK */}
+        <Route path="*" element={<Navigate to="/login" />} />
 
-    </Routes>
+      </Routes>
+
+      {/* ⭐ TOAST GLOBAL */}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        theme="colored"
+      />
+    </>
   )
 }

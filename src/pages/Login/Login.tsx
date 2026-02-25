@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { login } from '../../services/authService'
+import { toast } from 'react-toastify'
 
 export default function Login() {
   const [usuario, setUsuario] = useState('')
@@ -12,7 +13,7 @@ export default function Login() {
       await login(usuario, senha)
       window.location.href = '/home'
     } catch {
-      alert('Usuário ou senha inválidos')
+      toast.warning('Usuário ou senha inválidos')
     } finally {
       setLoading(false)
     }

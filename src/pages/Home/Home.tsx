@@ -15,6 +15,7 @@ import type{ChecklistEnvioDTO} from '../../dto/ChecklistEnvioDTO'
 import type { Layout,Massa } from '../../types/types'
 import type { UsuarioDTO } from '../../dto/UsuarioDTO'
 import ChecklistDocPreviewModal from "../../view/ChecklistDocPreviewModal"
+import { toast } from 'react-toastify'
 
 type AbaAtiva = 'identificacao' | 'ti' | 'modelo'
 
@@ -132,7 +133,7 @@ function validarArquivosTI(): boolean {
      ========================= */
 
   if (totalArquivosNovos === 0 && !existeArquivoAntigo) {
-    alert('Você criou Layout/Massa mas não anexou nenhum arquivo.')
+    toast.warning('Você criou Layout/Massa mas não anexou nenhum arquivo.')
     setAbaAtiva('ti')
     return false
   }
@@ -147,38 +148,38 @@ function validarArquivosTI(): boolean {
      ========================= */
   function validarIdentificacao(checklist: ChecklistVersaoDTO | null): boolean {
     if (!checklist) {
-      alert('Preencha a identificação')
+      toast.warning('Preencha a identificação')
       return false
     }
 
     if (!checklist.nomeDocumento?.trim()) {
-      alert('Informe o nome do documento')
+      toast.warning('Informe o nome do documento')
       return false
     }
 
     if (!checklist.idRamo) {
-      alert('Selecione o ramo')
+      toast.warning('Selecione o ramo')
       return false
     }
 
     if (!checklist.status) {
-      alert('Selecione o status')
+      toast.warning('Selecione o status')
       return false
     }
 
     if (!checklist.centroCusto?.trim()) {
-      alert('Informe o centro de custo')
+      toast.warning('Informe o centro de custo')
       return false
     }
 
     if (!checklist.idDemanda?.trim()) {
-      alert('Informe a identificação da demanda')
+      toast.warning('Informe a identificação da demanda')
       return false
     }
 
     if(!checklist.icatu && !checklist.caixa && !checklist.rioGrande)
     {
-      alert('Informe um tipo de documento')
+      toast.warning('Informe um tipo de documento')
       return false
     }
 
@@ -282,7 +283,7 @@ async function onSalvarChecklist() {
         arquivosMassas
       )
 
-      alert('Checklist salvo com sucesso!')
+      toast.success('Checklist salvo com sucesso!')
       navigate('/home')
     } else {
       await atualizarChecklist(
@@ -292,13 +293,13 @@ async function onSalvarChecklist() {
         arquivosMassas
       )
 
-      alert('Checklist atualizado com sucesso!')
+      toast.success('Checklist atualizado com sucesso!')
       navigate('/home')
     }
 
   } catch (error) {
     console.error(error)
-    alert('Erro ao salvar checklist')
+    toast.error('Erro ao salvar checklist')
   }
 }
 
