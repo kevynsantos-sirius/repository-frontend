@@ -104,24 +104,33 @@ export default function Home({
     carregarChecklist(id!)
   }, [id, isNovo])
 
-  function validarArquivosTI(): boolean {
+function validarArquivosTI(): boolean {
 
   // 🔎 Se não há layouts → usuário nunca entrou no TI
   if (layouts.length === 0) return true
 
+  /* =========================
+     1) ARQUIVOS NOVOS
+     ========================= */
   const arquivosLayouts = Object.values(filesLayout).flat()
   const arquivosMassas = Object.values(filesMassas).flat()
 
-  // 🔎 Verifica se algum layout/massa exige arquivo
-  const existeAlgumFormularioTI =
-    layouts.length > 0 ||
-    layouts.some(l => l.massas.length > 0)
+  const totalArquivosNovos =
+    arquivosLayouts.length + arquivosMassas.length
 
-  if (!existeAlgumFormularioTI) return true
+  /* =========================
+     2) ARQUIVOS JÁ EXISTENTES
+     ========================= */
+  const existeArquivoAntigo = layouts.some(layout =>
+    layout.nomeLayout?.trim() ||
+    layout.massas.some(m => m.nomeArquivo?.trim())
+  )
 
-  const totalArquivos = arquivosLayouts.length + arquivosMassas.length
+  /* =========================
+     3) VALIDAÇÃO FINAL
+     ========================= */
 
-  if (totalArquivos === 0) {
+  if (totalArquivosNovos === 0 && !existeArquivoAntigo) {
     alert('Você criou Layout/Massa mas não anexou nenhum arquivo.')
     setAbaAtiva('ti')
     return false
@@ -129,6 +138,7 @@ export default function Home({
 
   return true
 }
+
 
 
   /* =========================
