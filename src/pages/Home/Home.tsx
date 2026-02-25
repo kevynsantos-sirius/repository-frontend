@@ -176,6 +176,12 @@ function validarArquivosTI(): boolean {
       return false
     }
 
+    if(!checklist.icatu && !checklist.caixa && !checklist.rioGrande)
+    {
+      alert('Informe um tipo de documento')
+      return false
+    }
+
     return true
   }
 

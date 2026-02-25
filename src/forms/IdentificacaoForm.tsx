@@ -171,7 +171,13 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
               Responsável <span className="text-danger">*</span>
             </label>
 
-            <span className="form-control">
+            <span className="form-control"
+              style={{
+                backgroundColor: '#e9ecef',
+                opacity: 1,
+                pointerEvents: 'none',
+                cursor: 'not-allowed'
+              }}>
               {checklistForm?.usuario?.nomeUsuario || user?.nomeUsuario}
             </span>
           </div>
