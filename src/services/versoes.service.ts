@@ -7,7 +7,7 @@ type ChecklistVersaoResumoDTO = {
   idChecklistVersao: string
   idDemanda: string
   versao: number
-  dataCadastro: string // LocalDateTime vem como string no JSON
+  dataAtualizacao: string
   nomeUsuario: string
   status: number
   atual: boolean
@@ -17,12 +17,11 @@ type ChecklistVersaoResumoDTO = {
 export async function buscarVersoesChecklist(idChecklist: string): Promise<Versao[]> {
   const response = await api.get<ChecklistVersaoResumoDTO[]>(`/api/Checklists/${idChecklist}/versoes`)
   const data = response.data
-
   // Mapear DTO do backend para tipo do front
   return data.map(v => ({
     id: v.idChecklistVersao,
     nome: `Versão ${v.versao} - ${v.nomeUsuario}`,
-    data: new Date(v.dataCadastro).toLocaleString('pt-BR', {
+    data: new Date(v.dataAtualizacao).toLocaleString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
