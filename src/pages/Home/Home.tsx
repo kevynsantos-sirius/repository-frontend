@@ -385,13 +385,36 @@ function adicionarMassa(layoutId: string, massa: Massa) {
 
 
   function onRemoverLayout(layoutId: string) {
-    setLayouts(prev => prev.filter(l => l.id !== layoutId))
-    if (layoutSelecionadoId === layoutId) {
-      setLayoutSelecionadoId(null)
-      setMassaSelecionadaId(null)
-      setModoTI(null)
-    }
+
+  // 🔥 Remove layout da lista
+  setLayouts(prev => prev.filter(l => l.id !== layoutId))
+
+  // 🔥 Remove arquivos do layout
+  setFilesLayout(prev => {
+    const novo = { ...prev }
+    delete novo[layoutId]
+    return novo
+  })
+
+  // 🔥 Remove arquivos das massas desse layout
+  setFilesMassas(prev => {
+    const novo = { ...prev }
+
+    const layout = layouts.find(l => l.id === layoutId)
+
+    layout?.massas.forEach(m => {
+      delete novo[m.id]
+    })
+
+    return novo
+  })
+
+  if (layoutSelecionadoId === layoutId) {
+    setLayoutSelecionadoId(null)
+    setMassaSelecionadaId(null)
+    setModoTI(null)
   }
+}
 
   function atualizarLayout(updated: Layout) {
 
@@ -433,19 +456,28 @@ function atualizarMassa(layoutId: string, updated: Massa) {
 
 
 
-  function onRemoverMassa(layoutId: string, massaId: string) {
-    setLayouts(prev =>
-      prev.map(l =>
-        l.id === layoutId
-          ? { ...l, massas: l.massas.filter(m => m.id !== massaId) }
-          : l
-      )
+function onRemoverMassa(layoutId: string, massaId: string) {
+
+  setLayouts(prev =>
+    prev.map(l =>
+      l.id === layoutId
+        ? { ...l, massas: l.massas.filter(m => m.id !== massaId) }
+        : l
     )
-    if (massaSelecionadaId === massaId) {
-      setMassaSelecionadaId(null)
-      setModoTI(null)
-    }
+  )
+
+  // 🔥 Remove arquivos da massa
+  setFilesMassas(prev => {
+    const novo = { ...prev }
+    delete novo[massaId]
+    return novo
+  })
+
+  if (massaSelecionadaId === massaId) {
+    setMassaSelecionadaId(null)
+    setModoTI(null)
   }
+}
 
   if (loading) {
     return (
