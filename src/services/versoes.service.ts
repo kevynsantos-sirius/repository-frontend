@@ -22,11 +22,14 @@ export async function buscarVersoesChecklist(idChecklist: string): Promise<Versa
   return data.map(v => ({
     id: v.idChecklistVersao,
     nome: `Versão ${v.versao} - ${v.nomeUsuario}`,
-    data: new Date(v.dataCadastro).toLocaleDateString('pt-BR', {
+    data: new Date(v.dataCadastro).toLocaleString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     }),
     ativa: v.atual
   }))
+
 }
