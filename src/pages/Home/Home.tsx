@@ -77,6 +77,8 @@ export default function Home({
   const [abrirPreview, setAbrirPreview] = useState(false)
   const [dadosPreview, setDadosPreview] = useState<ChecklistVersaoDTO | null>(null)
 
+  const [btnSalvarCheckList, setBtnSalvarCheckList] = useState(false)
+
   const layoutSelecionado =
     layouts.find(l => l.id === layoutSelecionadoId) || null
 
@@ -87,7 +89,11 @@ export default function Home({
      LOAD
      ========================= */
   useEffect(() => {
-    if (isNovo) return
+    if(isNovo)
+      {
+        setBtnSalvarCheckList(true);
+        return;
+      }
 
     async function carregarChecklist(checklistId: string) {
       try {
@@ -503,6 +509,7 @@ function atualizarMassa(layoutId: string, updated: Massa) {
                 isNovo={isNovo}
                 onChangeChecklist={setChecklist}
                 user={user}
+                setBtnSalvarCheckList={setBtnSalvarCheckList}
               />
             )}
 
@@ -520,13 +527,12 @@ function atualizarMassa(layoutId: string, updated: Massa) {
                 onAddMassa={adicionarMassa}
                 onChangeLayout={atualizarLayout}
                 onChangeMassa={atualizarMassa}
-                onRemoverLayout={onRemoverLayout}
-                onRemoverMassa={onRemoverMassa}
                 filesLayout={filesLayout}
                 filesMassas={filesMassas}
                 setFilesLayout={setFilesLayout}
                 setFilesMassas={setFilesMassas}
                 onCancelar={onCancelarTI}
+                setBtnSalvarCheckList={setBtnSalvarCheckList}
               />
             )}
 
@@ -551,6 +557,7 @@ function atualizarMassa(layoutId: string, updated: Massa) {
 
           <div className="col-auto">
             <button
+              disabled={!btnSalvarCheckList}
               className="btn btn-primary px-5"
               onClick={onSalvarChecklist}
             >

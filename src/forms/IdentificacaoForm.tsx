@@ -1,5 +1,6 @@
 import type { ChecklistVersaoDTO } from '../dto/ChecklistVersaoDTO'
 import type { UsuarioDTO } from '../dto/UsuarioDTO'
+import type { Dispatch, SetStateAction } from 'react'
 
 type Props = {
   checklist: ChecklistVersaoDTO | null
@@ -8,13 +9,15 @@ type Props = {
   onChangeChecklist: React.Dispatch<
     React.SetStateAction<ChecklistVersaoDTO | null>
   >
+  setBtnSalvarCheckList: Dispatch<SetStateAction<boolean>>
 }
 
 export default function IdentificacaoForm({
   checklist,
   user,
   isNovo,
-  onChangeChecklist
+  onChangeChecklist,
+  setBtnSalvarCheckList
 }: Props) {
 
   // Loading somente quando estiver editando e ainda não carregou
@@ -99,7 +102,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
               required
               value={checklistForm?.nomeDocumento ?? ''}
               onChange={(e) =>
-                atualizarCampo('nomeDocumento', e.target.value)
+              {atualizarCampo('nomeDocumento', e.target.value); setBtnSalvarCheckList(true); }
               }
             />
 
@@ -115,7 +118,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
               required
               value={checklistForm?.idRamo ?? ''}
               onChange={(e) =>
-                atualizarCampo('idRamo', Number(e.target.value))
+              {atualizarCampo('idRamo', Number(e.target.value)); setBtnSalvarCheckList(true); }
               }
             >
               <option value="">Selecione</option>
@@ -138,7 +141,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
               required
               value={checklistForm?.status ?? ''}
               onChange={(e) =>
-                atualizarCampo('status', Number(e.target.value))
+              {atualizarCampo('status', Number(e.target.value)); setBtnSalvarCheckList(true); }
               }
             >
               <option value="">Selecione</option>
@@ -154,11 +157,12 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
             <input
               type="text"
               className="form-control"
+              disabled={!isNovo}
               maxLength={5}
               required
               value={checklistForm?.centroCusto ?? ''}
               onChange={(e) =>
-                atualizarCampo('centroCusto', e.target.value)
+              {atualizarCampo('centroCusto', e.target.value); setBtnSalvarCheckList(true);}
               }
             />
           </div>
@@ -193,7 +197,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
               required
               value={checklistForm?.idDemanda ?? ''}
               onChange={(e) =>
-                atualizarCampo('idDemanda', e.target.value)
+              {atualizarCampo('idDemanda', e.target.value); setBtnSalvarCheckList(true);}
               }
             />
           </div>
@@ -209,7 +213,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
                 className="form-check-input"
                 checked={checklistForm?.icatu ?? false}
                 onChange={(e) =>
-                  atualizarCampo('icatu', e.target.checked)
+                {atualizarCampo('icatu', e.target.checked); setBtnSalvarCheckList(true);}
                 }
               />
               <label className="form-check-label ms-2">
@@ -223,7 +227,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
                 className="form-check-input"
                 checked={checklistForm?.rioGrande ?? false}
                 onChange={(e) =>
-                  atualizarCampo('rioGrande', e.target.checked)
+                {atualizarCampo('rioGrande', e.target.checked); setBtnSalvarCheckList(true);}
                 }
               />
               <label className="form-check-label ms-2">
@@ -237,7 +241,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
                 className="form-check-input"
                 checked={checklistForm?.caixa ?? false}
                 onChange={(e) =>
-                  atualizarCampo('caixa', e.target.checked)}
+                  {atualizarCampo('caixa', e.target.checked); setBtnSalvarCheckList(true);}}
               />
               <label className="form-check-label ms-2">
                 Documento Caixa?

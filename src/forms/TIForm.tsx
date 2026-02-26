@@ -15,14 +15,13 @@ type Props = {
   onChangeLayout(layout: Layout): void
   onChangeMassa(layoutId: string, massa: Massa): void
 
-  onRemoverLayout(layoutId: string): void
-  onRemoverMassa(layoutId: string, massaId: string): void
-
   filesLayout: Record<string, File[]>
   filesMassas: Record<string, File[]>
 
   setFilesLayout: Dispatch<SetStateAction<Record<string, File[]>>>
   setFilesMassas: Dispatch<SetStateAction<Record<string, File[]>>>
+
+  setBtnSalvarCheckList: Dispatch<SetStateAction<boolean>>
 
   onCancelar(): void
 }
@@ -37,13 +36,12 @@ export default function TIForm({
   onAddMassa,
   onChangeLayout,
   onChangeMassa,
-  onRemoverLayout,
-  onRemoverMassa,
   filesLayout,
   filesMassas,
   setFilesLayout,
   setFilesMassas,
-  onCancelar
+  onCancelar,
+  setBtnSalvarCheckList
 }: Props) {
 
   if (!modo) {
@@ -137,7 +135,7 @@ export default function TIForm({
               type="button"
               className="btn btn-primary"
               disabled={!arquivo}
-              onClick={() => {onAddLayout(layout); onCancelar();}}
+              onClick={() => {onAddLayout(layout); onCancelar(); setBtnSalvarCheckList(true);}}
             >
               Adicionar Layout
             </button>
@@ -146,17 +144,9 @@ export default function TIForm({
               <button
                 type="button"
                 className="btn btn-success"
-                onClick={() => {onChangeLayout(layout); onCancelar();}}
+                onClick={() => {onChangeLayout(layout); onCancelar(); setBtnSalvarCheckList(true);}}
               >
                 Atualizar Layout
-              </button>
-
-              <button
-                type="button"
-                className="btn btn-outline-danger"
-                onClick={() => onRemoverLayout(layout.id)}
-              >
-                Remover Layout
               </button>
             </>
           )}
@@ -261,7 +251,7 @@ export default function TIForm({
               type="button"
               className="btn btn-primary"
               disabled={!arquivo}
-              onClick={() => {onAddMassa(layout.id, massa); onCancelar(); }}
+              onClick={() => {onAddMassa(layout.id, massa); onCancelar(); setBtnSalvarCheckList(true); }}
             >
               Adicionar Massa
             </button>
@@ -270,17 +260,9 @@ export default function TIForm({
               <button
                 type="button"
                 className="btn btn-success"
-                onClick={() => {onChangeMassa(layout.id, massa); onCancelar(); }}
+                onClick={() => {onChangeMassa(layout.id, massa); onCancelar(); setBtnSalvarCheckList(true); }}
               >
                 Atualizar Massa
-              </button>
-
-              <button
-                type="button"
-                className="btn btn-outline-danger"
-                onClick={() => onRemoverMassa(layout.id, massa.id)}
-              >
-                Remover Massa
               </button>
             </>
           )}

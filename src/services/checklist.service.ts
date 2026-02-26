@@ -110,5 +110,7 @@ export async function atualizarChecklist(
     formData
   )
 
-  return response.data
+  var res = response.data;
+
+  return res
 }
