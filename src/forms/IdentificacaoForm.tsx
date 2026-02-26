@@ -193,7 +193,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
             <input
               type="text"
               className="form-control"
-              maxLength={50}
+              maxLength={40}
               required
               value={checklistForm?.idDemanda ?? ''}
               onChange={(e) =>
