@@ -16,6 +16,7 @@ import type { Layout,Massa } from '../../types/types'
 import type { UsuarioDTO } from '../../dto/UsuarioDTO'
 import ChecklistDocPreviewModal from "../../view/ChecklistDocPreviewModal"
 import { toast } from 'react-toastify'
+import ConfirmModal from '../../modal/ConfirmModal'
 
 type AbaAtiva = 'identificacao' | 'ti' | 'modelo'
 
@@ -79,6 +80,8 @@ export default function Home({
 
   const [btnSalvarCheckList, setBtnSalvarCheckList] = useState(false)
 
+  const [confirmCancelOpen, setConfirmCancelOpen] = useState(false)
+
   const layoutSelecionado =
     layouts.find(l => l.id === layoutSelecionadoId) || null
 
@@ -111,6 +114,11 @@ export default function Home({
 
     carregarChecklist(id!)
   }, [id, isNovo])
+
+function confirmarCancelamento() {
+  setConfirmCancelOpen(false)
+  navigate('/home')
+}
 
 function validarArquivosTI(): boolean {
 
@@ -599,10 +607,10 @@ function onRemoverMassa(layoutId: string, massaId: string) {
 
           <div className="col-auto">
             <button
-              className="btn btn-outline-primary px-4"
-              onClick={() => navigate('/home')}
+              className="btn btn-outline-secondary px-4"
+              onClick={() => setConfirmCancelOpen(true)}
             >
-              Voltar
+              Cancelar
             </button>
           </div>
 
@@ -617,6 +625,17 @@ function onRemoverMassa(layoutId: string, massaId: string) {
           data={dadosPreview}
         />
       )}
+
+
+      <ConfirmModal
+        aberto={confirmCancelOpen}
+        titulo="Cancelar edição"
+        mensagem="Tem certeza que deseja cancelar? Todas as alterações não salvas serão perdidas."
+        textoConfirmar="Sim, cancelar"
+        textoCancelar="Continuar editando"
+        onConfirmar={confirmarCancelamento}
+        onCancelar={() => setConfirmCancelOpen(false)}
+      />
     </>
   )
 }
