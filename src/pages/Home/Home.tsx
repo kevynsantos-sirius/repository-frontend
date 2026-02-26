@@ -611,7 +611,17 @@ function onRemoverMassa(layoutId: string, massaId: string) {
           <div className="col-auto">
             <button
               className="btn btn-outline-secondary px-4"
-              onClick={() => setConfirmCancelOpen(true)}
+              onClick={() => {
+                if(btnSalvarCheckList)
+                {
+                  setConfirmCancelOpen(true);
+                }
+                else
+                {
+                  navigate('/home');
+                }
+
+              }}
             >
               Cancelar
             </button>
