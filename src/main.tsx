@@ -6,6 +6,7 @@ import './assets/css/app.css'
 import './assets/css/dashboard.css'
 import './assets/css/login.css'
 import './assets/css/versoes-checklistbar.css'
+import './components/globalLoading.js';
 
 ReactDOM.createRoot(
   document.getElementById('root')!

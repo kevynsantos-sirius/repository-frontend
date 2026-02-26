@@ -4,7 +4,7 @@ import Login from './pages/Login/Login'
 import DocumentsList from './pages/DocumentsList/DocumentsList'
 import Home from './pages/Home/Home'
 import Checklists from './pages/Checklists/Checklists'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import type { UsuarioDTO } from './dto/UsuarioDTO'
 
 import { ToastContainer } from 'react-toastify'
@@ -14,6 +14,10 @@ export default function App() {
 
   const [novoLayout, setNovoLayout] = useState(false)
   const [user, setUser] = useState<UsuarioDTO | null>(null)
+
+    useEffect(() => {
+    (window as any).hideLoading?.();
+  }, []);
 
   return (
     <>
