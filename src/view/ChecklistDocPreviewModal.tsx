@@ -3,7 +3,11 @@ import {
   Document,
   Packer,
   Paragraph,
-  HeadingLevel,
+  Table,
+  TableRow,
+  TableCell,
+  WidthType,
+  TextRun,
 } from "docx"
 import { saveAs } from "file-saver"
 import { renderAsync } from "docx-preview"
@@ -27,98 +31,157 @@ export default function ChecklistDocPreviewModal({
     if (!aberto || !data) return
 
     async function gerarDoc() {
+
+      /* =========================
+         HELPERS
+         ========================= */
+
+      const labelCell = (text: string) =>
+        new TableCell({
+          width: { size: 30, type: WidthType.PERCENTAGE },
+          shading: { fill: "F2F2F2" },
+          children: [
+            new Paragraph({
+              children: [new TextRun({ text, bold: true })],
+            }),
+          ],
+        })
+
+      const valueCell = (text?: string) =>
+        new TableCell({
+          width: { size: 70, type: WidthType.PERCENTAGE },
+          children: [
+            new Paragraph({
+              children: [new TextRun(text || "-")],
+            }),
+          ],
+        })
+
+      const sectionTitle = (text: string) =>
+        new Paragraph({
+          children: [
+            new TextRun({
+              text,
+              bold: true,
+              size: 28,
+            }),
+          ],
+          spacing: { before: 400, after: 200 },
+        })
+
+      /* =========================
+         IDENTIFICAÇÃO
+         ========================= */
+
+      const identificacaoTable = new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          new TableRow({ children: [labelCell("Nome do documento"), valueCell(data.nomeDocumento)] }),
+          new TableRow({ children: [labelCell("Ramo"), valueCell(data.nomeRamo ?? "-")] }),
+          new TableRow({ children: [labelCell("Centro de custo"), valueCell(data.centroCusto)] }),
+          new TableRow({ children: [labelCell("Status"), valueCell(data.status === 1 ? "Ativo" : "Inativo")] }),
+          new TableRow({ children: [labelCell("Responsável"), valueCell(data.usuario?.nomeUsuario)] }),
+          new TableRow({ children: [labelCell("Demanda"), valueCell(data.idDemanda)] }),
+        ],
+      })
+
+      /* =========================
+         DESTINOS
+         ========================= */
+
+      const destinosTable = new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          new TableRow({
+            children: [
+              labelCell("Icatu"),
+              valueCell(data.icatu ? "Sim" : "Não"),
+              labelCell("Caixa"),
+              valueCell(data.caixa ? "Sim" : "Não"),
+              labelCell("Rio Grande"),
+              valueCell(data.rioGrande ? "Sim" : "Não"),
+            ],
+          }),
+        ],
+      })
+
+      /* =========================
+         FORMA DE ENVIO
+         ========================= */
+
+      const envioTable = new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          new TableRow({
+            children: [
+              labelCell("Via Serviço"),
+              valueCell(data.viaServico ? "Sim" : "Não"),
+              labelCell("Via TXT"),
+              valueCell(data.viaTxt ? "Sim" : "Não"),
+            ],
+          }),
+        ],
+      })
+
+      /* =========================
+         LAYOUTS E MASSAS
+         ========================= */
+
+      const layoutsTables = data.layouts.flatMap((layout) => {
+        const massasRows = layout.massasDados.flatMap((massa) => [
+          new TableRow({
+            children: [
+              labelCell("Massa"),
+              valueCell(massa.nomeMassaDados),
+            ],
+          }),
+
+          new TableRow({
+            children: [
+              labelCell("Observação da massa"),
+              valueCell(massa.observacao ?? "-"),
+            ],
+          }),
+        ])
+
+        return [
+          sectionTitle(`Layout: ${layout.nomeLayout}`),
+
+          new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            rows: [
+              new TableRow({
+                children: [
+                  labelCell("Observação do layout"),
+                  valueCell(layout.observacao ?? "-"),
+                ],
+              }),
+
+              ...massasRows,
+            ],
+          }),
+        ]
+      })
+
+      /* =========================
+         DOCUMENTO FINAL
+         ========================= */
+
       const doc = new Document({
         sections: [
           {
             children: [
+              sectionTitle("Identificação do Documento"),
+              identificacaoTable,
 
-              /* =========================
-                 IDENTIFICAÇÃO
-                 ========================= */
+              sectionTitle("Destinos"),
+              destinosTable,
 
-              new Paragraph({
-                text: "Identificação do Documento",
-                heading: HeadingLevel.HEADING_1,
-              }),
+              sectionTitle("Forma de Envio"),
+              envioTable,
 
-              new Paragraph(`Nome: ${data.nomeDocumento}`),
-              new Paragraph(`Ramo: ${data.nomeRamo ?? "-"}`),
-              new Paragraph(`Centro de custo: ${data.centroCusto}`),
-              new Paragraph(`Status: ${data.status === 1 ? 'Ativo' : 'Inativo'}`),
-              new Paragraph(`Responsável: ${data.usuario?.nomeUsuario}`),
-              new Paragraph(`Demanda: ${data.idDemanda}`),
-
-              new Paragraph(" "),
-
-              /* =========================
-                 DESTINOS
-                 ========================= */
-
-              new Paragraph({
-                text: "Destinos",
-                heading: HeadingLevel.HEADING_2,
-              }),
-
-              new Paragraph(`Icatu: ${data.icatu ? "Sim" : "Não"}`),
-              new Paragraph(`Caixa: ${data.caixa ? "Sim" : "Não"}`),
-              new Paragraph(`Rio Grande: ${data.rioGrande ? "Sim" : "Não"}`),
-
-              new Paragraph(" "),
-
-              /* =========================
-                 FORMA DE ENVIO
-                 ========================= */
-
-              new Paragraph({
-                text: "Forma de Envio",
-                heading: HeadingLevel.HEADING_2,
-              }),
-
-              new Paragraph(`Via Serviço: ${data.viaServico ? "Sim" : "Não"}`),
-              new Paragraph(`Via TXT: ${data.viaTxt ? "Sim" : "Não"}`),
-
-              new Paragraph(" "),
-
-              /* =========================
-                 LAYOUTS E MASSAS
-                 ========================= */
-
-              new Paragraph({
-                text: "Layouts e Massas",
-                heading: HeadingLevel.HEADING_1,
-              }),
-
-              ...data.layouts.flatMap((layout) => [
-                new Paragraph({
-                  text: `Layout: ${layout.nomeLayout}`,
-                  heading: HeadingLevel.HEADING_2,
-                }),
-
-                new Paragraph(
-                  `Possui arquivo: ${layout.temArquivo ? "Sim" : "Não"}`
-                ),
-
-                new Paragraph(
-                  `Observação: ${layout.observacao ?? "-"}`
-                ),
-
-                ...layout.massasDados.flatMap((massa) => [
-                  new Paragraph({
-                    text: `Massa: ${massa.nomeMassaDados}`,
-                    heading: HeadingLevel.HEADING_3,
-                  }),
-
-                  new Paragraph(
-                    `Possui arquivo: ${massa.temArquivo ? "Sim" : "Não"}`
-                  ),
-
-                  new Paragraph(
-                    `Observação: ${massa.observacao ?? "-"}`
-                  ),
-                ]),
-
-                new Paragraph(" "),
-              ]),
+              sectionTitle("Layouts e Massas"),
+              ...layoutsTables,
             ],
           },
         ],
@@ -158,17 +221,18 @@ export default function ChecklistDocPreviewModal({
         />
 
         <div style={{ display: "flex", gap: 10 }}>
-          <button className="btn btn-outline-primary" onClick={baixar}>Baixar DOCX</button>
-          <button className="btn btn-outline-primary" onClick={onClose}>Fechar</button>
+          <button className="btn btn-outline-primary" onClick={baixar}>
+            Baixar DOCX
+          </button>
+
+          <button className="btn btn-outline-primary" onClick={onClose}>
+            Fechar
+          </button>
         </div>
       </div>
     </div>
   )
 }
-
-/* =========================
-   ESTILOS SIMPLES
-   ========================= */
 
 const overlay = {
   position: "fixed" as const,
