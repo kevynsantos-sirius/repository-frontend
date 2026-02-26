@@ -2,15 +2,18 @@ import { useEffect, useState } from 'react'
 import { buscarVersoesChecklist } from '../../services/versoes.service'
 import type { Versao } from '../../dto/Versao'
 import type { Layout } from '../../types/types'
+import {buscarChecklistPorId} from '../../services/checklist.service'
+import type { ChecklistVersaoDTO } from '../../dto/ChecklistVersaoDTO'
 
 type Props = {
   aberto: boolean
   idVersao: string
   onClose: () => void
   onSelectVersao: (layouts: Layout[]) => void
+  visualizarDocumento: (data: ChecklistVersaoDTO) => void
 }
 
-export default function VersoesCheckListbar({ aberto, idVersao, onClose }: Props) {
+export default function VersoesCheckListbar({ aberto, idVersao, onClose, visualizarDocumento }: Props) {
   const [versoes, setVersoes] = useState<Versao[]>([])
   const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState('')
@@ -31,6 +34,13 @@ export default function VersoesCheckListbar({ aberto, idVersao, onClose }: Props
         setLoading(false)
       })
   }, [aberto, idVersao])
+
+  async function getCheckListVersionForPreview(idChecklistVersao: string)
+  {
+    const data = await buscarChecklistPorId(idChecklistVersao);
+
+    visualizarDocumento(data);
+  }
 
   return (
     <>
@@ -54,6 +64,9 @@ export default function VersoesCheckListbar({ aberto, idVersao, onClose }: Props
                 key={v.id}
                 className={`list-group-item d-flex flex-column ${v.ativa ? 'active' : ''}`}
                 style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  getCheckListVersionForPreview(v.id);
+                }}
               >
                 <strong>{v.nome}</strong>
                 <small className="text-muted">Criada em {v.data}</small>

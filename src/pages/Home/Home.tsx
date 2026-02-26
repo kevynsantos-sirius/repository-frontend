@@ -523,6 +523,7 @@ function onRemoverMassa(layoutId: string, massaId: string) {
               setVersoesAberto(false)
             }}
             idVersao={idVersao}
+            visualizarDocumento={visualizarDocumento}
           />
         )}
 
