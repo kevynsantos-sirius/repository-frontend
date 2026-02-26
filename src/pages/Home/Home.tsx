@@ -422,6 +422,7 @@ function adicionarMassa(layoutId: string, massa: Massa) {
     setMassaSelecionadaId(null)
     setModoTI(null)
   }
+  setBtnSalvarCheckList(true);
 }
 
   function atualizarLayout(updated: Layout) {
@@ -485,6 +486,8 @@ function onRemoverMassa(layoutId: string, massaId: string) {
     setMassaSelecionadaId(null)
     setModoTI(null)
   }
+
+  setBtnSalvarCheckList(true);
 }
 
   if (loading) {
