@@ -8,12 +8,56 @@ export const api: AxiosInstance = axios.create({
   withCredentials: true
 })
 
-api.interceptors.response.use(
-  response => response,
+/* ===========================
+   CONTROLE DE LOADING GLOBAL
+=========================== */
+
+let activeRequests = 0
+
+function showLoader() {
+  if (activeRequests === 0) {
+    (window as any).showLoading?.()
+  }
+  activeRequests++
+}
+
+function hideLoader() {
+  activeRequests = Math.max(0, activeRequests - 1)
+
+  if (activeRequests === 0) {
+    (window as any).hideLoading?.()
+  }
+}
+
+/* ===========================
+   INTERCEPTORS
+=========================== */
+
+// 🔹 Antes da requisição
+api.interceptors.request.use(
+  config => {
+    showLoader()
+    return config
+  },
   error => {
+    hideLoader()
+    return Promise.reject(error)
+  }
+)
+
+// 🔹 Após resposta
+api.interceptors.response.use(
+  response => {
+    hideLoader()
+    return response
+  },
+  error => {
+    hideLoader()
+
     if (error.response?.status === 401) {
       window.location.href = '/'
     }
+
     return Promise.reject(error)
   }
 )
