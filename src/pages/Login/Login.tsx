@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { login } from '../../services/authService'
 import { toast } from 'react-toastify'
+import logo from '../../assets/images/checklist_docs_logo.png'
 
 export default function Login() {
   const [usuario, setUsuario] = useState('')
@@ -21,7 +22,15 @@ export default function Login() {
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
-      <div className="card p-4" style={{ width: 360 }}>
+      <div className="card p-4 text-center" style={{ width: 360 }}>
+
+        {/* 🔹 Logo */}
+        <img
+          src={logo}
+          alt="Checklist Docs"
+          style={{ width: 180, margin: '0 auto 16px auto' }}
+        />
+
         <h5 className="mb-3">Login</h5>
 
         <input
