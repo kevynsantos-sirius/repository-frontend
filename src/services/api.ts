@@ -55,7 +55,11 @@ api.interceptors.response.use(
     hideLoader()
 
     if (error.response?.status === 401) {
-      window.location.href = '/'
+      window.location.href = '/ExpiredLogin'
+    }
+
+    if (error.response?.status === 500) {
+      window.location.href = "/Error";
     }
 
     return Promise.reject(error)

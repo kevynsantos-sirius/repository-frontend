@@ -4,7 +4,10 @@ import Login from './pages/Login/Login'
 import DocumentsList from './pages/DocumentsList/DocumentsList'
 import Home from './pages/Home/Home'
 import Checklists from './pages/Checklists/Checklists'
-import { useState,useEffect } from 'react'
+import ExpiredLogin from './pages/ExpiredLogin/ExpiredLogin'
+import ErrorPage from './pages/Error/ErrorPage'
+
+import { useState, useEffect } from 'react'
 import type { UsuarioDTO } from './dto/UsuarioDTO'
 
 import { ToastContainer } from 'react-toastify'
@@ -15,7 +18,7 @@ export default function App() {
   const [novoLayout, setNovoLayout] = useState(false)
   const [user, setUser] = useState<UsuarioDTO | null>(null)
 
-    useEffect(() => {
+  useEffect(() => {
     (window as any).hideLoading?.();
   }, []);
 
@@ -23,8 +26,10 @@ export default function App() {
     <>
       <Routes>
 
-        {/* ROTA PÚBLICA */}
+        {/* ROTAS PÚBLICAS */}
         <Route path="/login" element={<Login />} />
+        <Route path="/ExpiredLogin" element={<ExpiredLogin />} />
+        <Route path="/Error" element={<ErrorPage />} />
 
         {/* ÁREA LOGADA */}
         <Route element={<AppLayout setUser={setUser} user={user} />}>
