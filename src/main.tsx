@@ -7,6 +7,7 @@ import './assets/css/dashboard.css'
 import './assets/css/login.css'
 import './assets/css/versoes-checklistbar.css'
 import './components/globalLoading.js';
+import 'bootstrap-icons/font/bootstrap-icons.css'
 
 ReactDOM.createRoot(
   document.getElementById('root')!
