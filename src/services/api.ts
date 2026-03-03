@@ -55,7 +55,11 @@ api.interceptors.response.use(
     hideLoader()
 
     if (error.response?.status === 401) {
-      window.location.href = '/ExpiredLogin'
+      const requestUrl = error.config?.url || ""
+      // Não redireciona se for erro de login
+      if (!requestUrl.includes("/auth/login")) {
+        window.location.href = "/ExpiredLogin"
+      }
     }
 
     if (error.response?.status === 500) {
