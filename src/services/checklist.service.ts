@@ -125,7 +125,7 @@ export async function downloadChecklistZip(
   const response = await api.get(
     `/api/checklists/${idChecklistVersao}/export`,
     {
-      responseType: "blob" // 🔥 ESSENCIAL
+      responseType: "blob"
     }
   )
 
@@ -135,9 +135,21 @@ export async function downloadChecklistZip(
 
   const url = window.URL.createObjectURL(blob)
 
+  // 🔥 Pega o nome vindo do backend
+  const contentDisposition = response.headers["content-disposition"]
+
+  let fileName = "checklist.zip"
+
+  if (contentDisposition) {
+    const fileNameMatch = contentDisposition.match(/filename="?([^"]+)"?/)
+    if (fileNameMatch?.[1]) {
+      fileName = fileNameMatch[1]
+    }
+  }
+
   const link = document.createElement("a")
   link.href = url
-  link.download = `checklist-${idChecklistVersao}.zip`
+  link.download = fileName
 
   document.body.appendChild(link)
   link.click()
