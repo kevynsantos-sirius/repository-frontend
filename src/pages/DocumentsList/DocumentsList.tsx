@@ -162,6 +162,7 @@ export default function DocumentsList({
                                 ) : (
                                   <i className="bi bi-file-earmark-word"></i>
                                 )}
+                                DOCX
                               </button>
 
                               <button className="btn btn-success"
