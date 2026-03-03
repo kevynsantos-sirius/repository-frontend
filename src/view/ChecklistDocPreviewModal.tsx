@@ -33,12 +33,17 @@ export default function ChecklistDocPreviewModal({
     async function gerarDoc() {
 
       /* =========================
-         HELPERS
+         CONFIG FIXA DEFINITIVA
          ========================= */
+
+      const TABLE_WIDTH = 10000
+      const COL_LABEL = 4000
+      const COL_VALUE = 6000
 
       const labelCell = (text: string) =>
         new TableCell({
-          width: { size: 30, type: WidthType.PERCENTAGE },
+          width: { size: COL_LABEL, type: WidthType.DXA },
+          margins: { top: 200, bottom: 200, left: 250, right: 250 },
           shading: { fill: "F2F2F2" },
           children: [
             new Paragraph({
@@ -49,12 +54,22 @@ export default function ChecklistDocPreviewModal({
 
       const valueCell = (text?: string) =>
         new TableCell({
-          width: { size: 70, type: WidthType.PERCENTAGE },
+          width: { size: COL_VALUE, type: WidthType.DXA },
+          margins: { top: 200, bottom: 200, left: 250, right: 250 },
           children: [
             new Paragraph({
-              children: [new TextRun(text || "-")],
+              children: [
+                new TextRun({
+                  text: text || "-",
+                }),
+              ],
             }),
           ],
+        })
+
+      const row = (label: string, value?: string) =>
+        new TableRow({
+          children: [labelCell(label), valueCell(value)],
         })
 
       const sectionTitle = (text: string) =>
@@ -63,103 +78,70 @@ export default function ChecklistDocPreviewModal({
             new TextRun({
               text,
               bold: true,
-              size: 28,
+              size: 32,
             }),
           ],
-          spacing: { before: 400, after: 200 },
+          spacing: { before: 600, after: 300 },
+        })
+
+      const createTable = (rows: TableRow[]) =>
+        new Table({
+          width: { size: TABLE_WIDTH, type: WidthType.DXA },
+          layout: "fixed",
+          columnWidths: [COL_LABEL, COL_VALUE], // 🔥 ESSA LINHA RESOLVE O GOOGLE DOCS
+          rows,
         })
 
       /* =========================
          IDENTIFICAÇÃO
          ========================= */
 
-      const identificacaoTable = new Table({
-        width: { size: 100, type: WidthType.PERCENTAGE },
-        rows: [
-          new TableRow({ children: [labelCell("Nome do documento"), valueCell(data.nomeDocumento)] }),
-          new TableRow({ children: [labelCell("Ramo"), valueCell(data.nomeRamo ?? "-")] }),
-          new TableRow({ children: [labelCell("Centro de custo"), valueCell(data.centroCusto)] }),
-          new TableRow({ children: [labelCell("Status"), valueCell(data.status === 1 ? "Ativo" : "Inativo")] }),
-          new TableRow({ children: [labelCell("Responsável"), valueCell(data.usuario?.nomeUsuario)] }),
-          new TableRow({ children: [labelCell("Demanda"), valueCell(data.idDemanda)] }),
-        ],
-      })
+      const identificacaoTable = createTable([
+        row("Nome do documento", data.nomeDocumento),
+        row("Ramo", data.nomeRamo ?? "-"),
+        row("Centro de custo", data.centroCusto),
+        row("Status", data.status === 1 ? "Ativo" : "Inativo"),
+        row("Responsável", data.usuario?.nomeUsuario),
+        row("Demanda", data.idDemanda),
+      ])
 
       /* =========================
          DESTINOS
          ========================= */
 
-      const destinosTable = new Table({
-        width: { size: 100, type: WidthType.PERCENTAGE },
-        rows: [
-          new TableRow({
-            children: [
-              labelCell("Icatu"),
-              valueCell(data.icatu ? "Sim" : "Não"),
-              labelCell("Caixa"),
-              valueCell(data.caixa ? "Sim" : "Não"),
-              labelCell("Rio Grande"),
-              valueCell(data.rioGrande ? "Sim" : "Não"),
-            ],
-          }),
-        ],
-      })
+      const destinosTable = createTable([
+        row("Icatu", data.icatu ? "Sim" : "Não"),
+        row("Caixa", data.caixa ? "Sim" : "Não"),
+        row("Rio Grande", data.rioGrande ? "Sim" : "Não"),
+      ])
 
       /* =========================
          FORMA DE ENVIO
          ========================= */
 
-      const envioTable = new Table({
-        width: { size: 100, type: WidthType.PERCENTAGE },
-        rows: [
-          new TableRow({
-            children: [
-              labelCell("Via Serviço"),
-              valueCell(data.viaServico ? "Sim" : "Não"),
-              labelCell("Via TXT"),
-              valueCell(data.viaTxt ? "Sim" : "Não"),
-            ],
-          }),
-        ],
-      })
+      const envioTable = createTable([
+        row("Via Serviço", data.viaServico ? "Sim" : "Não"),
+        row("Via TXT", data.viaTxt ? "Sim" : "Não"),
+      ])
 
       /* =========================
          LAYOUTS E MASSAS
          ========================= */
 
       const layoutsTables = data.layouts.flatMap((layout) => {
-        const massasRows = layout.massasDados.flatMap((massa) => [
-          new TableRow({
-            children: [
-              labelCell("Massa"),
-              valueCell(massa.nomeMassaDados),
-            ],
-          }),
 
-          new TableRow({
-            children: [
-              labelCell("Observação da massa"),
-              valueCell(massa.observacao ?? "-"),
-            ],
-          }),
+        const massaRows = layout.massasDados.flatMap((massa) => [
+          row("Massa", massa.nomeMassaDados),
+          row("Observação da massa", massa.observacao ?? "-"),
         ])
 
         return [
           sectionTitle(`Layout: ${layout.nomeLayout}`),
 
-          new Table({
-            width: { size: 100, type: WidthType.PERCENTAGE },
-            rows: [
-              new TableRow({
-                children: [
-                  labelCell("Observação do layout"),
-                  valueCell(layout.observacao ?? "-"),
-                ],
-              }),
-
-              ...massasRows,
-            ],
-          }),
+          createTable([
+            row("Observação do layout", layout.observacao ?? "-"),
+            ...massaRows,
+          ]),
         ]
       })
 
@@ -170,6 +152,7 @@ export default function ChecklistDocPreviewModal({
       const doc = new Document({
         sections: [
           {
+            properties: {},
             children: [
               sectionTitle("Identificação do Documento"),
               identificacaoTable,
