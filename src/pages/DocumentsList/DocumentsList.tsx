@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { buscarChecklists, buscarChecklistPorId } from '../../services/checklist.service'
+import { buscarChecklists, buscarChecklistPorId,downloadChecklistZip } from '../../services/checklist.service'
 import ChecklistDocPreviewModal from "../../view/ChecklistDocPreviewModal"
 
 import type { ChecklistVersaoDTO } from '../../dto/ChecklistVersaoDTO'
@@ -76,6 +76,11 @@ export default function DocumentsList({
     } finally {
       setLoadingPreview(false)
     }
+  }
+
+  async function downloadZipChecklist(idChecklistVersao: string)
+  {
+    await downloadChecklistZip(idChecklistVersao);
   }
 
   return (
@@ -157,6 +162,15 @@ export default function DocumentsList({
                                 ) : (
                                   <i className="bi bi-file-earmark-word"></i>
                                 )}
+                              </button>
+
+                              <button className="btn btn-success"
+                                onClick={()=>{
+                                  downloadZipChecklist(doc.idChecklistVersao);
+                                }}
+                              >
+                                <i className="bi bi-file-earmark-zip me-2"></i>
+                                Baixar ZIP
                               </button>
 
                               <button

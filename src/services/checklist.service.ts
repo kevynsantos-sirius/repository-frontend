@@ -114,3 +114,34 @@ export async function atualizarChecklist(
 
   return res
 }
+
+/* =========================
+   DOWNLOAD ZIP CHECKLIST
+   ========================= */
+export async function downloadChecklistZip(
+  idChecklistVersao: string
+): Promise<void> {
+
+  const response = await api.get(
+    `/api/checklists/${idChecklistVersao}/export`,
+    {
+      responseType: "blob" // 🔥 ESSENCIAL
+    }
+  )
+
+  const blob = new Blob([response.data], {
+    type: "application/zip"
+  })
+
+  const url = window.URL.createObjectURL(blob)
+
+  const link = document.createElement("a")
+  link.href = url
+  link.download = `checklist-${idChecklistVersao}.zip`
+
+  document.body.appendChild(link)
+  link.click()
+
+  link.remove()
+  window.URL.revokeObjectURL(url)
+}
