@@ -45,7 +45,6 @@ async function carregarUsuarios() {
             <th>Perfil</th>
             <th>Bloqueado</th>
             <th>Excluído</th>
-            <th>Ações</th>
           </tr>
         </thead>
 
@@ -86,10 +85,6 @@ async function carregarUsuarios() {
                 ) : (
                   <span className="badge bg-success">Não</span>
                 )}
-              </td>
-
-              <td>
-                
               </td>
             </tr>
           ))}
