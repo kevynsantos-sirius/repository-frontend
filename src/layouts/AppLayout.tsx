@@ -18,7 +18,6 @@ export default function AppLayout({
   useEffect(() => {
     const carregarUsuario = async () => {
       const user = await getUser();
-      console.log(user);
       setUser(user)
     }
 
