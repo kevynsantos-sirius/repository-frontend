@@ -32,12 +32,6 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/ExpiredLogin" element={<ExpiredLogin />} />
         <Route path="/Error" element={<ErrorPage />} />
-        <Route
-          path="/admin/users"
-          element={
-              <UsersList />
-          }
-        />
         <Route path="/NotAccess" element={<NotAccess />} />
 
         {/* ÁREA LOGADA */}
@@ -47,6 +41,13 @@ export default function App() {
           <Route
             path="/home"
             element={<DocumentsList setNovoLayout={setNovoLayout} />}
+          />
+
+          <Route
+            path="/admin/users"
+            element={
+                <UsersList />
+            }
           />
 
           {/* EDIÇÃO / VISUALIZAÇÃO */}

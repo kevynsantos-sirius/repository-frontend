@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { listarUsuarios, deletarUsuario } from "../../../services/user.service"
+import { listarUsuarios } from "../../../services/user.service"
 import type { Usuario } from "../../../services/user.service"
 import { useNavigate } from "react-router-dom"
 
@@ -26,18 +26,6 @@ async function carregarUsuarios() {
   }
 }
 
-  async function handleDelete(id: string) {
-    if (!window.confirm("Deseja realmente excluir este usuário?")) return
-
-    try {
-      await deletarUsuario(id)
-      carregarUsuarios()
-    } catch (error) {
-      console.error("Erro ao excluir usuário")
-      alert("Erro ao excluir usuário")
-    }
-  }
-
   useEffect(() => {
     carregarUsuarios()
   }, [])
@@ -46,7 +34,7 @@ async function carregarUsuarios() {
 
   return (
     <div className="container mt-4">
-      <h2>Gerenciamento de Usuários</h2>
+      <h2>Usuários</h2>
 
       <table className="table table-striped mt-3">
         <thead>
@@ -101,16 +89,7 @@ async function carregarUsuarios() {
               </td>
 
               <td>
-                <button className="btn btn-sm btn-primary me-2">
-                  Editar
-                </button>
-
-                <button
-                  className="btn btn-sm btn-danger"
-                  onClick={() => handleDelete(user.id)}
-                >
-                  Excluir
-                </button>
+                
               </td>
             </tr>
           ))}

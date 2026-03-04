@@ -45,19 +45,17 @@ export default function AppLayout({
 
         <div className="d-flex align-items-center gap-3">
             <span>
-              {
-                user?.admin ?
-                  (
-                    <a onClick={() => {
-                      navigate('/admin/users');
-                    }}>{user?.nomeUsuario}</a>
-                  )
-                  :
-                  (
-                    <text>{user?.nomeUsuario}</text>
-                  )
-              }
-                
+              {user?.admin ? (
+                <a
+                  onClick={() => navigate('/admin/users')}
+                  className="admin-badge"
+                  role="button"
+                >
+                  👑 {user?.nomeUsuario}
+                </a>
+              ) : (
+                <span>{user?.nomeUsuario}</span>
+              )}
             </span>
           <button
             className="btn btn-outline-danger btn-sm"
