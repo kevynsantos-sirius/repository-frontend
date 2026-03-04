@@ -95,6 +95,25 @@ async function carregarUsuarios() {
           ))}
         </tbody>
       </table>
+      <div className="container-fluid mt-3">
+        <div className="row justify-content-center g-2">
+
+          <div className="col-auto">
+            <button
+              className="btn btn-outline-secondary px-4"
+              onClick={() => {
+                
+                  navigate('/home');
+                
+
+              }}
+            >
+              Voltar
+            </button>
+          </div>
+
+        </div>
+      </div>
     </div>
   )
 }
