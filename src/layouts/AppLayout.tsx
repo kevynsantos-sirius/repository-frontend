@@ -17,7 +17,8 @@ export default function AppLayout({
 
   useEffect(() => {
     const carregarUsuario = async () => {
-      const user = await getUser()
+      const user = await getUser();
+      console.log(user);
       setUser(user)
     }
 
@@ -43,7 +44,21 @@ export default function AppLayout({
 
 
         <div className="d-flex align-items-center gap-3">
-          <span>{user?.nomeUsuario}</span>
+            <span>
+              {
+                user?.admin ?
+                  (
+                    <a onClick={() => {
+                      navigate('/admin/users');
+                    }}>{user?.nomeUsuario}</a>
+                  )
+                  :
+                  (
+                    <text>{user?.nomeUsuario}</text>
+                  )
+              }
+                
+            </span>
           <button
             className="btn btn-outline-danger btn-sm"
             onClick={logoutUser}

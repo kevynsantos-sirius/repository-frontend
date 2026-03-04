@@ -12,6 +12,8 @@ import type { UsuarioDTO } from './dto/UsuarioDTO'
 
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import UsersList from './pages/Admin/Users/UsersList'
+import NotAccess from './pages/NotAcess/NotAccess'
 
 export default function App() {
 
@@ -30,6 +32,13 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/ExpiredLogin" element={<ExpiredLogin />} />
         <Route path="/Error" element={<ErrorPage />} />
+        <Route
+          path="/admin/users"
+          element={
+              <UsersList />
+          }
+        />
+        <Route path="/NotAccess" element={<NotAccess />} />
 
         {/* ÁREA LOGADA */}
         <Route element={<AppLayout setUser={setUser} user={user} />}>
