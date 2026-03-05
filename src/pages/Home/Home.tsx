@@ -287,9 +287,8 @@ async function onSalvarChecklist() {
 
     const arquivosLayouts = Object.values(filesLayout).flat()
     const arquivosMassas = Object.values(filesMassas).flat()
-
+    payload.idUsuario = Number(user?.id)
     if (isNovo) {
-      payload.idUsuario = Number(user?.id)
 
       await salvarChecklist(
         payload,
