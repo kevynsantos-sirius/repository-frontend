@@ -63,13 +63,14 @@ export default function VersionsSidebar({
           {/* Layout */}
           <div className="d-flex justify-content-between align-items-start">
             <div
-              className={`fw-semibold cursor-pointer me-2 ${
+              className={`fw-semibold me-2 ${
                 layout.id === layoutSelecionadoId
                   ? 'text-danger fw-bold'
                   : 'text-primary-emphasis fw-bold'
               }`}
               onClick={() => onSelectLayout(layout.id)}
               style={{
+                cursor: 'pointer',
                 maxWidth: 'calc(100% - 40px)',
                 whiteSpace: 'normal',
                 overflowWrap: 'break-word',
@@ -110,13 +111,14 @@ export default function VersionsSidebar({
                 }}
               >
                 <span
-                  className={`cursor-pointer me-2 ${
+                  className={`me-2 ${
                     massa.id === massaSelecionadaId
                       ? 'text-primary fw-semibold'
                       : ''
                   }`}
                   onClick={() => onSelectMassa(layout.id, massa.id)}
                   style={{
+                    cursor: 'pointer',
                     maxWidth: 'calc(100% - 40px)',
                     whiteSpace: 'normal',
                     overflowWrap: 'break-word',
@@ -143,8 +145,8 @@ export default function VersionsSidebar({
             {/* Nova massa */}
             {layout.id === layoutSelecionadoId && (
               <li
-                className="text-muted cursor-pointer mt-1"
-                style={{ marginLeft: '8px' }}
+                className="text-muted mt-1"
+                style={{ marginLeft: '8px', cursor: 'pointer' }}
                 onClick={onNovaMassa}
               >
                 + Nova Massa
