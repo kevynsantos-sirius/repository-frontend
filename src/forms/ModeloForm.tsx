@@ -24,13 +24,14 @@ export default function ModeloForm({ checklist }: Props) {
 
             {/* Ações */}
             <div className="d-flex gap-2 mt-3">
-              <button type="button" className="btn btn-salvar">
+              {/* <button type="button" className="btn btn-salvar">
                 Salvar
               </button>
 
               <button type="button" className="btn btn-cancelar">
                 Cancelar
-              </button>
+              </button> */}
+              <p style={{ marginLeft: '10px' }}>Esta funcionalidade está em desenvolvimento e será disponibilizada em breve.</p>
             </div>
 
           </form>
