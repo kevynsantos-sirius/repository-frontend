@@ -83,12 +83,28 @@ export default function VersionsSidebar({
             {/* 🔴 Botão Layout */}
             <button
               type="button"
-              className="btn btn-sm btn-danger flex-shrink-0 d-flex align-items-center justify-content-center"
+              className="btn btn-sm btn-danger"
               onClick={() => onRemoverLayout(layout.id)}
               title="Remover layout"
-              style={{ width: 32, height: 32, padding: 0 }}
+              style={{
+                width: 32,
+                height: 32,
+                padding: 0,
+                position: 'relative', // ✅ centralização precisa
+              }}
             >
-              <span style={{ fontSize: '24px', lineHeight: 1 }}>×</span>
+              <span
+                style={{
+                  fontSize: '24px',
+                  lineHeight: 1,
+                  position: 'absolute',
+                  top: '45%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)', // ✅ centraliza perfeitamente
+                }}
+              >
+                ×
+              </span>
             </button>
           </div>
 
@@ -132,12 +148,28 @@ export default function VersionsSidebar({
                 {/* ⚪ Botão Massa */}
                 <button
                   type="button"
-                  className="btn btn-sm btn-outline-danger flex-shrink-0 d-flex align-items-center justify-content-center"
+                  className="btn btn-sm btn-outline-danger"
                   onClick={() => onRemoverMassa(layout.id, massa.id)}
                   title="Remover massa"
-                  style={{ width: 32, height: 32, padding: 0 }}
+                  style={{
+                    width: 32,
+                    height: 32,
+                    padding: 0,
+                    position: 'relative',
+                  }}
                 >
-                  <span style={{ fontSize: '24px', lineHeight: 1 }}>×</span>
+                  <span
+                    style={{
+                      fontSize: '24px',
+                      lineHeight: 1,
+                      position: 'absolute',
+                      top: '45%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                    }}
+                  >
+                    ×
+                  </span>
                 </button>
               </li>
             ))}
