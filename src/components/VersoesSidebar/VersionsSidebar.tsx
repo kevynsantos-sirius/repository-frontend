@@ -27,10 +27,16 @@ export default function VersionsSidebar({
 }: Props) {
   return (
     <div className="versions-sidebar p-3 border-end">
-      
+
       {/* Header */}
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <strong>Layouts</strong>
+      <div
+        className="d-flex justify-content-between align-items-center mb-3"
+        style={{
+          borderBottom: '2px solid #4e73df', // 🔥 cor alterada aqui
+          paddingBottom: '8px'
+        }}
+      >
+        <h3>Layouts</h3>
         <button
           type="button"
           className="btn btn-sm btn-outline-custom"
@@ -49,7 +55,10 @@ export default function VersionsSidebar({
       {layouts.map(layout => (
         <div
           key={layout.id}
-          className="mb-3 pb-2 border-bottom"
+          className="mb-3 pb-2"
+          style={{
+            borderBottom: '1px solid #dee2e6'
+          }}
         >
           {/* Layout */}
           <div className="d-flex justify-content-between align-items-start">
@@ -82,14 +91,19 @@ export default function VersionsSidebar({
 
           {/* Massas */}
           <ul className="ps-2 mt-2">
-            {layout.massas.map(massa => (
+            {layout.massas.map((massa, index) => (
               <li
                 key={massa.id}
                 className="d-flex justify-content-between align-items-center mb-1"
                 style={{
                   borderLeft: '2px solid #dee2e6',
+                  borderBottom:
+                    index !== layout.massas.length - 1
+                      ? '1px solid #f1f3f5'
+                      : 'none',
                   paddingLeft: '8px',
-                  marginLeft: '8px'
+                  marginLeft: '8px',
+                  paddingBottom: '4px'
                 }}
               >
                 <span
@@ -124,9 +138,7 @@ export default function VersionsSidebar({
             {layout.id === layoutSelecionadoId && (
               <li
                 className="text-muted cursor-pointer mt-1"
-                style={{
-                  marginLeft: '8px'
-                }}
+                style={{ marginLeft: '8px' }}
                 onClick={onNovaMassa}
               >
                 + Nova Massa
