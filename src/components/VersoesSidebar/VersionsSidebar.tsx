@@ -90,7 +90,7 @@ export default function VersionsSidebar({
                 width: 32,
                 height: 32,
                 padding: 0,
-                position: 'relative', // ✅ centralização precisa
+                position: 'relative',
               }}
             >
               <span
@@ -100,7 +100,7 @@ export default function VersionsSidebar({
                   position: 'absolute',
                   top: '45%',
                   left: '50%',
-                  transform: 'translate(-50%, -50%)', // ✅ centraliza perfeitamente
+                  transform: 'translate(-50%, -50%)',
                 }}
               >
                 ×
@@ -109,7 +109,10 @@ export default function VersionsSidebar({
           </div>
 
           {/* Massas */}
-          <ul className="ps-2 mt-2">
+          <ul
+            className="ps-2 mt-2"
+            style={{ listStyle: 'none', paddingLeft: 0 }}
+          >
             {layout.massas.map((massa, index) => (
               <li
                 key={massa.id}
