@@ -150,7 +150,7 @@ export default function DocumentsList({
                             <div className="d-flex justify-content-end gap-2">
 
                               <button
-                                className="btn btn-sm btn-outline-secondary"
+                                className="btn btn-sm btn-outline-custom"
                                 disabled={loadingPreview}
                                 onClick={() => visualizarDocumento(doc.idChecklistVersao)}
                               >
@@ -165,8 +165,9 @@ export default function DocumentsList({
                                 DOCX
                               </button>
 
-                              <button className="btn btn-success"
-                                onClick={()=>{
+                              <button
+                                className="btn btn-custom"
+                                onClick={() => {
                                   downloadZipChecklist(doc.idChecklistVersao);
                                 }}
                               >
@@ -175,11 +176,13 @@ export default function DocumentsList({
                               </button>
 
                               <button
-                                className="btn btn-sm btn-outline-primary"
-                                onClick={() => abrirDocumento(
-                                  doc.idChecklistVersao,
-                                  doc.idChecklist
-                                )}
+                                className="btn btn-sm btn-outline-custom"
+                                onClick={() =>
+                                  abrirDocumento(
+                                    doc.idChecklistVersao,
+                                    doc.idChecklist
+                                  )
+                                }
                               >
                                 Abrir
                               </button>
