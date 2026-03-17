@@ -70,7 +70,7 @@ export default function VersionsSidebar({
               }`}
               onClick={() => onSelectLayout(layout.id)}
               style={{
-                maxWidth: 'calc(100% - 30px)',
+                maxWidth: 'calc(100% - 40px)',
                 whiteSpace: 'normal',
                 overflowWrap: 'break-word',
                 wordBreak: 'break-word'
@@ -80,14 +80,15 @@ export default function VersionsSidebar({
               {layout.nomeLayout || 'Novo Layout'}
             </div>
 
-            {/* 🔴 Botão mais forte (Layout) */}
+            {/* 🔴 Botão Layout */}
             <button
               type="button"
-              className="btn btn-sm btn-danger flex-shrink-0"
+              className="btn btn-sm btn-danger flex-shrink-0 d-flex align-items-center justify-content-center"
               onClick={() => onRemoverLayout(layout.id)}
               title="Remover layout"
+              style={{ width: 32, height: 32, padding: 0 }}
             >
-              ×
+              <span style={{ fontSize: '24px', lineHeight: 1 }}>×</span>
             </button>
           </div>
 
@@ -116,7 +117,7 @@ export default function VersionsSidebar({
                   }`}
                   onClick={() => onSelectMassa(layout.id, massa.id)}
                   style={{
-                    maxWidth: 'calc(100% - 30px)',
+                    maxWidth: 'calc(100% - 40px)',
                     whiteSpace: 'normal',
                     overflowWrap: 'break-word',
                     wordBreak: 'break-word'
@@ -126,14 +127,15 @@ export default function VersionsSidebar({
                   {massa.nomeArquivo || 'Nova Massa'}
                 </span>
 
-                {/* ⚪ Botão mais leve (Massa) */}
+                {/* ⚪ Botão Massa */}
                 <button
                   type="button"
-                  className="btn btn-sm btn-outline-danger flex-shrink-0"
+                  className="btn btn-sm btn-outline-danger flex-shrink-0 d-flex align-items-center justify-content-center"
                   onClick={() => onRemoverMassa(layout.id, massa.id)}
                   title="Remover massa"
+                  style={{ width: 32, height: 32, padding: 0 }}
                 >
-                  ×
+                  <span style={{ fontSize: '24px', lineHeight: 1 }}>×</span>
                 </button>
               </li>
             ))}
