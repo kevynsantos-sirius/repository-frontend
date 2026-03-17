@@ -32,11 +32,11 @@ export default function VersionsSidebar({
       <div
         className="d-flex justify-content-between align-items-center mb-3"
         style={{
-          borderBottom: '2px solid #4e73df', // 🔥 cor alterada aqui
+          borderBottom: '2px solid #4e73df',
           paddingBottom: '8px'
         }}
       >
-        <h3>Layouts</h3>
+        <h3 className="m-0">Layouts</h3>
         <button
           type="button"
           className="btn btn-sm btn-outline-custom"
@@ -80,12 +80,14 @@ export default function VersionsSidebar({
               {layout.nomeLayout || 'Novo Layout'}
             </div>
 
+            {/* 🔴 Botão mais forte (Layout) */}
             <button
               type="button"
-              className="btn btn-sm btn-outline-danger flex-shrink-0"
+              className="btn btn-sm btn-danger flex-shrink-0"
               onClick={() => onRemoverLayout(layout.id)}
+              title="Remover layout"
             >
-              x
+              ×
             </button>
           </div>
 
@@ -124,12 +126,14 @@ export default function VersionsSidebar({
                   {massa.nomeArquivo || 'Nova Massa'}
                 </span>
 
+                {/* ⚪ Botão mais leve (Massa) */}
                 <button
                   type="button"
                   className="btn btn-sm btn-outline-danger flex-shrink-0"
                   onClick={() => onRemoverMassa(layout.id, massa.id)}
+                  title="Remover massa"
                 >
-                  x
+                  ×
                 </button>
               </li>
             ))}
