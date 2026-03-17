@@ -36,7 +36,7 @@ export default function VersionsSidebar({
           paddingBottom: '8px'
         }}
       >
-        <h3 className="m-0">Layouts</h3>
+        <h3 className="me-3">Layouts</h3>
         <button
           type="button"
           className="btn btn-sm btn-outline-custom"
