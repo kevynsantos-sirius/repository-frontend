@@ -63,14 +63,13 @@ export default function VersionsSidebar({
           {/* Layout */}
           <div className="d-flex justify-content-between align-items-start">
             <div
-              className={`fw-semibold me-2 ${
-                layout.id === layoutSelecionadoId
-                  ? 'text-danger fw-bold'
-                  : 'text-primary-emphasis fw-bold'
-              }`}
+              className="fw-semibold me-2"
               onClick={() => onSelectLayout(layout.id)}
               style={{
                 cursor: 'pointer',
+                color:
+                  layout.id === layoutSelecionadoId ? '#2563eb' : undefined,
+                transition: 'color 0.2s ease',
                 maxWidth: 'calc(100% - 40px)',
                 whiteSpace: 'normal',
                 overflowWrap: 'break-word',
@@ -111,14 +110,15 @@ export default function VersionsSidebar({
                 }}
               >
                 <span
-                  className={`me-2 ${
-                    massa.id === massaSelecionadaId
-                      ? 'text-primary fw-semibold'
-                      : ''
-                  }`}
+                  className="me-2"
                   onClick={() => onSelectMassa(layout.id, massa.id)}
                   style={{
                     cursor: 'pointer',
+                    color:
+                      massa.id === massaSelecionadaId
+                        ? '#60a5fa'
+                        : undefined,
+                    transition: 'color 0.2s ease',
                     maxWidth: 'calc(100% - 40px)',
                     whiteSpace: 'normal',
                     overflowWrap: 'break-word',
