@@ -8,7 +8,9 @@ export default function Login() {
   const [senha, setSenha] = useState('')
   const [loading, setLoading] = useState(false)
 
-  async function handleLogin() {
+  async function handleLogin(e: any) {
+    e.preventDefault() // evita reload da página
+
     try {
       setLoading(true)
       await login(usuario, senha)
@@ -22,40 +24,42 @@ export default function Login() {
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
-      <div className="card p-4 text-center" style={{ width: 360 }}>
+      <form onSubmit={handleLogin}>
+        <div className="card p-4 text-center" style={{ width: 360 }}>
 
-        {/* 🔹 Logo */}
-        <img
-          src={logo}
-          alt="Checklist Docs"
-          style={{ width: 180, margin: '0 auto 16px auto' }}
-        />
+          <img
+            src={logo}
+            alt="Checklist Docs"
+            style={{ width: 180, margin: '0 auto 16px auto' }}
+          />
 
-        <h5 className="mb-3">Login</h5>
+          <h5 className="mb-3">Login</h5>
 
-        <input
-          className="form-control mb-2"
-          placeholder="Usuário"
-          value={usuario}
-          onChange={e => setUsuario(e.target.value)}
-        />
+          <input
+            className="form-control mb-2"
+            placeholder="Usuário"
+            value={usuario}
+            onChange={e => setUsuario(e.target.value)}
+          />
 
-        <input
-          type="password"
-          className="form-control mb-3"
-          placeholder="Senha"
-          value={senha}
-          onChange={e => setSenha(e.target.value)}
-        />
+          <input
+            type="password"
+            className="form-control mb-3"
+            placeholder="Senha"
+            value={senha}
+            onChange={e => setSenha(e.target.value)}
+          />
 
-        <button
-          className="btn btn-primary w-100"
-          onClick={handleLogin}
-          disabled={loading}
-        >
-          Entrar
-        </button>
-      </div>
+          <button
+            type="submit"
+            className="btn btn-primary w-100"
+            disabled={loading}
+          >
+            Entrar
+          </button>
+
+        </div>
+      </form>
     </div>
   )
 }
