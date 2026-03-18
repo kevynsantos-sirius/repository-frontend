@@ -17,6 +17,7 @@ import type { UsuarioDTO } from '../../dto/UsuarioDTO'
 import ChecklistDocPreviewModal from "../../view/ChecklistDocPreviewModal"
 import { toast } from 'react-toastify'
 import ConfirmModal from '../../modal/ConfirmModal'
+import { v4 as uuidv4 } from 'uuid';
 
 type AbaAtiva = 'identificacao' | 'ti' | 'modelo'
 
@@ -205,7 +206,7 @@ function validarArquivosTI(): boolean {
      ========================= */
 function onNovoLayout() {
   setDraftLayout({
-    id: crypto.randomUUID(),
+    id: uuidv4(),
     nomeLayout: '',
     observacao: '',
     massas: []
@@ -332,7 +333,7 @@ function onNovaMassa() {
   setMassaSelecionadaId(null)   // ⭐ ESSENCIAL
 
   setDraftMassa({
-    id: crypto.randomUUID(),
+    id: uuidv4(),
     nomeArquivo: '',
     observacao: ''
   })
