@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { buscarChecklists, buscarChecklistPorId,downloadChecklistZip } from '../../services/checklist.service'
+import { buscarChecklists, buscarChecklistPorId, downloadChecklistZip } from '../../services/checklist.service'
 import ChecklistDocPreviewModal from "../../view/ChecklistDocPreviewModal"
 
 import type { ChecklistVersaoDTO } from '../../dto/ChecklistVersaoDTO'
@@ -54,6 +54,37 @@ export default function DocumentsList({
   }, [paginaAtual, itensPorPagina])
 
   /* ===============================
+     PAGINAÇÃO INTELIGENTE
+     =============================== */
+  function gerarPaginas() {
+    const paginas: (number | string)[] = []
+    const maxVisiveis = 5
+
+    let inicio = Math.max(1, paginaAtual - Math.floor(maxVisiveis / 2))
+    let fim = Math.min(totalPaginas, inicio + maxVisiveis - 1)
+
+    if (fim - inicio < maxVisiveis - 1) {
+      inicio = Math.max(1, fim - maxVisiveis + 1)
+    }
+
+    if (inicio > 1) {
+      paginas.push(1)
+      if (inicio > 2) paginas.push('...')
+    }
+
+    for (let i = inicio; i <= fim; i++) {
+      paginas.push(i)
+    }
+
+    if (fim < totalPaginas) {
+      if (fim < totalPaginas - 1) paginas.push('...')
+      paginas.push(totalPaginas)
+    }
+
+    return paginas
+  }
+
+  /* ===============================
      NAVEGAR PARA EDIÇÃO
      =============================== */
   function abrirDocumento(idVersao: string, idChecklist: string) {
@@ -78,9 +109,8 @@ export default function DocumentsList({
     }
   }
 
-  async function downloadZipChecklist(idChecklistVersao: string)
-  {
-    await downloadChecklistZip(idChecklistVersao);
+  async function downloadZipChecklist(idChecklistVersao: string) {
+    await downloadChecklistZip(idChecklistVersao)
   }
 
   return (
@@ -155,10 +185,7 @@ export default function DocumentsList({
                                 onClick={() => visualizarDocumento(doc.idChecklistVersao)}
                               >
                                 {loadingPreview ? (
-                                  <span
-                                    className="spinner-border spinner-border-sm"
-                                    role="status"
-                                  />
+                                  <span className="spinner-border spinner-border-sm" />
                                 ) : (
                                   <i className="bi bi-file-earmark-word"></i>
                                 )}
@@ -168,7 +195,7 @@ export default function DocumentsList({
                               <button
                                 className="btn btn-custom"
                                 onClick={() => {
-                                  downloadZipChecklist(doc.idChecklistVersao);
+                                  downloadZipChecklist(doc.idChecklistVersao)
                                 }}
                               >
                                 <i className="bi bi-file-earmark-zip me-2"></i>
@@ -204,7 +231,7 @@ export default function DocumentsList({
                 </div>
 
                 {/* FOOTER */}
-                <div className="d-flex justify-content-between align-items-center p-3">
+                <div className="d-flex justify-content-between align-items-center p-3 flex-wrap gap-2">
 
                   {/* ITENS POR PÁGINA */}
                   <div className="d-flex align-items-center gap-2">
@@ -238,16 +265,20 @@ export default function DocumentsList({
                           </button>
                         </li>
 
-                        {Array.from({ length: totalPaginas }).map((_, i) => (
+                        {gerarPaginas().map((item, i) => (
                           <li
                             key={i}
-                            className={`page-item ${paginaAtual === i + 1 ? 'active' : ''}`}
+                            className={`page-item ${
+                              item === paginaAtual ? 'active' : ''
+                            } ${item === '...' ? 'disabled' : ''}`}
                           >
                             <button
                               className="page-link"
-                              onClick={() => setPaginaAtual(i + 1)}
+                              onClick={() =>
+                                typeof item === 'number' && setPaginaAtual(item)
+                              }
                             >
-                              {i + 1}
+                              {item}
                             </button>
                           </li>
                         ))}
@@ -271,7 +302,7 @@ export default function DocumentsList({
         </div>
       </div>
 
-      {/* 🔥 MODAL PREVIEW DOCX */}
+      {/* MODAL PREVIEW */}
       {dadosPreview && (
         <ChecklistDocPreviewModal
           aberto={abrirPreview}
