@@ -14,6 +14,7 @@ export type Checklist = {
   usuario: any
   idDemanda: string
   situacao: 'PRD' | 'DEV' | 'RASCUNHO'
+  status: number
 }
 
 export type ChecklistPaginadoResponse = {

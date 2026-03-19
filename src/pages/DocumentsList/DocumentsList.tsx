@@ -14,6 +14,7 @@ type Documento = {
   usuario: any
   idDemanda: string
   situacao: 'PRD' | 'DEV' | 'RASCUNHO'
+  status: number
 }
 
 type DocumentsProps = {
@@ -173,7 +174,7 @@ export default function DocumentsList({
                           </td>
 
                           <td>
-                            <span>{doc.situacao}</span>
+                            <span>{doc.status === 1 ? 'Ativo' : 'Inativo'}</span>
                           </td>
 
                           <td className="text-end">
