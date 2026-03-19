@@ -54,6 +54,7 @@ textarea {
   outline-offset: 2px;
 }
 
+/* Botão preenchido */
 .btn-custom {
   background-color: #4e73df;
   border-color: #4e73df;
@@ -63,27 +64,37 @@ textarea {
 .btn-custom:hover {
   background-color: #3b5fc4;
   border-color: #3b5fc4;
+  color: #fff !important;
 }
 
+.btn-custom:focus,
+.btn-custom:active {
+  background-color: #3b5fc4;
+  border-color: #3b5fc4;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+
+
+/* Botão outline */
 .btn-outline-custom {
   color: #4e73df;
   border-color: #4e73df;
   background-color: transparent;
 }
 
+/* Hover */
 button.btn-outline-custom:hover {
   background-color: #4e73df !important;
   color: #fff !important;
   border-color: #4e73df !important;
 }
 
+/* Active + Focus (CORRIGIDO 🔥) */
 button.btn-outline-custom:focus,
 button.btn-outline-custom:active {
+  background-color: #4e73df !important;
   color: #fff !important;
-}
-
-.btn-custom:hover {
-  background-color: #3b5fc4;
-  border-color: #3b5fc4;
-  color: #fff !important; /* 🔥 ESSENCIAL */
+  border-color: #4e73df !important;
+  box-shadow: none !important;
 }
