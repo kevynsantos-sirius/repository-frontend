@@ -591,16 +591,6 @@ function onRemoverMassa(layoutId: string, massaId: string) {
 
           <div className="col-auto">
             <button
-              className="btn btn-outline-primary px-4"
-              disabled={!checklist}
-              onClick={() => checklist && visualizarDocumento(checklist)}
-            >
-              Visualizar Documento
-            </button>
-          </div>
-
-          <div className="col-auto">
-            <button
               disabled={!btnSalvarCheckList}
               className="btn btn-primary px-5"
               onClick={onSalvarChecklist}
