@@ -83,28 +83,19 @@ export default function VersionsSidebar({
             {/* 🔴 Botão Layout */}
             <button
               type="button"
-              className="btn btn-sm btn-danger"
+              className="btn btn-sm btn-outline-danger"
               onClick={() => onRemoverLayout(layout.id)}
               title="Remover layout"
               style={{
                 width: 32,
                 height: 32,
                 padding: 0,
-                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
               }}
             >
-              <span
-                style={{
-                  fontSize: '24px',
-                  lineHeight: 1,
-                  position: 'absolute',
-                  top: '45%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                }}
-              >
-                ×
-              </span>
+              <i className="bi bi-trash"></i>
             </button>
           </div>
 
@@ -158,21 +149,12 @@ export default function VersionsSidebar({
                     width: 32,
                     height: 32,
                     padding: 0,
-                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}
                 >
-                  <span
-                    style={{
-                      fontSize: '24px',
-                      lineHeight: 1,
-                      position: 'absolute',
-                      top: '45%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                    }}
-                  >
-                    ×
-                  </span>
+                  <i className="bi bi-trash"></i>
                 </button>
               </li>
             ))}
