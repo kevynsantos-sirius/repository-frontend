@@ -503,10 +503,13 @@ function onNovoModelo(file: File) {
     id: crypto.randomUUID(),
     arquivo: file,
     observacao: "",
+
     logos: [],
     arquivosAdicionais: [],
     assinaturas: [],
+
     regrasAcesso: "",
+
     camposBusca: {
       backoffice: "",
       cliente: "",
@@ -514,7 +517,12 @@ function onNovoModelo(file: File) {
       estipulante: "",
       subestipulante: "",
       outro: ""
-    }
+    },
+
+    // 🆕 Novos campos — Formatação & Impressão
+    tipoImpressao: [],
+    tipoAcabamento: [],
+    arquivoImpressao: null
   }
 
   setModelos(prev => [...prev, novo])

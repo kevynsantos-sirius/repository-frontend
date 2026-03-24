@@ -28,7 +28,8 @@ export type Modelo = {
   arquivosAdicionais: ArquivoGerenciado[]
   assinaturas: ArquivoGerenciado[]
 
-  regrasAcesso: string   // ⬅️ ADICIONAR ESTE CAMPO
+  regrasAcesso: string
+
   camposBusca: {
     backoffice: string
     cliente: string
@@ -37,5 +38,10 @@ export type Modelo = {
     subestipulante: string
     outro: string
   }
+
+  // 🆕 NOVOS CAMPOS — Formatação & Impressão
+  tipoImpressao: string[]         // ["duplex", "simples"]
+  tipoAcabamento: string[]        // ["autoEnvelope", "manuseio", "insercao"]
+  arquivoImpressao: File | null   // Opcional
 }
 

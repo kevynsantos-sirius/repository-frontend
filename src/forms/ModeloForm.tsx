@@ -4,6 +4,9 @@ import type { Modelo, ArquivoGerenciado } from '../types/types'
 import ModelosSidebar from '../components/ModelosSidebar/ModelosSidebar'
 import ModalGerenciarArquivos from "../modal/ModalGerenciarArquivos"
 
+// 👉 novo import
+import FormatoImpressaoSection from "../components/FormatoImpressaoSection/FormatoImpressaoSection";
+
 type Props = {
   checklist: ChecklistVersaoDTO | null
   modelos: Modelo[]
@@ -99,6 +102,7 @@ export default function ModeloForm({
           <div className="card-body pt-3">
             <form id="formModelo" onSubmit={(e) => e.preventDefault()}>
 
+              {/* BOTÕES DE GERENCIAMENTO */}
               {modeloSelecionado && (
                 <div
                   className="d-grid"
@@ -118,6 +122,7 @@ export default function ModeloForm({
                 </div>
               )}
 
+              {/* MODELO SELECIONADO */}
               <div className="mt-4 mb-4">
                 {modeloSelecionado ? (
                   <>
@@ -136,16 +141,16 @@ export default function ModeloForm({
                 )}
               </div>
 
-              {/* NOVO CAMPO — REGRAS DE ACESSO */}
+              {/* REGRAS DE ACESSO */}
               {modeloSelecionado && (
                 <div className="mb-4">
                   <h6 className="fw-bold">Acesso ao documento</h6>
-                  <label className="form-label fw-bold">Regras de acesso</label>
+                  <span className="label-azul">Regras de acesso</span>
                   <textarea
                     className="form-control"
                     rows={4}
                     value={modeloSelecionado.regrasAcesso}
-                    placeholder="Descreva regras adicionais (ex.: período de acesso, restrições, auditoria, etc.)"
+                    placeholder="Descreva regras adicionais..."
                     onChange={(e) =>
                       onUpdateModelo({
                         ...modeloSelecionado,
@@ -160,18 +165,18 @@ export default function ModeloForm({
               {modeloSelecionado && (
                 <div className="mt-4">
                   <h6 className="mb-3 fw-bold">
-                    Ao digitar o nome do documento, quais <u>CAMPOS DE BUSCA</u> deverão aparecer por usuário:
+                    Ao digitar o nome do documento, quais <u>CAMPOS DE BUSCA</u> deverão aparecer:
                   </h6>
 
                   <table className="table table-bordered">
                     <thead>
                       <tr className="table-light text-center">
-                        <th>Backoffice</th>
-                        <th>Cliente</th>
-                        <th>Corretor</th>
-                        <th>Estipulante</th>
-                        <th>Subestipulante</th>
-                        <th>Outro</th>
+                        <th><span className="label-azul">Backoffice</span></th>
+                        <th><span className="label-azul">Cliente</span></th>
+                        <th><span className="label-azul">Corretor</span></th>
+                        <th><span className="label-azul">Estipulante</span></th>
+                        <th><span className="label-azul">Subestipulante</span></th>
+                        <th><span className="label-azul">Outro</span></th>
                       </tr>
                     </thead>
 
@@ -201,11 +206,20 @@ export default function ModeloForm({
                 </div>
               )}
 
+              {/* NOVA SEÇÃO — FORMATAÇÃO & IMPRESSÃO */}
+              {modeloSelecionado && (
+                <FormatoImpressaoSection
+                  modelo={modeloSelecionado}
+                  onUpdateModelo={onUpdateModelo}
+                />
+              )}
+
             </form>
           </div>
         </div>
       </div>
 
+      {/* MODAL */}
       {modalTipo && modeloSelecionado && (
         <ModalGerenciarArquivos
           titulo={
