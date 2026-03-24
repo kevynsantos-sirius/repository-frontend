@@ -39,9 +39,13 @@ export type Modelo = {
     outro: string
   }
 
-  // 🆕 NOVOS CAMPOS — Formatação & Impressão
-  tipoImpressao: string[]         // ["duplex", "simples"]
-  tipoAcabamento: string[]        // ["autoEnvelope", "manuseio", "insercao"]
-  arquivoImpressao: File | null   // Opcional
+  // FORMATAÇÃO & IMPRESSÃO
+  tipoImpressao: string[]
+  tipoAcabamento: string[]
+  arquivoImpressao: File | null
+
+  // DISPONIBILIZAÇÃO
+  disponibilizacao: string[]
+  emailOpcoes: string[]
 }
 

@@ -519,10 +519,12 @@ function onNovoModelo(file: File) {
       outro: ""
     },
 
-    // 🆕 Novos campos — Formatação & Impressão
     tipoImpressao: [],
     tipoAcabamento: [],
-    arquivoImpressao: null
+    arquivoImpressao: null,
+
+    disponibilizacao: [],
+    emailOpcoes: []
   }
 
   setModelos(prev => [...prev, novo])

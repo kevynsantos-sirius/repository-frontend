@@ -6,6 +6,7 @@ import ModalGerenciarArquivos from "../modal/ModalGerenciarArquivos"
 
 // 👉 novo import
 import FormatoImpressaoSection from "../components/FormatoImpressaoSection/FormatoImpressaoSection";
+import DisponibilizacaoSection from "../components/DisponibilizacaoSection/DisponibilizacaoSection";
 
 type Props = {
   checklist: ChecklistVersaoDTO | null
@@ -214,6 +215,12 @@ export default function ModeloForm({
                 />
               )}
 
+              {modeloSelecionado && (
+                <DisponibilizacaoSection
+                  modelo={modeloSelecionado}
+                  onUpdateModelo={onUpdateModelo}
+                />
+              )}
             </form>
           </div>
         </div>
