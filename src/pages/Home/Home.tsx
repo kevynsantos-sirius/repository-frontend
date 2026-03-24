@@ -18,6 +18,7 @@ import ChecklistDocPreviewModal from "../../view/ChecklistDocPreviewModal"
 import { toast } from 'react-toastify'
 import ConfirmModal from '../../modal/ConfirmModal'
 import { v4 as uuidv4 } from 'uuid';
+import type { Modelo } from "../../types/types"
 
 type AbaAtiva = 'identificacao' | 'ti' | 'modelo'
 
@@ -82,6 +83,10 @@ export default function Home({
   const [btnSalvarCheckList, setBtnSalvarCheckList] = useState(false)
 
   const [confirmCancelOpen, setConfirmCancelOpen] = useState(false)
+
+   const [modelos, setModelos] = useState<Modelo[]>([])
+
+  const [modeloSelecionadoId, setModeloSelecionadoId] = useState<string | null>(null)
 
   const layoutSelecionado =
     layouts.find(l => l.id === layoutSelecionadoId) || null
@@ -490,6 +495,35 @@ function onRemoverMassa(layoutId: string, massaId: string) {
   setBtnSalvarCheckList(true);
 }
 
+
+
+  // ➕ Criar novo modelo
+ function onNovoModelo(file: File) {
+  const novo: Modelo = {
+    id: crypto.randomUUID(),
+    arquivo: file
+  }
+
+  setModelos(prev => [...prev, novo])
+  setModeloSelecionadoId(novo.id)
+  }
+
+  // 🗑 Remover modelo
+  function onRemoverModelo(modeloId: string) {
+    setModelos(prev => prev.filter(m => m.id !== modeloId))
+
+    // Se o removido era o selecionado -> deseleciona
+    if (modeloSelecionadoId === modeloId) {
+      setModeloSelecionadoId(null)
+    }
+  }
+
+  // ✔ Selecionar modelo
+  function onSelectModelo(modeloId: string) {
+    setModeloSelecionadoId(modeloId)
+  }
+
+
   if (loading) {
     return (
       <div className="p-4">
@@ -581,7 +615,14 @@ function onRemoverMassa(layoutId: string, massaId: string) {
             )}
 
             {abaAtiva === 'modelo' && (
-              <ModeloForm checklist={checklist} />
+              <ModeloForm
+                checklist={checklist}
+                modelos={modelos}
+                modeloSelecionadoId={modeloSelecionadoId}
+                onNovoModelo={onNovoModelo}
+                onRemoverModelo={onRemoverModelo}
+                onSelectModelo={onSelectModelo}
+              />
             )}
           </div>
         </div>

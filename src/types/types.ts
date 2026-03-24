@@ -13,3 +13,8 @@ export type Layout = {
   arquivo?: File | null
 }
 
+export type Modelo = {
+  id: string
+  arquivo: File | null
+}
+
