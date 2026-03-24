@@ -25,7 +25,7 @@ export default function DisponibilizacaoSection({ modelo, onUpdateModelo }: Prop
       <h6 className="fw-bold">Disponibilização</h6>
 
       {/* DISPONIBILIZAÇÃO */}
-      <div className="d-flex flex-column gap-2 mt-2">
+      <div className="d-flex flex-column gap-2 mt-2 mb-2">
 
         <label>
           <input
@@ -76,6 +76,7 @@ export default function DisponibilizacaoSection({ modelo, onUpdateModelo }: Prop
         <label>
           <input
             type="checkbox"
+            className="me-1"
             checked={modelo.emailOpcoes.includes("anexo")}
             onChange={() => toggleArray("emailOpcoes", "anexo")}
           />
@@ -85,6 +86,7 @@ export default function DisponibilizacaoSection({ modelo, onUpdateModelo }: Prop
         <label>
           <input
             type="checkbox"
+            className="me-1"
             checked={modelo.emailOpcoes.includes("anexoArmazenamento")}
             onChange={() => toggleArray("emailOpcoes", "anexoArmazenamento")}
           />
@@ -94,6 +96,7 @@ export default function DisponibilizacaoSection({ modelo, onUpdateModelo }: Prop
         <label>
           <input
             type="checkbox"
+            className="me-1"
             checked={modelo.emailOpcoes.includes("corpoEmail")}
             onChange={() => toggleArray("emailOpcoes", "corpoEmail")}
           />
@@ -103,6 +106,7 @@ export default function DisponibilizacaoSection({ modelo, onUpdateModelo }: Prop
         <label>
           <input
             type="checkbox"
+            className="me-1"
             checked={modelo.emailOpcoes.includes("corpoEmailArmazenamento")}
             onChange={() => toggleArray("emailOpcoes", "corpoEmailArmazenamento")}
           />
@@ -112,6 +116,7 @@ export default function DisponibilizacaoSection({ modelo, onUpdateModelo }: Prop
         <label>
           <input
             type="checkbox"
+            className="me-1"
             checked={modelo.emailOpcoes.includes("anexoCarimboTempo")}
             onChange={() => toggleArray("emailOpcoes", "anexoCarimboTempo")}
           />

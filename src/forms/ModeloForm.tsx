@@ -101,7 +101,7 @@ export default function ModeloForm({
           </div>
 
           <div className="card-body pt-3">
-            <form id="formModelo" onSubmit={(e) => e.preventDefault()}>
+            <form id="formModelo" className="p-3" onSubmit={(e) => e.preventDefault()}>
 
               {/* BOTÕES DE GERENCIAMENTO */}
               {modeloSelecionado && (
