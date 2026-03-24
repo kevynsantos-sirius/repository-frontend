@@ -49,3 +49,5 @@ export type Modelo = {
   emailOpcoes: string[]
 }
 
+export type AbaAtiva = 'identificacao' | 'ti' | 'modelo' | 'planoComunicacao'
+

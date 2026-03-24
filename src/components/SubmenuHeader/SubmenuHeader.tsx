@@ -1,4 +1,4 @@
-type AbaAtiva = 'identificacao' | 'ti' | 'modelo'
+import type { AbaAtiva } from "../../types/types"
 
 type Props = {
   active: AbaAtiva
@@ -31,6 +31,12 @@ export default function SubmenuHeader({ active, onChange }: Props) {
           Modelo do Documento
         </button>
 
+        <button
+          className={`submenu-item ${active === 'planoComunicacao' ? 'active' : ''}`}
+          onClick={() => onChange('planoComunicacao')}
+        >
+          Plano de Comunicação
+        </button>
       </div>
 
       

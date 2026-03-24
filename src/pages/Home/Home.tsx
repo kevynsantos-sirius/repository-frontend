@@ -19,8 +19,9 @@ import { toast } from 'react-toastify'
 import ConfirmModal from '../../modal/ConfirmModal'
 import { v4 as uuidv4 } from 'uuid';
 import type { Modelo } from "../../types/types"
+import PlanoComunicacaoForm from "../../forms/PlanoComunicacaoForm"
+import type { AbaAtiva } from "../../types/types"
 
-type AbaAtiva = 'identificacao' | 'ti' | 'modelo'
 
 /* =========================
    MAPEADOR BACK → FRONT
@@ -61,6 +62,9 @@ export default function Home({
   const [layouts, setLayouts] = useState<Layout[]>([])
   const [checklist, setChecklist] = useState<ChecklistVersaoDTO | null>(null)
   const [loading, setLoading] = useState(false)
+
+  const [planoArquivo, setPlanoArquivo] = useState<File | null>(null)
+  const [planoObservacao, setPlanoObservacao] = useState("")
 
   // 🔹 ADICIONE ESTES ESTADOS junto aos outros
 
@@ -661,6 +665,15 @@ function onUpdateModelo(modeloAtualizado: Modelo) {
                 onSelectModelo={onSelectModelo}
                 onEditarObservacao={onEditarObservacao}
                 onUpdateModelo={onUpdateModelo}   // ⬅️ ADICIONAR ESTA LINHA
+              />
+            )}
+
+            {abaAtiva === 'planoComunicacao' && (
+              <PlanoComunicacaoForm
+                arquivo={planoArquivo}
+                observacao={planoObservacao}
+                onChangeArquivo={setPlanoArquivo}
+                onChangeObservacao={setPlanoObservacao}
               />
             )}
           </div>
