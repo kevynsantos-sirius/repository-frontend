@@ -16,5 +16,6 @@ export type Layout = {
 export type Modelo = {
   id: string
   arquivo: File | null
+  observacao: string // <-- NOVO
 }
 

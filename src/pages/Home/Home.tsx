@@ -501,12 +501,13 @@ function onRemoverMassa(layoutId: string, massaId: string) {
  function onNovoModelo(file: File) {
   const novo: Modelo = {
     id: crypto.randomUUID(),
-    arquivo: file
+    arquivo: file,
+    observacao: "" // ⬅️ corrigido
   }
 
   setModelos(prev => [...prev, novo])
   setModeloSelecionadoId(novo.id)
-  }
+}
 
   // 🗑 Remover modelo
   function onRemoverModelo(modeloId: string) {
@@ -522,6 +523,14 @@ function onRemoverMassa(layoutId: string, massaId: string) {
   function onSelectModelo(modeloId: string) {
     setModeloSelecionadoId(modeloId)
   }
+
+  function onEditarObservacao(modeloId: string, novaObs: string) {
+  setModelos(prev =>
+    prev.map(m =>
+      m.id === modeloId ? { ...m, observacao: novaObs } : m
+    )
+  )
+}
 
 
   if (loading) {
@@ -616,13 +625,14 @@ function onRemoverMassa(layoutId: string, massaId: string) {
 
             {abaAtiva === 'modelo' && (
               <ModeloForm
-                checklist={checklist}
-                modelos={modelos}
-                modeloSelecionadoId={modeloSelecionadoId}
-                onNovoModelo={onNovoModelo}
-                onRemoverModelo={onRemoverModelo}
-                onSelectModelo={onSelectModelo}
-              />
+              checklist={checklist}
+              modelos={modelos}
+              modeloSelecionadoId={modeloSelecionadoId}
+              onNovoModelo={onNovoModelo}
+              onRemoverModelo={onRemoverModelo}
+              onSelectModelo={onSelectModelo}
+              onEditarObservacao={onEditarObservacao}
+            />
             )}
           </div>
         </div>

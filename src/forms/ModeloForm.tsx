@@ -10,6 +10,7 @@ type Props = {
   onNovoModelo(file: File): void
   onRemoverModelo(modeloId: string): void
   onSelectModelo(modeloId: string): void
+  onEditarObservacao(modeloId: string, observacao: string): void
 }
 
 export default function ModeloForm({
@@ -18,22 +19,29 @@ export default function ModeloForm({
   modeloSelecionadoId,
   onNovoModelo,
   onRemoverModelo,
-  onSelectModelo
+  onSelectModelo,
+  onEditarObservacao
 }: Props) {
+
   console.log(checklist);
+
+  // Pegamos o modelo selecionado
+  const modeloSelecionado = modelos.find(m => m.id === modeloSelecionadoId) || null
+
   return (
     <div className="d-flex" style={{ width: '100%', minHeight: '100%' }}>
 
-      {/* 🟦 Sidebar de Modelos */}
+      {/* Sidebar */}
       <ModelosSidebar
         modelos={modelos}
         modeloSelecionadoId={modeloSelecionadoId}
         onNovoModelo={onNovoModelo}
         onRemoverModelo={onRemoverModelo}
         onSelectModelo={onSelectModelo}
+        onEditarObservacao={onEditarObservacao}
       />
 
-      {/* 🟩 Conteúdo principal */}
+      {/* Conteúdo principal */}
       <div
         id="aba-modelo"
         className="aba flex-grow-1"
@@ -42,7 +50,7 @@ export default function ModeloForm({
           padding: '20px'
         }}
       >
-        <div id="modelo" className="card form-card">
+        <div className="card form-card">
 
           <div className="card-header bg-white border-0 pb-0">
             <h5 className="mb-0">Modelo do Documento</h5>
@@ -51,26 +59,23 @@ export default function ModeloForm({
           <div className="card-body pt-3">
             <form id="formModelo" onSubmit={(e) => e.preventDefault()}>
 
-              {/* Exemplo usando checklist */}
-              {/* <p>ID do checklist: {checklist?.id}</p> */}
-
               <div className="mt-2 mb-4">
-                {modeloSelecionadoId ? (
-                  <p className="text-secondary">
-                    Modelo selecionado: <strong>{modeloSelecionadoId}</strong>
-                  </p>
-                ) : (
-                  <p className="text-muted">
-                    Nenhum modelo selecionado
-                  </p>
-                )}
-              </div>
+                {modeloSelecionado ? (
+                  <div>
+                    <p className="text-secondary">
+                      Modelo selecionado: <strong>{modeloSelecionado.arquivo?.name}</strong>
+                    </p>
 
-              {/* Ações */}
-              <div className="d-flex gap-2 mt-3">
-                <p style={{ marginLeft: '10px' }}>
-                  Esta funcionalidade está em desenvolvimento e será disponibilizada em breve.
-                </p>
+                    <p className="text-muted" style={{ whiteSpace: 'pre-wrap' }}>
+                      <strong>Observação:</strong>{' '}
+                      {modeloSelecionado.observacao?.trim()
+                        ? modeloSelecionado.observacao
+                        : '(Nenhuma observação cadastrada)'}
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-muted">Nenhum modelo selecionado</p>
+                )}
               </div>
 
             </form>
