@@ -62,16 +62,19 @@ export default function ModeloForm({
               <div className="mt-2 mb-4">
                 {modeloSelecionado ? (
                   <div>
-                    <p className="text-secondary">
-                      Modelo selecionado: <strong>{modeloSelecionado.arquivo?.name}</strong>
-                    </p>
+                    <div className="mb-2">
+                      <span className="label-azul">Modelo selecionado</span>
+                      <p className="mt-1">{modeloSelecionado.arquivo?.name}</p>
+                    </div>
 
-                    <p className="text-muted" style={{ whiteSpace: 'pre-wrap' }}>
-                      <strong>Observação:</strong>{' '}
-                      {modeloSelecionado.observacao?.trim()
-                        ? modeloSelecionado.observacao
-                        : '(Nenhuma observação cadastrada)'}
-                    </p>
+                    <div className="mb-2">
+                      <span className="label-azul">Observação</span>
+                      <p className="mt-1" style={{ whiteSpace: 'pre-wrap' }}>
+                        {modeloSelecionado.observacao?.trim()
+                          ? modeloSelecionado.observacao
+                          : '(Nenhuma observação cadastrada)'}
+                      </p>
+                    </div>
                   </div>
                 ) : (
                   <p className="text-muted">Nenhum modelo selecionado</p>

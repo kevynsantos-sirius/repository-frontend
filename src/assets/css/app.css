@@ -98,3 +98,15 @@ button.btn-outline-custom:active {
   border-color: #4e73df !important;
   box-shadow: none !important;
 }
+
+.label-azul {
+  display: inline-block;
+  background: #e8f0ff;
+  color: #1a56db;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+  border-left: 4px solid #1a56db;
+}
