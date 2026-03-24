@@ -505,7 +505,15 @@ function onNovoModelo(file: File) {
     observacao: "",
     logos: [],
     arquivosAdicionais: [],
-    assinaturas: []
+    assinaturas: [],
+    camposBusca: {
+      backoffice: "",
+      cliente: "",
+      corretor: "",
+      estipulante: "",
+      subestipulante: "",
+      outro: ""
+    }
   }
 
   setModelos(prev => [...prev, novo])

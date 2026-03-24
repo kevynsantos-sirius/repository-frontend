@@ -26,5 +26,13 @@ export type Modelo = {
   logos: ArquivoGerenciado[]
   arquivosAdicionais: ArquivoGerenciado[]
   assinaturas: ArquivoGerenciado[]
+  camposBusca: {
+    backoffice: string
+    cliente: string
+    corretor: string
+    estipulante: string
+    subestipulante: string
+    outro: string
+  }
 }
 

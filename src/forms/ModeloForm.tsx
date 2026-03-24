@@ -137,7 +137,140 @@ function removerArquivo(
                   <p className="text-muted">Nenhum modelo selecionado</p>
                 )}
               </div>
+                {/* TABELA CAMPOS DE BUSCA */}
+                 <strong><h5>Acesso ao documento</h5></strong>
+                {modeloSelecionado && (
+                  <div className="mt-4">
+                    <h6 className="mb-3 fw-bold">
+                      Ao digitar o nome do documento, quais <u>CAMPOS DE BUSCA</u> deverão aparecer por usuário:
+                    </h6>
 
+                    <table className="table table-bordered">
+                      <thead>
+                        <tr className="table-light text-center">
+                          <th style={{ width: "16%" }}>Backoffice</th>
+                          <th style={{ width: "16%" }}>Cliente</th>
+                          <th style={{ width: "16%" }}>Corretor</th>
+                          <th style={{ width: "16%" }}>Estipulante</th>
+                          <th style={{ width: "16%" }}>Subestipulante</th>
+                          <th style={{ width: "20%" }}>Outro</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr>
+                          {/* BACKOFFICE */}
+                          <td>
+                            <textarea
+                              className="form-control"
+                              rows={5}
+                              value={modeloSelecionado.camposBusca.backoffice}
+                              onChange={(e) =>
+                                onUpdateModelo({
+                                  ...modeloSelecionado,
+                                  camposBusca: {
+                                    ...modeloSelecionado.camposBusca,
+                                    backoffice: e.target.value
+                                  }
+                                })
+                              }
+                            ></textarea>
+                          </td>
+
+                          {/* CLIENTE */}
+                          <td>
+                            <textarea
+                              className="form-control"
+                              rows={5}
+                              value={modeloSelecionado.camposBusca.cliente}
+                              onChange={(e) =>
+                                onUpdateModelo({
+                                  ...modeloSelecionado,
+                                  camposBusca: {
+                                    ...modeloSelecionado.camposBusca,
+                                    cliente: e.target.value
+                                  }
+                                })
+                              }
+                            ></textarea>
+                          </td>
+
+                          {/* CORRETOR */}
+                          <td>
+                            <textarea
+                              className="form-control"
+                              rows={5}
+                              value={modeloSelecionado.camposBusca.corretor}
+                              onChange={(e) =>
+                                onUpdateModelo({
+                                  ...modeloSelecionado,
+                                  camposBusca: {
+                                    ...modeloSelecionado.camposBusca,
+                                    corretor: e.target.value
+                                  }
+                                })
+                              }
+                            ></textarea>
+                          </td>
+
+                          {/* ESTIPULANTE */}
+                          <td>
+                            <textarea
+                              className="form-control"
+                              rows={5}
+                              value={modeloSelecionado.camposBusca.estipulante}
+                              onChange={(e) =>
+                                onUpdateModelo({
+                                  ...modeloSelecionado,
+                                  camposBusca: {
+                                    ...modeloSelecionado.camposBusca,
+                                    estipulante: e.target.value
+                                  }
+                                })
+                              }
+                            ></textarea>
+                          </td>
+
+                          {/* SUBESTIPULANTE */}
+                          <td>
+                            <textarea
+                              className="form-control"
+                              rows={5}
+                              value={modeloSelecionado.camposBusca.subestipulante}
+                              onChange={(e) =>
+                                onUpdateModelo({
+                                  ...modeloSelecionado,
+                                  camposBusca: {
+                                    ...modeloSelecionado.camposBusca,
+                                    subestipulante: e.target.value
+                                  }
+                                })
+                              }
+                            ></textarea>
+                          </td>
+
+                          {/* OUTRO */}
+                          <td>
+                            <textarea
+                              className="form-control"
+                              rows={5}
+                              value={modeloSelecionado.camposBusca.outro}
+                              onChange={(e) =>
+                                onUpdateModelo({
+                                  ...modeloSelecionado,
+                                  camposBusca: {
+                                    ...modeloSelecionado.camposBusca,
+                                    outro: e.target.value
+                                  }
+                                })
+                              }
+                            ></textarea>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                )}
             </form>
           </div>
         </div>
