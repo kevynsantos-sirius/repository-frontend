@@ -13,9 +13,18 @@ export type Layout = {
   arquivo?: File | null
 }
 
+export type ArquivoGerenciado = {
+  id: string
+  name: string
+  file?: File
+}
+
 export type Modelo = {
   id: string
   arquivo: File | null
-  observacao: string // <-- NOVO
+  observacao: string
+  logos: ArquivoGerenciado[]
+  arquivosAdicionais: ArquivoGerenciado[]
+  planosComunicacao: ArquivoGerenciado[]
 }
 

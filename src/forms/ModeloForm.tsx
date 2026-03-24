@@ -1,6 +1,8 @@
+import { useState } from "react";
 import type { ChecklistVersaoDTO } from '../dto/ChecklistVersaoDTO'
-import type { Modelo } from '../types/types'
+import type { Modelo, ArquivoGerenciado } from '../types/types'
 import ModelosSidebar from '../components/ModelosSidebar/ModelosSidebar'
+import ModalGerenciarArquivos from "../modal/ModalGerenciarArquivos"
 
 type Props = {
   checklist: ChecklistVersaoDTO | null
@@ -11,6 +13,9 @@ type Props = {
   onRemoverModelo(modeloId: string): void
   onSelectModelo(modeloId: string): void
   onEditarObservacao(modeloId: string, observacao: string): void
+
+  // NOVAS FUNÇÕES
+  onUpdateModelo(modelo: Modelo): void
 }
 
 export default function ModeloForm({
@@ -20,18 +25,55 @@ export default function ModeloForm({
   onNovoModelo,
   onRemoverModelo,
   onSelectModelo,
-  onEditarObservacao
+  onEditarObservacao,
+  onUpdateModelo
 }: Props) {
-
   console.log(checklist);
-
-  // Pegamos o modelo selecionado
   const modeloSelecionado = modelos.find(m => m.id === modeloSelecionadoId) || null
+
+  const [modalTipo, setModalTipo] = useState<
+  "logos" | "arquivosAdicionais" | "planosComunicacao" | null
+>(null)
+
+  function abrirModal(tipo: typeof modalTipo) {
+    setModalTipo(tipo)
+  }
+
+  function fecharModal() {
+    setModalTipo(null)
+  }
+
+function addArquivo(tipo: "logos" | "arquivosAdicionais" | "planosComunicacao", file: File) {
+  if (!modeloSelecionado) return
+
+  const novo: ArquivoGerenciado = {
+    id: crypto.randomUUID(),
+    name: file.name,
+    file
+  }
+
+  const atualizado: Modelo = {
+    ...modeloSelecionado,
+    [tipo]: [...modeloSelecionado[tipo], novo]
+  }
+
+  onUpdateModelo(atualizado)
+}
+
+function removerArquivo(tipo: "logos" | "arquivosAdicionais" | "planosComunicacao", arquivoId: string) {
+  if (!modeloSelecionado) return
+
+  const atualizado: Modelo = {
+    ...modeloSelecionado,
+    [tipo]: modeloSelecionado[tipo].filter((a) => a.id !== arquivoId)
+  }
+
+  onUpdateModelo(atualizado)
+}
 
   return (
     <div className="d-flex" style={{ width: '100%', minHeight: '100%' }}>
 
-      {/* Sidebar */}
       <ModelosSidebar
         modelos={modelos}
         modeloSelecionadoId={modeloSelecionadoId}
@@ -41,17 +83,8 @@ export default function ModeloForm({
         onEditarObservacao={onEditarObservacao}
       />
 
-      {/* Conteúdo principal */}
-      <div
-        id="aba-modelo"
-        className="aba flex-grow-1"
-        style={{
-          display: 'block',
-          padding: '20px'
-        }}
-      >
+      <div className="aba flex-grow-1" style={{ padding: '20px' }}>
         <div className="card form-card">
-
           <div className="card-header bg-white border-0 pb-0">
             <h5 className="mb-0">Modelo do Documento</h5>
           </div>
@@ -59,23 +92,48 @@ export default function ModeloForm({
           <div className="card-body pt-3">
             <form id="formModelo" onSubmit={(e) => e.preventDefault()}>
 
-              <div className="mt-2 mb-4">
+              {/* GRID DE BOTÕES */}
+              {modeloSelecionado && (
+                <div className="d-grid" style={{ gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
+                  <button
+                    className="btn btn-outline-primary"
+                    onClick={() => abrirModal("logos")}
+                    type="button"
+                  >
+                    Logos
+                  </button>
+
+                  <button
+                    className="btn btn-outline-primary"
+                    onClick={() => abrirModal("arquivosAdicionais")}
+                    type="button"
+                  >
+                    Arquivos adicionais
+                  </button>
+
+                  <button
+                    className="btn btn-outline-primary"
+                    onClick={() => abrirModal("planosComunicacao")}
+                    type="button"
+                  >
+                    Plano de comunicação
+                  </button>
+                </div>
+              )}
+
+              <div className="mt-4 mb-4">
                 {modeloSelecionado ? (
-                  <div>
-                    <div className="mb-2">
+                  <>
+                    <div className="mb-3">
                       <span className="label-azul">Modelo selecionado</span>
                       <p className="mt-1">{modeloSelecionado.arquivo?.name}</p>
                     </div>
 
-                    <div className="mb-2">
+                    <div className="mb-3">
                       <span className="label-azul">Observação</span>
-                      <p className="mt-1" style={{ whiteSpace: 'pre-wrap' }}>
-                        {modeloSelecionado.observacao?.trim()
-                          ? modeloSelecionado.observacao
-                          : '(Nenhuma observação cadastrada)'}
-                      </p>
+                      <p className="mt-1">{modeloSelecionado.observacao || "(Nenhuma observação cadastrada)"}</p>
                     </div>
-                  </div>
+                  </>
                 ) : (
                   <p className="text-muted">Nenhum modelo selecionado</p>
                 )}
@@ -83,10 +141,23 @@ export default function ModeloForm({
 
             </form>
           </div>
-
         </div>
       </div>
 
+      {/* MODAIS */}
+      {modalTipo && modeloSelecionado && (
+        <ModalGerenciarArquivos
+        titulo={
+          modalTipo === "logos" ? "Logos"
+          : modalTipo === "arquivosAdicionais" ? "Arquivos Adicionais"
+          : "Planos de Comunicação"
+        }
+        arquivos={modeloSelecionado[modalTipo]}
+        onClose={fecharModal}
+        onAddArquivo={(file) => addArquivo(modalTipo, file)}
+        onRemoveArquivo={(id) => removerArquivo(modalTipo, id)}
+      />
+      )}
     </div>
   )
 }

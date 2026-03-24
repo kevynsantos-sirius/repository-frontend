@@ -498,11 +498,14 @@ function onRemoverMassa(layoutId: string, massaId: string) {
 
 
   // ➕ Criar novo modelo
- function onNovoModelo(file: File) {
+function onNovoModelo(file: File) {
   const novo: Modelo = {
     id: crypto.randomUUID(),
     arquivo: file,
-    observacao: "" // ⬅️ corrigido
+    observacao: "",
+    logos: [],
+    arquivosAdicionais: [],
+    planosComunicacao: []
   }
 
   setModelos(prev => [...prev, novo])
@@ -529,6 +532,12 @@ function onRemoverMassa(layoutId: string, massaId: string) {
     prev.map(m =>
       m.id === modeloId ? { ...m, observacao: novaObs } : m
     )
+  )
+}
+
+function onUpdateModelo(modeloAtualizado: Modelo) {
+  setModelos(prev =>
+    prev.map(m => m.id === modeloAtualizado.id ? modeloAtualizado : m)
   )
 }
 
@@ -625,14 +634,15 @@ function onRemoverMassa(layoutId: string, massaId: string) {
 
             {abaAtiva === 'modelo' && (
               <ModeloForm
-              checklist={checklist}
-              modelos={modelos}
-              modeloSelecionadoId={modeloSelecionadoId}
-              onNovoModelo={onNovoModelo}
-              onRemoverModelo={onRemoverModelo}
-              onSelectModelo={onSelectModelo}
-              onEditarObservacao={onEditarObservacao}
-            />
+                checklist={checklist}
+                modelos={modelos}
+                modeloSelecionadoId={modeloSelecionadoId}
+                onNovoModelo={onNovoModelo}
+                onRemoverModelo={onRemoverModelo}
+                onSelectModelo={onSelectModelo}
+                onEditarObservacao={onEditarObservacao}
+                onUpdateModelo={onUpdateModelo}   // ⬅️ ADICIONAR ESTA LINHA
+              />
             )}
           </div>
         </div>
