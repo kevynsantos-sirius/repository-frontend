@@ -110,3 +110,8 @@ button.btn-outline-custom:active {
   font-size: 0.9rem;
   border-left: 4px solid #1a56db;
 }
+
+h6
+{
+  color: #2d43c0;
+}
