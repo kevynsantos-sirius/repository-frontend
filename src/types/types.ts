@@ -23,9 +23,12 @@ export type Modelo = {
   id: string
   arquivo: File | null
   observacao: string
+
   logos: ArquivoGerenciado[]
   arquivosAdicionais: ArquivoGerenciado[]
   assinaturas: ArquivoGerenciado[]
+
+  regrasAcesso: string   // ⬅️ ADICIONAR ESTE CAMPO
   camposBusca: {
     backoffice: string
     cliente: string

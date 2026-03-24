@@ -506,6 +506,7 @@ function onNovoModelo(file: File) {
     logos: [],
     arquivosAdicionais: [],
     assinaturas: [],
+    regrasAcesso: "",
     camposBusca: {
       backoffice: "",
       cliente: "",

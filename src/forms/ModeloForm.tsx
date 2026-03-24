@@ -14,7 +14,6 @@ type Props = {
   onSelectModelo(modeloId: string): void
   onEditarObservacao(modeloId: string, observacao: string): void
 
-  // NOVAS FUNÇÕES
   onUpdateModelo(modelo: Modelo): void
 }
 
@@ -28,12 +27,14 @@ export default function ModeloForm({
   onEditarObservacao,
   onUpdateModelo
 }: Props) {
+
   console.log(checklist);
+
   const modeloSelecionado = modelos.find(m => m.id === modeloSelecionadoId) || null
 
-const [modalTipo, setModalTipo] = useState<
-  "logos" | "arquivosAdicionais" | "assinaturas" | null
->(null)
+  const [modalTipo, setModalTipo] = useState<
+    "logos" | "arquivosAdicionais" | "assinaturas" | null
+  >(null)
 
   function abrirModal(tipo: typeof modalTipo) {
     setModalTipo(tipo)
@@ -43,39 +44,39 @@ const [modalTipo, setModalTipo] = useState<
     setModalTipo(null)
   }
 
-function addArquivo(
-  tipo: "logos" | "arquivosAdicionais" | "assinaturas",
-  file: File
-) {
-  if (!modeloSelecionado) return
+  function addArquivo(
+    tipo: "logos" | "arquivosAdicionais" | "assinaturas",
+    file: File
+  ) {
+    if (!modeloSelecionado) return
 
-  const novo: ArquivoGerenciado = {
-    id: crypto.randomUUID(),
-    name: file.name,
-    file
+    const novo: ArquivoGerenciado = {
+      id: crypto.randomUUID(),
+      name: file.name,
+      file
+    }
+
+    const atualizado: Modelo = {
+      ...modeloSelecionado,
+      [tipo]: [...modeloSelecionado[tipo], novo]
+    }
+
+    onUpdateModelo(atualizado)
   }
 
-  const atualizado: Modelo = {
-    ...modeloSelecionado,
-    [tipo]: [...modeloSelecionado[tipo], novo]
+  function removerArquivo(
+    tipo: "logos" | "arquivosAdicionais" | "assinaturas",
+    arquivoId: string
+  ) {
+    if (!modeloSelecionado) return
+
+    const atualizado: Modelo = {
+      ...modeloSelecionado,
+      [tipo]: modeloSelecionado[tipo].filter((a) => a.id !== arquivoId)
+    }
+
+    onUpdateModelo(atualizado)
   }
-
-  onUpdateModelo(atualizado)
-}
-
-function removerArquivo(
-  tipo: "logos" | "arquivosAdicionais" | "assinaturas",
-  arquivoId: string
-) {
-  if (!modeloSelecionado) return
-
-  const atualizado: Modelo = {
-    ...modeloSelecionado,
-    [tipo]: modeloSelecionado[tipo].filter((a) => a.id !== arquivoId)
-  }
-
-  onUpdateModelo(atualizado)
-}
 
   return (
     <div className="d-flex" style={{ width: '100%', minHeight: '100%' }}>
@@ -98,25 +99,22 @@ function removerArquivo(
           <div className="card-body pt-3">
             <form id="formModelo" onSubmit={(e) => e.preventDefault()}>
 
-              {/* GRID DE BOTÕES */}
               {modeloSelecionado && (
-                <div className="d-grid" style={{ gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
-                  <div
-                    className="d-grid"
-                    style={{ gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}
-                  >
-                    <button className="btn btn-outline-primary" onClick={() => abrirModal("logos")}>
-                      Logos
-                    </button>
+                <div
+                  className="d-grid"
+                  style={{ gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}
+                >
+                  <button className="btn btn-outline-primary" onClick={() => abrirModal("logos")}>
+                    Logos
+                  </button>
 
-                    <button className="btn btn-outline-primary" onClick={() => abrirModal("arquivosAdicionais")}>
-                      Arquivos adicionais
-                    </button>
+                  <button className="btn btn-outline-primary" onClick={() => abrirModal("arquivosAdicionais")}>
+                    Arquivos adicionais
+                  </button>
 
-                    <button className="btn btn-outline-primary" onClick={() => abrirModal("assinaturas")}>
-                      Assinaturas
-                    </button>
-                  </div>
+                  <button className="btn btn-outline-primary" onClick={() => abrirModal("assinaturas")}>
+                    Assinaturas
+                  </button>
                 </div>
               )}
 
@@ -137,146 +135,77 @@ function removerArquivo(
                   <p className="text-muted">Nenhum modelo selecionado</p>
                 )}
               </div>
-                {/* TABELA CAMPOS DE BUSCA */}
-                 <strong><h5>Acesso ao documento</h5></strong>
-                {modeloSelecionado && (
-                  <div className="mt-4">
-                    <h6 className="mb-3 fw-bold">
-                      Ao digitar o nome do documento, quais <u>CAMPOS DE BUSCA</u> deverão aparecer por usuário:
-                    </h6>
 
-                    <table className="table table-bordered">
-                      <thead>
-                        <tr className="table-light text-center">
-                          <th style={{ width: "16%" }}>Backoffice</th>
-                          <th style={{ width: "16%" }}>Cliente</th>
-                          <th style={{ width: "16%" }}>Corretor</th>
-                          <th style={{ width: "16%" }}>Estipulante</th>
-                          <th style={{ width: "16%" }}>Subestipulante</th>
-                          <th style={{ width: "20%" }}>Outro</th>
-                        </tr>
-                      </thead>
+              {/* NOVO CAMPO — REGRAS DE ACESSO */}
+              {modeloSelecionado && (
+                <div className="mb-4">
+                  <h6 className="fw-bold">Acesso ao documento</h6>
+                  <label className="form-label fw-bold">Regras de acesso</label>
+                  <textarea
+                    className="form-control"
+                    rows={4}
+                    value={modeloSelecionado.regrasAcesso}
+                    placeholder="Descreva regras adicionais (ex.: período de acesso, restrições, auditoria, etc.)"
+                    onChange={(e) =>
+                      onUpdateModelo({
+                        ...modeloSelecionado,
+                        regrasAcesso: e.target.value
+                      })
+                    }
+                  />
+                </div>
+              )}
 
-                      <tbody>
-                        <tr>
-                          {/* BACKOFFICE */}
-                          <td>
+              {/* TABELA CAMPOS DE BUSCA */}
+              {modeloSelecionado && (
+                <div className="mt-4">
+                  <h6 className="mb-3 fw-bold">
+                    Ao digitar o nome do documento, quais <u>CAMPOS DE BUSCA</u> deverão aparecer por usuário:
+                  </h6>
+
+                  <table className="table table-bordered">
+                    <thead>
+                      <tr className="table-light text-center">
+                        <th>Backoffice</th>
+                        <th>Cliente</th>
+                        <th>Corretor</th>
+                        <th>Estipulante</th>
+                        <th>Subestipulante</th>
+                        <th>Outro</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr>
+                        {Object.entries(modeloSelecionado.camposBusca).map(([key, value]) => (
+                          <td key={key}>
                             <textarea
                               className="form-control"
                               rows={5}
-                              value={modeloSelecionado.camposBusca.backoffice}
+                              value={value}
                               onChange={(e) =>
                                 onUpdateModelo({
                                   ...modeloSelecionado,
                                   camposBusca: {
                                     ...modeloSelecionado.camposBusca,
-                                    backoffice: e.target.value
+                                    [key]: e.target.value
                                   }
                                 })
                               }
-                            ></textarea>
+                            />
                           </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              )}
 
-                          {/* CLIENTE */}
-                          <td>
-                            <textarea
-                              className="form-control"
-                              rows={5}
-                              value={modeloSelecionado.camposBusca.cliente}
-                              onChange={(e) =>
-                                onUpdateModelo({
-                                  ...modeloSelecionado,
-                                  camposBusca: {
-                                    ...modeloSelecionado.camposBusca,
-                                    cliente: e.target.value
-                                  }
-                                })
-                              }
-                            ></textarea>
-                          </td>
-
-                          {/* CORRETOR */}
-                          <td>
-                            <textarea
-                              className="form-control"
-                              rows={5}
-                              value={modeloSelecionado.camposBusca.corretor}
-                              onChange={(e) =>
-                                onUpdateModelo({
-                                  ...modeloSelecionado,
-                                  camposBusca: {
-                                    ...modeloSelecionado.camposBusca,
-                                    corretor: e.target.value
-                                  }
-                                })
-                              }
-                            ></textarea>
-                          </td>
-
-                          {/* ESTIPULANTE */}
-                          <td>
-                            <textarea
-                              className="form-control"
-                              rows={5}
-                              value={modeloSelecionado.camposBusca.estipulante}
-                              onChange={(e) =>
-                                onUpdateModelo({
-                                  ...modeloSelecionado,
-                                  camposBusca: {
-                                    ...modeloSelecionado.camposBusca,
-                                    estipulante: e.target.value
-                                  }
-                                })
-                              }
-                            ></textarea>
-                          </td>
-
-                          {/* SUBESTIPULANTE */}
-                          <td>
-                            <textarea
-                              className="form-control"
-                              rows={5}
-                              value={modeloSelecionado.camposBusca.subestipulante}
-                              onChange={(e) =>
-                                onUpdateModelo({
-                                  ...modeloSelecionado,
-                                  camposBusca: {
-                                    ...modeloSelecionado.camposBusca,
-                                    subestipulante: e.target.value
-                                  }
-                                })
-                              }
-                            ></textarea>
-                          </td>
-
-                          {/* OUTRO */}
-                          <td>
-                            <textarea
-                              className="form-control"
-                              rows={5}
-                              value={modeloSelecionado.camposBusca.outro}
-                              onChange={(e) =>
-                                onUpdateModelo({
-                                  ...modeloSelecionado,
-                                  camposBusca: {
-                                    ...modeloSelecionado.camposBusca,
-                                    outro: e.target.value
-                                  }
-                                })
-                              }
-                            ></textarea>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                )}
             </form>
           </div>
         </div>
       </div>
 
-      {/* MODAIS */}
       {modalTipo && modeloSelecionado && (
         <ModalGerenciarArquivos
           titulo={
