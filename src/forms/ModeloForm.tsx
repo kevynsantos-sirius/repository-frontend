@@ -31,8 +31,8 @@ export default function ModeloForm({
   console.log(checklist);
   const modeloSelecionado = modelos.find(m => m.id === modeloSelecionadoId) || null
 
-  const [modalTipo, setModalTipo] = useState<
-  "logos" | "arquivosAdicionais" | "planosComunicacao" | null
+const [modalTipo, setModalTipo] = useState<
+  "logos" | "arquivosAdicionais" | "assinaturas" | null
 >(null)
 
   function abrirModal(tipo: typeof modalTipo) {
@@ -43,7 +43,10 @@ export default function ModeloForm({
     setModalTipo(null)
   }
 
-function addArquivo(tipo: "logos" | "arquivosAdicionais" | "planosComunicacao", file: File) {
+function addArquivo(
+  tipo: "logos" | "arquivosAdicionais" | "assinaturas",
+  file: File
+) {
   if (!modeloSelecionado) return
 
   const novo: ArquivoGerenciado = {
@@ -60,7 +63,10 @@ function addArquivo(tipo: "logos" | "arquivosAdicionais" | "planosComunicacao", 
   onUpdateModelo(atualizado)
 }
 
-function removerArquivo(tipo: "logos" | "arquivosAdicionais" | "planosComunicacao", arquivoId: string) {
+function removerArquivo(
+  tipo: "logos" | "arquivosAdicionais" | "assinaturas",
+  arquivoId: string
+) {
   if (!modeloSelecionado) return
 
   const atualizado: Modelo = {
@@ -95,29 +101,22 @@ function removerArquivo(tipo: "logos" | "arquivosAdicionais" | "planosComunicaca
               {/* GRID DE BOTÕES */}
               {modeloSelecionado && (
                 <div className="d-grid" style={{ gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
-                  <button
-                    className="btn btn-outline-primary"
-                    onClick={() => abrirModal("logos")}
-                    type="button"
+                  <div
+                    className="d-grid"
+                    style={{ gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}
                   >
-                    Logos
-                  </button>
+                    <button className="btn btn-outline-primary" onClick={() => abrirModal("logos")}>
+                      Logos
+                    </button>
 
-                  <button
-                    className="btn btn-outline-primary"
-                    onClick={() => abrirModal("arquivosAdicionais")}
-                    type="button"
-                  >
-                    Arquivos adicionais
-                  </button>
+                    <button className="btn btn-outline-primary" onClick={() => abrirModal("arquivosAdicionais")}>
+                      Arquivos adicionais
+                    </button>
 
-                  <button
-                    className="btn btn-outline-primary"
-                    onClick={() => abrirModal("planosComunicacao")}
-                    type="button"
-                  >
-                    Plano de comunicação
-                  </button>
+                    <button className="btn btn-outline-primary" onClick={() => abrirModal("assinaturas")}>
+                      Assinaturas
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -147,16 +146,18 @@ function removerArquivo(tipo: "logos" | "arquivosAdicionais" | "planosComunicaca
       {/* MODAIS */}
       {modalTipo && modeloSelecionado && (
         <ModalGerenciarArquivos
-        titulo={
-          modalTipo === "logos" ? "Logos"
-          : modalTipo === "arquivosAdicionais" ? "Arquivos Adicionais"
-          : "Planos de Comunicação"
-        }
-        arquivos={modeloSelecionado[modalTipo]}
-        onClose={fecharModal}
-        onAddArquivo={(file) => addArquivo(modalTipo, file)}
-        onRemoveArquivo={(id) => removerArquivo(modalTipo, id)}
-      />
+          titulo={
+            modalTipo === "logos"
+              ? "Logos"
+              : modalTipo === "arquivosAdicionais"
+              ? "Arquivos Adicionais"
+              : "Assinaturas"
+          }
+          arquivos={modeloSelecionado[modalTipo]}
+          onClose={fecharModal}
+          onAddArquivo={(file) => addArquivo(modalTipo, file)}
+          onRemoveArquivo={(id) => removerArquivo(modalTipo, id)}
+        />
       )}
     </div>
   )
