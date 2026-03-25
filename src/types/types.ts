@@ -16,6 +16,7 @@ export type Layout = {
 export type ArquivoGerenciado = {
   id: string
   name: string
+  observacao: string
   file?: File
 }
 

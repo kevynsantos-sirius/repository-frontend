@@ -5,7 +5,7 @@ type Props = {
   titulo: string;
   arquivos: ArquivoGerenciado[];
   onClose(): void;
-  onAddArquivo(file: File): void;
+  onAddArquivo(file: File, observacao: string): void;
   onRemoveArquivo(id: string): void;
 };
 
@@ -17,12 +17,18 @@ export default function ModalGerenciarArquivos({
   onRemoveArquivo
 }: Props) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const [file, setFile] = useState<File | null>(null);
+  const [observacao, setObservacao] = useState("");
 
   function handleUpload() {
     if (!file) return;
-    onAddArquivo(file);
+
+    onAddArquivo(file, observacao);
+
+    // limpar campos
     setFile(null);
+    setObservacao("");
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
@@ -69,6 +75,16 @@ export default function ModalGerenciarArquivos({
             onChange={(e) => setFile(e.target.files?.[0] || null)}
           />
 
+          {/* campo de observação */}
+          <label className="form-label mt-2">Observação</label>
+          <textarea
+            className="form-control"
+            rows={3}
+            value={observacao}
+            onChange={(e) => setObservacao(e.target.value)}
+            placeholder="Digite uma observação sobre este arquivo"
+          />
+
           <button
             className="btn btn-primary mt-2 w-100"
             onClick={handleUpload}
@@ -89,16 +105,24 @@ export default function ModalGerenciarArquivos({
         {arquivos.map((a) => (
           <div
             key={a.id}
-            className="d-flex justify-content-between align-items-center border rounded p-2 mb-2"
+            className="d-flex flex-column border rounded p-2 mb-2"
           >
-            <span>{a.name}</span>
+            <div className="d-flex justify-content-between align-items-center">
+              <strong>{a.name}</strong>
 
-            <button
-              className="btn btn-sm btn-danger"
-              onClick={() => onRemoveArquivo(a.id)}
-            >
-              Remover
-            </button>
+              <button
+                className="btn btn-sm btn-danger"
+                onClick={() => onRemoveArquivo(a.id)}
+              >
+                Remover
+              </button>
+            </div>
+
+            {a.observacao && (
+              <small className="text-muted mt-1">
+                Observação: {a.observacao}
+              </small>
+            )}
           </div>
         ))}
 

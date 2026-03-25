@@ -48,25 +48,27 @@ export default function ModeloForm({
     setModalTipo(null)
   }
 
-  function addArquivo(
-    tipo: "logos" | "arquivosAdicionais" | "assinaturas",
-    file: File
-  ) {
-    if (!modeloSelecionado) return
+ function addArquivo(
+  tipo: "logos" | "arquivosAdicionais" | "assinaturas",
+  file: File,
+  observacao: string
+) {
+  if (!modeloSelecionado) return;
 
-    const novo: ArquivoGerenciado = {
-      id: crypto.randomUUID(),
-      name: file.name,
-      file
-    }
+  const novo: ArquivoGerenciado = {
+    id: crypto.randomUUID(),
+    name: file.name,
+    file,
+    observacao
+  };
 
-    const atualizado: Modelo = {
-      ...modeloSelecionado,
-      [tipo]: [...modeloSelecionado[tipo], novo]
-    }
+  const atualizado: Modelo = {
+    ...modeloSelecionado,
+    [tipo]: [...modeloSelecionado[tipo], novo]
+  };
 
-    onUpdateModelo(atualizado)
-  }
+  onUpdateModelo(atualizado);
+}
 
   function removerArquivo(
     tipo: "logos" | "arquivosAdicionais" | "assinaturas",
@@ -238,7 +240,7 @@ export default function ModeloForm({
           }
           arquivos={modeloSelecionado[modalTipo]}
           onClose={fecharModal}
-          onAddArquivo={(file) => addArquivo(modalTipo, file)}
+          onAddArquivo={(file, observacao) => addArquivo(modalTipo, file, observacao)}
           onRemoveArquivo={(id) => removerArquivo(modalTipo, id)}
         />
       )}
