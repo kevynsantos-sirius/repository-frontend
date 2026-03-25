@@ -64,7 +64,9 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
         nomeUsuario: user?.nomeUsuario ?? ''
       },
 
-      layouts: []
+      layouts: [],
+
+      modelos: []
     }
 
     return {

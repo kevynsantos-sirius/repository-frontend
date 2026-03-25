@@ -228,19 +228,68 @@ function onNovoLayout() {
 }
 
 
-  function montarPayloadEnvio(
+function montarPayloadEnvio(
   checklist: ChecklistVersaoDTO,
-  layouts: Layout[]
+  layouts: Layout[],
+  modelos: Modelo[]
 ): ChecklistEnvioDTO {
 
   function layoutTemArquivoNovo(layoutId: string): boolean {
-    return !!filesLayout[layoutId]?.length
+    return !!filesLayout[layoutId]?.length;
   }
 
   function massaTemArquivoNovo(massaId: string): boolean {
-    return !!filesMassas[massaId]?.length
+    return !!filesMassas[massaId]?.length;
   }
 
+
+
+  function modeloTemArquivoNovo(mod: Modelo): boolean {
+    return (
+      mod.logos.some(l => !!l.file) ||
+      mod.arquivosAdicionais.some(a => !!a.file) ||
+      mod.assinaturas.some(s => !!s.file) ||
+      !!mod.arquivoImpressao
+    );
+  }
+
+  // 🔹 MODELOS
+  const modelosPayload = modelos.map(mod => ({
+    id: mod.id,
+    observacao: mod.observacao,
+    regrasAcesso: mod.regrasAcesso,
+
+    camposBusca: { ...mod.camposBusca },
+
+    tipoImpressao: mod.tipoImpressao,
+    tipoAcabamento: mod.tipoAcabamento,
+
+    temArquivo: modeloTemArquivoNovo(mod),
+    arquivoImpressao: !!mod.arquivoImpressao,
+
+    logos: mod.logos.map(l => ({
+      id: l.id,
+      name: l.name,
+      observacao: l.observacao,
+      temArquivo: !!l.file
+    })),
+
+    arquivosAdicionais: mod.arquivosAdicionais.map(a => ({
+      id: a.id,
+      name: a.name,
+      observacao: a.observacao,
+      temArquivo: !!a.file
+    })),
+
+    assinaturas: mod.assinaturas.map(s => ({
+      id: s.id,
+      name: s.name,
+      observacao: s.observacao,
+      temArquivo: !!s.file
+    }))
+  }));
+
+  // 🔥 AQUI ESTÁ O RETORNO CERTO
   return {
     idChecklist: checklist.idChecklist?.toString(),
     idChecklistVersao: checklist.idChecklistVersao?.toString(),
@@ -261,24 +310,24 @@ function onNovoLayout() {
     viaServico: checklist.viaServico,
     viaTxt: checklist.viaTxt,
 
+    // Layouts
     layouts: layouts.map(l => ({
       id: l.id,
       nomeLayout: l.nomeLayout,
       observacao: l.observacao,
-
-      // 🔥 FLAG DO LAYOUT
       temArquivo: layoutTemArquivoNovo(l.id),
 
       massasDados: l.massas.map(m => ({
         id: m.id,
         nomeMassaDados: m.nomeArquivo,
         observacao: m.observacao,
-
-        // 🔥 FLAG DA MASSA
         temArquivo: massaTemArquivoNovo(m.id)
       }))
-    }))
-  }
+    })),
+
+    // 🔥 ADICIONAR FINALMENTE OS MODELOS
+    modelos: modelosPayload
+  };
 }
 
 
@@ -293,17 +342,24 @@ async function onSalvarChecklist() {
   if (!validarArquivosTI()) return
 
   try {
-    const payload = montarPayloadEnvio(checklist, layouts)
+    const payload = montarPayloadEnvio(checklist, layouts, modelos)
 
     const arquivosLayouts = Object.values(filesLayout).flat()
     const arquivosMassas = Object.values(filesMassas).flat()
+    const arquivosModelos = [
+  ...modelos.flatMap(m => m.logos.map(l => l.file).filter(Boolean)),
+  ...modelos.flatMap(m => m.arquivosAdicionais.map(a => a.file).filter(Boolean)),
+  ...modelos.flatMap(m => m.assinaturas.map(s => s.file).filter(Boolean)),
+  ...modelos.map(m => m.arquivoImpressao).filter(Boolean)
+];
     payload.idUsuario = Number(user?.id)
     if (isNovo) {
 
       await salvarChecklist(
         payload,
-        arquivosLayouts,
-        arquivosMassas
+        arquivosLayouts.filter((f): f is File => f instanceof File),
+        arquivosMassas.filter((f): f is File => f instanceof File),
+        arquivosModelos.filter((f): f is File => f instanceof File)
       )
 
       toast.success('Checklist salvo com sucesso!')
@@ -312,8 +368,9 @@ async function onSalvarChecklist() {
       await atualizarChecklist(
         checklist.idChecklistVersao.toString(),
         payload,
-        arquivosLayouts,
-        arquivosMassas
+        arquivosLayouts.filter((f): f is File => f instanceof File),
+        arquivosMassas.filter((f): f is File => f instanceof File),
+        arquivosModelos.filter((f): f is File => f instanceof File)
       )
 
       toast.success('Checklist atualizado com sucesso!')

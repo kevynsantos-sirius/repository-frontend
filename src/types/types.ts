@@ -22,13 +22,7 @@ export type ArquivoGerenciado = {
 
 export type Modelo = {
   id: string
-  arquivo: File | null
   observacao: string
-
-  logos: ArquivoGerenciado[]
-  arquivosAdicionais: ArquivoGerenciado[]
-  assinaturas: ArquivoGerenciado[]
-
   regrasAcesso: string
 
   camposBusca: {
@@ -43,11 +37,21 @@ export type Modelo = {
   // FORMATAÇÃO & IMPRESSÃO
   tipoImpressao: string[]
   tipoAcabamento: string[]
+
+  // 🔥 Aqui mantém o File real, diferente do DTO
   arquivoImpressao: File | null
 
   // DISPONIBILIZAÇÃO
   disponibilizacao: string[]
   emailOpcoes: string[]
+
+  // ARQUIVOS GERENCIADOS
+  logos: ArquivoGerenciado[]        // cada item contém File|null
+  arquivosAdicionais: ArquivoGerenciado[]
+  assinaturas: ArquivoGerenciado[]
+
+  // 🔥 arquivo do modelo principal (não existe no DTO)
+  arquivo: File | null
 }
 
 export type AbaAtiva = 'identificacao' | 'ti' | 'modelo' | 'planoComunicacao'

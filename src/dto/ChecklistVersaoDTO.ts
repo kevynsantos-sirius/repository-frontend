@@ -1,3 +1,5 @@
+
+
 /* =========================
    TIPOS AUXILIARES
    ========================= */
@@ -20,6 +22,48 @@ export type LayoutDTO = {
   observacao: string | null
   temArquivo: boolean
   massasDados: MassaDadosDTO[]
+}
+
+export type ModeloEnvioDTO = {
+  id: string
+  observacao: string
+  regrasAcesso: string
+
+  camposBusca: {
+    backoffice: string
+    cliente: string
+    corretor: string
+    estipulante: string
+    subestipulante: string
+    outro: string
+  }
+
+  tipoImpressao: string[]
+  tipoAcabamento: string[]
+
+  temArquivo: boolean
+  arquivoImpressao: boolean
+
+  logos: {
+    id: string
+    name: string
+    observacao: string
+    temArquivo: boolean
+  }[]
+
+  arquivosAdicionais: {
+    id: string
+    name: string
+    observacao: string
+    temArquivo: boolean
+  }[]
+
+  assinaturas: {
+    id: string
+    name: string
+    observacao: string
+    temArquivo: boolean
+  }[]
 }
 
 /* =========================
@@ -50,4 +94,6 @@ export type ChecklistVersaoDTO = {
 
   usuario: UsuarioDTO
   layouts: LayoutDTO[]
+
+  modelos: ModeloEnvioDTO[]
 }

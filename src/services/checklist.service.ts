@@ -56,30 +56,23 @@ export async function buscarChecklistPorId(
 export async function salvarChecklist(
   payload: ChecklistEnvioDTO,
   filesLayout: File[] = [],
-  filesMassas: File[] = []
+  filesMassas: File[] = [],
+  filesModelos: File[] = []
 ) {
-  const formData = new FormData()
-  console.log(payload);
+  const formData = new FormData();
 
-  // 🔹 JSON como string (porque backend recebe String dadosJson)
-  formData.append("dados", JSON.stringify(payload))
+  formData.append("dados", JSON.stringify(payload));
 
-  // 🔹 Arquivos de Layout
-  filesLayout.forEach((file) => {
-    formData.append("filesLayout", file)
-  })
-
-  // 🔹 Arquivos de Massa
-  filesMassas.forEach((file) => {
-    formData.append("filesMassas", file)
-  })
+  filesLayout.forEach(f => formData.append("filesLayout", f));
+  filesMassas.forEach(f => formData.append("filesMassas", f));
+  filesModelos.forEach(f => formData.append("filesModelos", f));
 
   const response = await api.post(
     "/api/Checklists/salvar",
     formData
-  )
+  );
 
-  return response.data
+  return response.data;
 }
 
 
@@ -87,7 +80,8 @@ export async function atualizarChecklist(
   idChecklist: string,
   payload: ChecklistEnvioDTO,
   filesLayout: File[] = [],
-  filesMassas: File[] = []
+  filesMassas: File[] = [],
+  filesModelos: File[] = []
 ) {
   const formData = new FormData()
 
@@ -98,13 +92,9 @@ export async function atualizarChecklist(
     })
   )
 
-  filesLayout.forEach((file) => {
-    formData.append("filesLayout", file)
-  })
-
-  filesMassas.forEach((file) => {
-    formData.append("filesMassas", file)
-  })
+  filesLayout.forEach(f => formData.append("filesLayout", f));
+  filesMassas.forEach(f => formData.append("filesMassas", f));
+  filesModelos.forEach(f => formData.append("filesModelos", f));
 
   const response = await api.post(
     `/api/Checklists/${idChecklist}/editar`,

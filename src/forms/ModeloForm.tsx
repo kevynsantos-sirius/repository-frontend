@@ -22,7 +22,6 @@ type Props = {
 }
 
 export default function ModeloForm({
-  checklist,
   modelos,
   modeloSelecionadoId,
   onNovoModelo,
@@ -32,7 +31,7 @@ export default function ModeloForm({
   onUpdateModelo
 }: Props) {
 
-  console.log(checklist);
+  
 
   const modeloSelecionado = modelos.find(m => m.id === modeloSelecionadoId) || null
 
