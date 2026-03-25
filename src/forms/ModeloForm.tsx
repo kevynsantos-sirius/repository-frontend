@@ -144,7 +144,24 @@ export default function ModeloForm({
                 )}
               </div>
 
-              {/* REGRAS DE ACESSO */}
+             
+
+              {/* NOVA SEÇÃO — FORMATAÇÃO & IMPRESSÃO */}
+              {modeloSelecionado && (
+                <FormatoImpressaoSection
+                  modelo={modeloSelecionado}
+                  onUpdateModelo={onUpdateModelo}
+                />
+              )}
+
+              {modeloSelecionado && (
+                <DisponibilizacaoSection
+                  modelo={modeloSelecionado}
+                  onUpdateModelo={onUpdateModelo}
+                />
+              )}
+
+               {/* REGRAS DE ACESSO */}
               {modeloSelecionado && (
                 <div className="mb-4">
                   <h6 className="fw-bold">Acesso ao documento</h6>
@@ -207,21 +224,6 @@ export default function ModeloForm({
                     </tbody>
                   </table>
                 </div>
-              )}
-
-              {/* NOVA SEÇÃO — FORMATAÇÃO & IMPRESSÃO */}
-              {modeloSelecionado && (
-                <FormatoImpressaoSection
-                  modelo={modeloSelecionado}
-                  onUpdateModelo={onUpdateModelo}
-                />
-              )}
-
-              {modeloSelecionado && (
-                <DisponibilizacaoSection
-                  modelo={modeloSelecionado}
-                  onUpdateModelo={onUpdateModelo}
-                />
               )}
             </form>
           </div>
