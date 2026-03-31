@@ -57,7 +57,7 @@ export async function salvarChecklist(
   payload: ChecklistEnvioDTO,
   filesLayout: File[] = [],
   filesMassas: File[] = [],
-  filesModelos: File[] = []
+  filesModelos: { file: File; key: string }[] = []
 ) {
   const formData = new FormData();
 
@@ -65,7 +65,8 @@ export async function salvarChecklist(
 
   filesLayout.forEach(f => formData.append("filesLayout", f));
   filesMassas.forEach(f => formData.append("filesMassas", f));
-  filesModelos.forEach(f => formData.append("filesModelos", f));
+  // arquivosModelos agora é um array de objetos {file, key}
+  filesModelos.forEach(fm => formData.append(fm.key, fm.file));
 
   const response = await api.post(
     "/api/Checklists/salvar",
@@ -81,7 +82,7 @@ export async function atualizarChecklist(
   payload: ChecklistEnvioDTO,
   filesLayout: File[] = [],
   filesMassas: File[] = [],
-  filesModelos: File[] = []
+  filesModelos: { file: File; key: string }[] = []
 ) {
   const formData = new FormData()
 
@@ -94,7 +95,8 @@ export async function atualizarChecklist(
 
   filesLayout.forEach(f => formData.append("filesLayout", f));
   filesMassas.forEach(f => formData.append("filesMassas", f));
-  filesModelos.forEach(f => formData.append("filesModelos", f));
+  // arquivosModelos agora é um array de objetos {file, key}
+  filesModelos.forEach(fm => formData.append(fm.key, fm.file));
 
   const response = await api.post(
     `/api/Checklists/${idChecklist}/editar`,

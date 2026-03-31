@@ -346,12 +346,44 @@ async function onSalvarChecklist() {
 
     const arquivosLayouts = Object.values(filesLayout).flat()
     const arquivosMassas = Object.values(filesMassas).flat()
-    const arquivosModelos = [
-  ...modelos.flatMap(m => m.logos.map(l => l.file).filter(Boolean)),
-  ...modelos.flatMap(m => m.arquivosAdicionais.map(a => a.file).filter(Boolean)),
-  ...modelos.flatMap(m => m.assinaturas.map(s => s.file).filter(Boolean)),
-  ...modelos.map(m => m.arquivoImpressao).filter(Boolean)
-];
+    const arquivosModelos: { file: File, key: string }[] = [];
+
+    modelos.forEach((m, i) => {
+
+      if (m.arquivo) {
+        arquivosModelos.push({
+          file: m.arquivo,
+          key: `modelo-${i}-principal`
+        });
+      }
+
+      m.logos.forEach((l, j) => {
+        if (l.file) {
+          arquivosModelos.push({
+            file: l.file,
+            key: `modelo-${i}-logo-${j}`
+          });
+        }
+      });
+
+      m.assinaturas.forEach((s, j) => {
+        if (s.file) {
+          arquivosModelos.push({
+            file: s.file,
+            key: `modelo-${i}-assinatura-${j}`
+          });
+        }
+      });
+
+      m.arquivosAdicionais.forEach((a, j) => {
+        if (a.file) {
+          arquivosModelos.push({
+            file: a.file,
+            key: `modelo-${i}-adicional-${j}`
+          });
+        }
+      });
+    });
     payload.idUsuario = Number(user?.id)
     if (isNovo) {
 
@@ -359,7 +391,7 @@ async function onSalvarChecklist() {
         payload,
         arquivosLayouts.filter((f): f is File => f instanceof File),
         arquivosMassas.filter((f): f is File => f instanceof File),
-        arquivosModelos.filter((f): f is File => f instanceof File)
+        arquivosModelos
       )
 
       toast.success('Checklist salvo com sucesso!')
@@ -370,7 +402,7 @@ async function onSalvarChecklist() {
         payload,
         arquivosLayouts.filter((f): f is File => f instanceof File),
         arquivosMassas.filter((f): f is File => f instanceof File),
-        arquivosModelos.filter((f): f is File => f instanceof File)
+        arquivosModelos
       )
 
       toast.success('Checklist atualizado com sucesso!')
