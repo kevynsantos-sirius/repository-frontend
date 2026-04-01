@@ -41,6 +41,73 @@ function mapLayoutsFromBackend(layoutsBackend: any[]): Layout[] {
   }))
 }
 
+// ===============================
+// MAPEADOR MODELOS BACK → FRONT
+// ===============================
+function mapModelosFromBackend(modelosBackend: any[]): Modelo[] {
+  if (!Array.isArray(modelosBackend)) return [];
+
+  return modelosBackend.map((m: any) => ({
+    id: m.id || crypto.randomUUID(),
+
+    observacao: m.observacao ?? "",
+
+    regrasAcesso: m.regrasAcesso ?? "",
+
+    nomeRecurso: m.nomeRecurso ?? null,
+
+    arquivo: null,            // 🔹 nunca vem do back (somente arquivos novos)
+    arquivoImpressao: m.arquivoImpressao ? {} as File : null,
+
+    camposBusca: {
+      backoffice: m.camposBusca?.backoffice ?? "",
+      cliente: m.camposBusca?.cliente ?? "",
+      corretor: m.camposBusca?.corretor ?? "",
+      estipulante: m.camposBusca?.estipulante ?? "",
+      subestipulante: m.camposBusca?.subestipulante ?? "",
+      outro: m.camposBusca?.outro ?? ""
+    },
+
+    tipoImpressao: Array.isArray(m.tipoImpressao) ? m.tipoImpressao : [],
+
+    tipoAcabamento: Array.isArray(m.tipoAcabamento) ? m.tipoAcabamento : [],
+
+    logos: Array.isArray(m.logos)
+      ? m.logos.map((l: any) => ({
+          id: l.id || crypto.randomUUID(),
+          name: l.name ?? "",
+          observacao: l.observacao ?? "",
+          file: null,
+          temArquivo: !!l.temArquivo
+        }))
+      : [],
+
+    arquivosAdicionais: Array.isArray(m.arquivosAdicionais)
+      ? m.arquivosAdicionais.map((a: any) => ({
+          id: a.id || crypto.randomUUID(),
+          name: a.name ?? "",
+          observacao: a.observacao ?? "",
+          file: null,
+          temArquivo: !!a.temArquivo
+        }))
+      : [],
+
+    assinaturas: Array.isArray(m.assinaturas)
+      ? m.assinaturas.map((s: any) => ({
+          id: s.id || crypto.randomUUID(),
+          name: s.name ?? "",
+          observacao: s.observacao ?? "",
+          file: null,
+          temArquivo: !!s.temArquivo
+        }))
+      : [],
+
+    // 🔹 Campos que não vêm no back, mas existem no front
+    disponibilizacao: m.disponibilizacao ?? [],
+    emailOpcoes: m.emailOpcoes ?? []
+  }));
+}
+
 type HomeProps = {
   novoLayout: boolean
   user: UsuarioDTO | null
@@ -116,6 +183,10 @@ export default function Home({
 
         if (Array.isArray((data as any).layouts)) {
           setLayouts(mapLayoutsFromBackend((data as any).layouts))
+        }
+
+        if (Array.isArray((data as any).modelos)) {
+          setModelos(mapModelosFromBackend((data as any).modelos));
         }
       } finally {
         setLoading(false)

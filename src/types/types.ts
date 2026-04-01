@@ -24,6 +24,8 @@ export type Modelo = {
   id: string
   observacao: string
   regrasAcesso: string
+  nomeRecurso?: string | null
+  temArquivo?: boolean
 
   camposBusca: {
     backoffice: string

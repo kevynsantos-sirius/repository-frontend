@@ -111,7 +111,9 @@ export default function ModelosSidebar({
               }}
               title={modelo.arquivo?.name ?? 'Arquivo não definido'}
             >
-              {modelo.arquivo?.name ?? 'Arquivo não enviado'}
+              {modelo.arquivo?.name 
+                ?? modelo.nomeRecurso 
+                ?? (modelo.temArquivo ? 'Arquivo enviado' : 'Arquivo não enviado')}
             </div>
 
             {/* Remover */}
