@@ -59,14 +59,25 @@ export async function salvarChecklist(
   filesMassas: File[] = [],
   filesModelos: { file: File; key: string }[] = []
 ) {
+  console.log("LAYOUTS:", filesLayout);
+  console.log("MASSAS:", filesMassas);
+  console.log("MODELOS:", filesModelos);
   const formData = new FormData();
-
-  formData.append("dados", JSON.stringify(payload));
 
   filesLayout.forEach(f => formData.append("filesLayout", f));
   filesMassas.forEach(f => formData.append("filesMassas", f));
+  filesModelos.forEach(f => formData.append("arquivosModelos", f.file));
+  formData.append(
+    "keysModelos",
+    new Blob([JSON.stringify(filesModelos.map(f => f.key))], {
+      type: "application/json"
+    })
+  );
   // arquivosModelos agora é um array de objetos {file, key}
-  filesModelos.forEach(fm => formData.append(fm.key, fm.file));
+  formData.append("dados", new Blob(
+    [JSON.stringify(payload)],
+    { type: "application/json" }
+  ));
 
   const response = await api.post(
     "/api/Checklists/salvar",
@@ -84,24 +95,31 @@ export async function atualizarChecklist(
   filesMassas: File[] = [],
   filesModelos: { file: File; key: string }[] = []
 ) {
+  console.log("LAYOUTS:", filesLayout);
+  console.log("MASSAS:", filesMassas);
+  console.log("MODELOS:", filesModelos);
   const formData = new FormData()
-
-  formData.append(
-    "dto",
-    new Blob([JSON.stringify(payload)], {
-      type: "application/json"
-    })
-  )
 
   filesLayout.forEach(f => formData.append("filesLayout", f));
   filesMassas.forEach(f => formData.append("filesMassas", f));
+  filesModelos.forEach(f => formData.append("arquivosModelos", f.file));
+  formData.append(
+    "keysModelos",
+    new Blob([JSON.stringify(filesModelos.map(f => f.key))], {
+      type: "application/json"
+    })
+  );
+  
   // arquivosModelos agora é um array de objetos {file, key}
-  filesModelos.forEach(fm => formData.append(fm.key, fm.file));
+  formData.append("dto", new Blob(
+    [JSON.stringify(payload)],
+    { type: "application/json" }
+  ));
 
   const response = await api.post(
-    `/api/Checklists/${idChecklist}/editar`,
-    formData
-  )
+  `/api/Checklists/${idChecklist}/editar`,
+  formData
+);
 
   var res = response.data;
 

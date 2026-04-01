@@ -389,8 +389,8 @@ async function onSalvarChecklist() {
 
       await salvarChecklist(
         payload,
-        arquivosLayouts.filter((f): f is File => f instanceof File),
-        arquivosMassas.filter((f): f is File => f instanceof File),
+        arquivosLayouts.filter(f => f && f.name && f.size > 0),
+        arquivosMassas.filter(f => f && f.name && f.size > 0),
         arquivosModelos
       )
 
@@ -400,8 +400,8 @@ async function onSalvarChecklist() {
       await atualizarChecklist(
         checklist.idChecklistVersao.toString(),
         payload,
-        arquivosLayouts.filter((f): f is File => f instanceof File),
-        arquivosMassas.filter((f): f is File => f instanceof File),
+        arquivosLayouts.filter(f => f && f.name && f.size > 0),
+        arquivosMassas.filter(f => f && f.name && f.size > 0),
         arquivosModelos
       )
 
