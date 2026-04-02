@@ -20,7 +20,7 @@ import ConfirmModal from '../../modal/ConfirmModal'
 import { v4 as uuidv4 } from 'uuid';
 import type { Modelo } from "../../types/types"
 import PlanoComunicacaoForm from "../../forms/PlanoComunicacaoForm"
-import type { AbaAtiva } from "../../types/types"
+import type { AbaAtiva, ArquivoGerenciado, ArquivoGerenciadoDTO } from "../../types/types"
 
 
 /* =========================
@@ -41,72 +41,7 @@ function mapLayoutsFromBackend(layoutsBackend: any[]): Layout[] {
   }))
 }
 
-// ===============================
-// MAPEADOR MODELOS BACK → FRONT
-// ===============================
-function mapModelosFromBackend(modelosBackend: any[]): Modelo[] {
-  if (!Array.isArray(modelosBackend)) return [];
 
-  return modelosBackend.map((m: any) => ({
-    id: m.id || crypto.randomUUID(),
-
-    observacao: m.observacao ?? "",
-
-    regrasAcesso: m.regrasAcesso ?? "",
-
-    nomeRecurso: m.nomeRecurso ?? null,
-
-    arquivo: null,            // 🔹 nunca vem do back (somente arquivos novos)
-    arquivoImpressao: m.arquivoImpressao ? {} as File : null,
-
-    camposBusca: {
-      backoffice: m.camposBusca?.backoffice ?? "",
-      cliente: m.camposBusca?.cliente ?? "",
-      corretor: m.camposBusca?.corretor ?? "",
-      estipulante: m.camposBusca?.estipulante ?? "",
-      subestipulante: m.camposBusca?.subestipulante ?? "",
-      outro: m.camposBusca?.outro ?? ""
-    },
-
-    tipoImpressao: Array.isArray(m.tipoImpressao) ? m.tipoImpressao : [],
-
-    tipoAcabamento: Array.isArray(m.tipoAcabamento) ? m.tipoAcabamento : [],
-
-    logos: Array.isArray(m.logos)
-      ? m.logos.map((l: any) => ({
-          id: l.id || crypto.randomUUID(),
-          name: l.name ?? "",
-          observacao: l.observacao ?? "",
-          file: null,
-          temArquivo: !!l.temArquivo
-        }))
-      : [],
-
-    arquivosAdicionais: Array.isArray(m.arquivosAdicionais)
-      ? m.arquivosAdicionais.map((a: any) => ({
-          id: a.id || crypto.randomUUID(),
-          name: a.name ?? "",
-          observacao: a.observacao ?? "",
-          file: null,
-          temArquivo: !!a.temArquivo
-        }))
-      : [],
-
-    assinaturas: Array.isArray(m.assinaturas)
-      ? m.assinaturas.map((s: any) => ({
-          id: s.id || crypto.randomUUID(),
-          name: s.name ?? "",
-          observacao: s.observacao ?? "",
-          file: null,
-          temArquivo: !!s.temArquivo
-        }))
-      : [],
-
-    // 🔹 Campos que não vêm no back, mas existem no front
-    disponibilizacao: m.disponibilizacao ?? [],
-    emailOpcoes: m.emailOpcoes ?? []
-  }));
-}
 
 type HomeProps = {
   novoLayout: boolean
@@ -186,7 +121,7 @@ export default function Home({
         }
 
         if (Array.isArray((data as any).modelos)) {
-          setModelos(mapModelosFromBackend((data as any).modelos));
+          setModelos(data.modelos.map(parseModeloBackend))
         }
       } finally {
         setLoading(false)
@@ -399,6 +334,49 @@ function montarPayloadEnvio(
     // 🔥 ADICIONAR FINALMENTE OS MODELOS
     modelos: modelosPayload
   };
+}
+
+function parseArquivoGerenciado(dto: ArquivoGerenciadoDTO): ArquivoGerenciado {
+  return {
+    id: dto.id ?? crypto.randomUUID(),
+    name: dto.name ?? dto.nomeArquivo ?? "arquivo",
+    nomeArquivo: dto.nomeArquivo ?? dto.name ?? "arquivo",
+    observacao: dto.observacao ?? "",
+    arquivo: null,   // backend não envia o File real
+    file: undefined,   // usado somente no front quando o usuário envia
+    tipo: dto.tipo
+  }
+}
+
+function parseModeloBackend(m: any): Modelo {
+  return {
+    id: m.id ?? crypto.randomUUID(),
+    observacao: m.observacao ?? "",
+    regrasAcesso: m.regrasAcesso ?? "",
+    nomeRecurso: m.nomeRecurso ?? null,
+    temArquivo: m.temArquivo ?? false,
+
+    camposBusca: {
+      backoffice: m.camposBusca?.backoffice ?? "",
+      cliente: m.camposBusca?.cliente ?? "",
+      corretor: m.camposBusca?.corretor ?? "",
+      estipulante: m.camposBusca?.estipulante ?? "",
+      subestipulante: m.camposBusca?.subestipulante ?? "",
+      outro: m.camposBusca?.outro ?? ""
+    },
+
+    tipoImpressao: m.tipoImpressao ?? [],
+    tipoAcabamento: m.tipoAcabamento ?? [],
+    disponibilizacao: m.disponibilizacao ?? [],
+    emailOpcoes: m.emailOpcoes ?? [],
+
+    arquivoImpressao: m.arquivoImpressao ? {} as File : null,
+    arquivo: null, // nunca vem do back
+
+    logos: (m.logos ?? []).map(parseArquivoGerenciado),
+    arquivosAdicionais: (m.arquivosAdicionais ?? []).map(parseArquivoGerenciado),
+    assinaturas: (m.assinaturas ?? []).map(parseArquivoGerenciado)
+  }
 }
 
 

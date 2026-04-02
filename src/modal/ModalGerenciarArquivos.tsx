@@ -59,6 +59,7 @@ export default function ModalGerenciarArquivos({
           overflowY: "auto"
         }}
       >
+        {/* HEADER */}
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h4 className="m-0">{titulo}</h4>
           <button className="btn btn-sm btn-outline-secondary" onClick={onClose}>
@@ -66,6 +67,7 @@ export default function ModalGerenciarArquivos({
           </button>
         </div>
 
+        {/* UPLOAD */}
         <div className="mb-3">
           <label className="form-label">Adicionar arquivo</label>
           <input
@@ -75,7 +77,6 @@ export default function ModalGerenciarArquivos({
             onChange={(e) => setFile(e.target.files?.[0] || null)}
           />
 
-          {/* campo de observação */}
           <label className="form-label mt-2">Observação</label>
           <textarea
             className="form-control"
@@ -96,6 +97,7 @@ export default function ModalGerenciarArquivos({
 
         <hr />
 
+        {/* LISTA */}
         <h6 className="mb-2">Arquivos cadastrados</h6>
 
         {arquivos.length === 0 && (

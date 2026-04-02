@@ -57,8 +57,11 @@ export default function ModeloForm({
   const novo: ArquivoGerenciado = {
     id: crypto.randomUUID(),
     name: file.name,
+    nomeArquivo: file.name,
     file,
-    observacao
+    arquivo: file,
+    observacao,
+    tipo: 0
   };
 
   const atualizado: Modelo = {
@@ -82,6 +85,7 @@ export default function ModeloForm({
 
     onUpdateModelo(atualizado)
   }
+
 
   return (
     <div className="d-flex" style={{ width: '100%', minHeight: '100%' }}>
@@ -241,7 +245,9 @@ export default function ModeloForm({
           }
           arquivos={modeloSelecionado[modalTipo]}
           onClose={fecharModal}
-          onAddArquivo={(file, observacao) => addArquivo(modalTipo, file, observacao)}
+          onAddArquivo={(file, observacao) =>
+            addArquivo(modalTipo, file, observacao)
+          }
           onRemoveArquivo={(id) => removerArquivo(modalTipo, id)}
         />
       )}

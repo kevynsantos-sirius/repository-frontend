@@ -18,6 +18,22 @@ export type ArquivoGerenciado = {
   name: string
   observacao: string
   file?: File
+  nomeArquivo: string
+  arquivo: File | null
+  tipo: number
+}
+
+export type ArquivoGerenciadoDTO = {
+  id: string
+  name: string | null
+  observacao: string | null
+  temArquivo: boolean
+  codigo: number
+  tipo: number
+  descricaoTipo: string
+  arquivo: string | null
+  mimeType: string | null
+  nomeArquivo: string | null
 }
 
 export type Modelo = {
