@@ -671,6 +671,7 @@ function onNovoModelo(file: File) {
 
   setModelos(prev => [...prev, novo])
   setModeloSelecionadoId(novo.id)
+  setBtnSalvarCheckList(true);
 }
 
   // 🗑 Remover modelo
@@ -681,11 +682,12 @@ function onNovoModelo(file: File) {
     if (modeloSelecionadoId === modeloId) {
       setModeloSelecionadoId(null)
     }
+    setBtnSalvarCheckList(true);
   }
 
   // ✔ Selecionar modelo
   function onSelectModelo(modeloId: string) {
-    setModeloSelecionadoId(modeloId)
+    setModeloSelecionadoId(modeloId);
   }
 
   function onEditarObservacao(modeloId: string, novaObs: string) {
@@ -694,12 +696,14 @@ function onNovoModelo(file: File) {
       m.id === modeloId ? { ...m, observacao: novaObs } : m
     )
   )
+  setBtnSalvarCheckList(true);
 }
 
 function onUpdateModelo(modeloAtualizado: Modelo) {
   setModelos(prev =>
     prev.map(m => m.id === modeloAtualizado.id ? modeloAtualizado : m)
   )
+  setBtnSalvarCheckList(true);
 }
 
 
