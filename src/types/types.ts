@@ -55,8 +55,7 @@ export type Modelo = {
   tipoImpressao: string[]
   tipoAcabamento: string[]
 
-  // 🔥 Aqui mantém o File real, diferente do DTO
-  arquivoImpressao: File | null
+ arquivosImpressao: File[]
 
   // DISPONIBILIZAÇÃO
   disponibilizacao: string[]

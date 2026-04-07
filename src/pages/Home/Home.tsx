@@ -255,7 +255,7 @@ function montarPayloadEnvio(
       mod.logos.some(l => !!l.file) ||
       mod.arquivosAdicionais.some(a => !!a.file) ||
       mod.assinaturas.some(s => !!s.file) ||
-      !!mod.arquivoImpressao
+      !!mod.arquivosImpressao
     );
   }
 
@@ -269,9 +269,13 @@ function montarPayloadEnvio(
 
     tipoImpressao: mod.tipoImpressao,
     tipoAcabamento: mod.tipoAcabamento,
+    disponibilizacao: mod.disponibilizacao,
+    emailOpcoes: mod.emailOpcoes,
 
     temArquivo: modeloTemArquivoNovo(mod),
-    arquivoImpressao: !!mod.arquivoImpressao,
+    arquivosImpressao: mod.arquivosImpressao
+      ?.filter(a => a)
+      .map(a => a) ?? [],
 
     logos: mod.logos.map(l => ({
       id: l.id,
@@ -368,9 +372,8 @@ function parseModeloBackend(m: any): Modelo {
     tipoAcabamento: m.tipoAcabamento ?? [],
     disponibilizacao: m.disponibilizacao ?? [],
     emailOpcoes: m.emailOpcoes ?? [],
-
-    arquivoImpressao: m.arquivoImpressao ? {} as File : null,
     arquivo: null, // nunca vem do back
+    arquivosImpressao: (m.arquivosImpressao ?? []).map(parseArquivoGerenciado),
 
     logos: (m.logos ?? []).map(parseArquivoGerenciado),
     arquivosAdicionais: (m.arquivosAdicionais ?? []).map(parseArquivoGerenciado),
@@ -428,6 +431,16 @@ async function onSalvarChecklist() {
           arquivosModelos.push({
             file: a.file,
             key: `modelo-${i}-adicional-${j}`
+          });
+        }
+      });
+
+      m.arquivosImpressao.forEach((i , j) => {
+        if(i)
+        {
+          arquivosModelos.push({
+            file: i,
+            key: `modelo-${i}-impressao-${j}`
           });
         }
       });
@@ -661,7 +674,7 @@ function onNovoModelo(file: File) {
 
     tipoImpressao: [],
     tipoAcabamento: [],
-    arquivoImpressao: null,
+    arquivosImpressao: [],
 
     disponibilizacao: [],
     emailOpcoes: []

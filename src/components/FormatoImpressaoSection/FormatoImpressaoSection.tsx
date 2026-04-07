@@ -80,17 +80,25 @@ export default function FormatoImpressaoSection({ modelo, onUpdateModelo }: Prop
       <input
         type="file"
         className="form-control mt-1"
+        multiple
         onChange={(e) => {
-          const file = e.target.files?.[0];
-          onUpdateModelo({ ...modelo, arquivoImpressao: file || null });
+          const files = Array.from(e.target.files ?? []);
+          onUpdateModelo({
+            ...modelo,
+            arquivosImpressao: [...(modelo.arquivosImpressao ?? []), ...files],
+          });
         }}
       />
 
-      {modelo.arquivoImpressao && (
-        <p className="mt-2">
-          Arquivo atual: <strong>{modelo.arquivoImpressao.name}</strong>
-        </p>
-      )}
+    {modelo.arquivosImpressao?.length > 0 && (
+        <ul className="mt-2">
+          {modelo.arquivosImpressao.map((file, index) => (
+            <li key={index}>
+              <strong>{file.name}</strong>
+            </li>
+          ))}
+        </ul>
+    )}
     </div>
   );
 }

@@ -50,7 +50,7 @@ export type ChecklistEnvioDTO = {
     tipoImpressao: string[]
     tipoAcabamento: string[]
     temArquivo: boolean
-    arquivoImpressao: boolean
+    arquivosImpressao: File[]
 
     logos: { id: string; name: string; observacao: string; temArquivo: boolean }[]
     arquivosAdicionais: { id: string; name: string; observacao: string; temArquivo: boolean }[]
