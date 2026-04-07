@@ -199,7 +199,6 @@ export default function ModeloForm({
                         <th><span className="label-azul">Corretor</span></th>
                         <th><span className="label-azul">Estipulante</span></th>
                         <th><span className="label-azul">Subestipulante</span></th>
-                        <th><span className="label-azul">Outro</span></th>
                       </tr>
                     </thead>
 

@@ -37,7 +37,6 @@ export type ModeloEnvioDTO = {
     corretor: string
     estipulante: string
     subestipulante: string
-    outro: string
   }
 
   tipoImpressao: string[]

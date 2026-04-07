@@ -46,7 +46,6 @@ export type ChecklistEnvioDTO = {
       corretor: string
       estipulante: string
       subestipulante: string
-      outro: string
     }
     tipoImpressao: string[]
     tipoAcabamento: string[]
