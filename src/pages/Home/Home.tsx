@@ -275,7 +275,12 @@ function montarPayloadEnvio(
     temArquivo: modeloTemArquivoNovo(mod),
     arquivosImpressao: mod.arquivosImpressao
       ?.filter(a => a)
-      .map(a => a) ?? [],
+      .map(a => ({
+        id: crypto.randomUUID(),
+        name: '',
+        observacao: '',
+        temArquivo: !!a
+      })) ?? [],
 
     logos: mod.logos.map(l => ({
       id: l.id,
@@ -435,12 +440,11 @@ async function onSalvarChecklist() {
         }
       });
 
-      m.arquivosImpressao.forEach((i , j) => {
-        if(i)
-        {
+      m.arquivosImpressao.forEach((arquivo, j) => {
+        if (arquivo) {
           arquivosModelos.push({
-            file: i,
-            key: `modelo-${i}-impressao-${j}`
+            file: arquivo,
+            key: `modelo-${i}-impressao-${j}` // ✅ usa o índice do modelo
           });
         }
       });
