@@ -443,7 +443,7 @@ async function onSalvarChecklist() {
       m.arquivosImpressao.forEach((arquivo, j) => {
         if (arquivo) {
           arquivosModelos.push({
-            file: arquivo,
+            file: arquivo.file!,
             key: `modelo-${i}-impressao-${j}` // ✅ usa o índice do modelo
           });
         }

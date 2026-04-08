@@ -55,7 +55,7 @@ export type Modelo = {
   tipoImpressao: string[]
   tipoAcabamento: string[]
 
- arquivosImpressao: File[]
+ arquivosImpressao: ArquivoGerenciado[]
 
   // DISPONIBILIZAÇÃO
   disponibilizacao: string[]
