@@ -209,7 +209,7 @@ export default function ModeloForm({
                             <textarea
                               className="form-control"
                               rows={5}
-                              value={value}
+                              value={value ?? ""}   // 👍 nunca será null
                               onChange={(e) =>
                                 onUpdateModelo({
                                   ...modeloSelecionado,

@@ -49,24 +49,41 @@ export type Modelo = {
     corretor: string
     estipulante: string
     subestipulante: string
+    outro?: string | null
   }
 
-  // FORMATAÇÃO & IMPRESSÃO
+  // Arrays usados na UI
   tipoImpressao: string[]
   tipoAcabamento: string[]
-
- arquivosImpressao: ArquivoGerenciado[]
-
-  // DISPONIBILIZAÇÃO
   disponibilizacao: string[]
   emailOpcoes: string[]
 
-  // ARQUIVOS GERENCIADOS
-  logos: ArquivoGerenciado[]        // cada item contém File|null
+  // Booleans vindos do Backend
+  duplex: boolean
+  isImpresso: boolean
+
+  acabamentoAutoEnvelope: boolean
+  acabamentoManuseio: boolean
+  acabamentoInsercao: boolean
+
+  disponibilizacaoCorreioSimples: boolean
+  disponibilizacaoCorreioSimplesAR: boolean
+  crc: boolean
+  disponibilizacaoMeusDocumentosPDF: boolean
+  disponibilizacaoSMS: boolean
+
+  emailComDocumentoAnexo: boolean
+  emailComDocumentoAnexoEarmazenamento: boolean
+  emailComDocumentoAnexoEcorpoEmail: boolean
+  emailComDocumentoAnexoEarmazenamentoEemail: boolean
+  emailComDocumentoAnexoECarimbo: boolean
+
+  // Arquivos
+  logos: ArquivoGerenciado[]
   arquivosAdicionais: ArquivoGerenciado[]
   assinaturas: ArquivoGerenciado[]
+  arquivosImpressao: ArquivoGerenciado[]
 
-  // 🔥 arquivo do modelo principal (não existe no DTO)
   arquivo: File | null
 }
 

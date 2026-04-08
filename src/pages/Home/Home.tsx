@@ -358,7 +358,7 @@ function parseArquivoGerenciado(dto: ArquivoGerenciadoDTO): ArquivoGerenciado {
 }
 
 function parseModeloBackend(m: any): Modelo {
-  return {
+  const out: Modelo = {
     id: m.id ?? crypto.randomUUID(),
     observacao: m.observacao ?? "",
     regrasAcesso: m.regrasAcesso ?? "",
@@ -370,20 +370,64 @@ function parseModeloBackend(m: any): Modelo {
       cliente: m.camposBusca?.cliente ?? "",
       corretor: m.camposBusca?.corretor ?? "",
       estipulante: m.camposBusca?.estipulante ?? "",
-      subestipulante: m.camposBusca?.subestipulante ?? ""
+      subestipulante: m.camposBusca?.subestipulante ?? "",
+      outro: m.camposBusca?.outro ?? ""
     },
 
-    tipoImpressao: m.tipoImpressao ?? [],
-    tipoAcabamento: m.tipoAcabamento ?? [],
-    disponibilizacao: m.disponibilizacao ?? [],
-    emailOpcoes: m.emailOpcoes ?? [],
-    arquivo: null, // nunca vem do back
-    arquivosImpressao: (m.arquivosImpressao ?? []).map(parseArquivoGerenciado),
+    tipoImpressao: [],
+    tipoAcabamento: [],
+    disponibilizacao: [],
+    emailOpcoes: [],
 
+    arquivo: null,
+
+    arquivosImpressao: (m.arquivosImpressao ?? []).map(parseArquivoGerenciado),
     logos: (m.logos ?? []).map(parseArquivoGerenciado),
     arquivosAdicionais: (m.arquivosAdicionais ?? []).map(parseArquivoGerenciado),
-    assinaturas: (m.assinaturas ?? []).map(parseArquivoGerenciado)
-  }
+    assinaturas: (m.assinaturas ?? []).map(parseArquivoGerenciado),
+
+    duplex: m.duplex ?? false,
+    isImpresso: m.isImpresso ?? false,
+
+    acabamentoAutoEnvelope: m.acabamentoAutoEnvelope ?? false,
+    acabamentoManuseio: m.acabamentoManuseio ?? false,
+    acabamentoInsercao: m.acabamentoInsercao ?? false,
+
+    disponibilizacaoCorreioSimples: m.disponibilizacaoCorreioSimples ?? false,
+    disponibilizacaoCorreioSimplesAR: m.disponibilizacaoCorreioSimplesAR ?? false,
+    crc: m.crc ?? false,
+    disponibilizacaoMeusDocumentosPDF: m.disponibilizacaoMeusDocumentosPDF ?? false,
+    disponibilizacaoSMS: m.disponibilizacaoSMS ?? false,
+
+    emailComDocumentoAnexo: m.emailComDocumentoAnexo ?? false,
+    emailComDocumentoAnexoEarmazenamento: m.emailComDocumentoAnexoEarmazenamento ?? false,
+    emailComDocumentoAnexoEcorpoEmail: m.emailComDocumentoAnexoEcorpoEmail ?? false,
+    emailComDocumentoAnexoEarmazenamentoEemail: m.emailComDocumentoAnexoEarmazenamentoEemail ?? false,
+    emailComDocumentoAnexoECarimbo: m.emailComDocumentoAnexoECarimbo ?? false
+  };
+
+  // 🔄 SINCRONIZAÇÃO AUTOMÁTICA
+
+  if (m.duplex) out.tipoImpressao.push("duplex");
+  if (m.isImpresso) out.tipoImpressao.push("simples");
+
+  if (m.acabamentoAutoEnvelope) out.tipoAcabamento.push("autoEnvelope");
+  if (m.acabamentoManuseio) out.tipoAcabamento.push("manuseio");
+  if (m.acabamentoInsercao) out.tipoAcabamento.push("insercao");
+
+  if (m.disponibilizacaoCorreioSimples) out.disponibilizacao.push("correiosSimples");
+  if (m.disponibilizacaoCorreioSimplesAR) out.disponibilizacao.push("correiosSimplesAR");
+  if (m.crc) out.disponibilizacao.push("impressaoSobDemanda");
+  if (m.disponibilizacaoMeusDocumentosPDF) out.disponibilizacao.push("meusDocumentosPdf");
+  if (m.disponibilizacaoSMS) out.disponibilizacao.push("sms");
+
+  if (m.emailComDocumentoAnexo) out.emailOpcoes.push("anexo");
+  if (m.emailComDocumentoAnexoEarmazenamento) out.emailOpcoes.push("anexoArmazenamento");
+  if (m.emailComDocumentoAnexoEcorpoEmail) out.emailOpcoes.push("corpoEmail");
+  if (m.emailComDocumentoAnexoEarmazenamentoEemail) out.emailOpcoes.push("corpoEmailArmazenamento");
+  if (m.emailComDocumentoAnexoECarimbo) out.emailOpcoes.push("anexoCarimboTempo");
+
+  return out;
 }
 
 
@@ -660,32 +704,56 @@ function onNovoModelo(file: File) {
   const novo: Modelo = {
     id: crypto.randomUUID(),
     arquivo: file,
+
     observacao: "",
-
-    logos: [],
-    arquivosAdicionais: [],
-    assinaturas: [],
-
     regrasAcesso: "",
+    nomeRecurso: null,
+    temArquivo: true,
 
     camposBusca: {
       backoffice: "",
       cliente: "",
       corretor: "",
       estipulante: "",
-      subestipulante: ""
+      subestipulante: "",
+      outro: ""
     },
 
+    // ARRAYS (UI)
     tipoImpressao: [],
     tipoAcabamento: [],
     arquivosImpressao: [],
-
     disponibilizacao: [],
-    emailOpcoes: []
-  }
+    emailOpcoes: [],
 
-  setModelos(prev => [...prev, novo])
-  setModeloSelecionadoId(novo.id)
+    // ARQUIVOS GERENCIADOS
+    logos: [],
+    arquivosAdicionais: [],
+    assinaturas: [],
+
+    // BOOLEANS (BACKEND)
+    duplex: false,
+    isImpresso: false,
+
+    acabamentoAutoEnvelope: false,
+    acabamentoManuseio: false,
+    acabamentoInsercao: false,
+
+    disponibilizacaoCorreioSimples: false,
+    disponibilizacaoCorreioSimplesAR: false,
+    crc: false,
+    disponibilizacaoMeusDocumentosPDF: false,
+    disponibilizacaoSMS: false,
+
+    emailComDocumentoAnexo: false,
+    emailComDocumentoAnexoEarmazenamento: false,
+    emailComDocumentoAnexoEcorpoEmail: false,
+    emailComDocumentoAnexoEarmazenamentoEemail: false,
+    emailComDocumentoAnexoECarimbo: false
+  };
+
+  setModelos(prev => [...prev, novo]);
+  setModeloSelecionadoId(novo.id);
   setBtnSalvarCheckList(true);
 }
 
