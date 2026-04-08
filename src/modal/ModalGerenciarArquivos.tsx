@@ -104,7 +104,9 @@ export default function ModalGerenciarArquivos({
           <p className="text-muted">Nenhum arquivo enviado.</p>
         )}
 
-        {arquivos.map((a) => (
+        {arquivos
+         .filter(a => !a.excluido)   // 👈 só mostra os NÃO excluídos
+        .map((a) => (
           <div
             key={a.id}
             className="d-flex flex-column border rounded p-2 mb-2"

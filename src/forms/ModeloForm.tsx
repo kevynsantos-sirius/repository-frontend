@@ -61,7 +61,8 @@ export default function ModeloForm({
     file,
     arquivo: file,
     observacao,
-    tipo: 0
+    tipo: 0,
+    excluido: false
   };
 
   const atualizado: Modelo = {
@@ -72,19 +73,23 @@ export default function ModeloForm({
   onUpdateModelo(atualizado);
 }
 
-  function removerArquivo(
-    tipo: "logos" | "arquivosAdicionais" | "assinaturas",
-    arquivoId: string
-  ) {
-    if (!modeloSelecionado) return
+function removerArquivo(
+  tipo: "logos" | "arquivosAdicionais" | "assinaturas",
+  arquivoId: string
+) {
+  if (!modeloSelecionado) return;
 
-    const atualizado: Modelo = {
-      ...modeloSelecionado,
-      [tipo]: modeloSelecionado[tipo].filter((a) => a.id !== arquivoId)
-    }
+  const atualizado: Modelo = {
+    ...modeloSelecionado,
+    [tipo]: modeloSelecionado[tipo].map((a) =>
+      a.id === arquivoId
+        ? { ...a, excluido: true } // ← Marca como EXCLUIDO
+        : a
+    )
+  };
 
-    onUpdateModelo(atualizado)
-  }
+  onUpdateModelo(atualizado);
+}
 
 
   return (

@@ -21,6 +21,7 @@ export type ArquivoGerenciado = {
   nomeArquivo: string
   arquivo: File | null
   tipo: number
+  excluido: boolean
 }
 
 export type ArquivoGerenciadoDTO = {
@@ -34,6 +35,7 @@ export type ArquivoGerenciadoDTO = {
   arquivo: string | null
   mimeType: string | null
   nomeArquivo: string | null
+  excluido: boolean
 }
 
 export type Modelo = {

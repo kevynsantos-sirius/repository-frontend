@@ -276,31 +276,35 @@ function montarPayloadEnvio(
     arquivosImpressao: mod.arquivosImpressao
       ?.filter(a => a)
       .map(a => ({
-        id: crypto.randomUUID(),
+        id: a.id,
         name: '',
         observacao: '',
-        temArquivo: !!a
+        temArquivo: !!a,
+        excluido: a.excluido
       })) ?? [],
 
     logos: mod.logos.map(l => ({
       id: l.id,
       name: l.name,
       observacao: l.observacao,
-      temArquivo: !!l.file
+      temArquivo: !!l.file,
+      excluido: l.excluido
     })),
 
     arquivosAdicionais: mod.arquivosAdicionais.map(a => ({
       id: a.id,
       name: a.name,
       observacao: a.observacao,
-      temArquivo: !!a.file
+      temArquivo: !!a.file,
+      excluido: a.excluido
     })),
 
     assinaturas: mod.assinaturas.map(s => ({
       id: s.id,
       name: s.name,
       observacao: s.observacao,
-      temArquivo: !!s.file
+      temArquivo: !!s.file,
+      excluido: s.excluido
     }))
   }));
 
@@ -353,7 +357,8 @@ function parseArquivoGerenciado(dto: ArquivoGerenciadoDTO): ArquivoGerenciado {
     observacao: dto.observacao ?? "",
     arquivo: null,   // backend não envia o File real
     file: undefined,   // usado somente no front quando o usuário envia
-    tipo: dto.tipo
+    tipo: dto.tipo,
+    excluido: false
   }
 }
 

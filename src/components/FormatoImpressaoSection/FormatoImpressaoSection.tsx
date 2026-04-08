@@ -91,7 +91,8 @@ export default function FormatoImpressaoSection({ modelo, onUpdateModelo }: Prop
           observacao: '',
           file: file,
           arquivo: null,                // não usamos esse campo no envio
-          tipo: 1                       // coloque o valor correto (impressão)
+          tipo: 1,                       // coloque o valor correto (impressão)
+          excluido: false
         }));
 
         onUpdateModelo({
