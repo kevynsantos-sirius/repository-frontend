@@ -434,7 +434,19 @@ function parseModeloBackend(m: any): Modelo {
   return out;
 }
 
+function validarModelo(): boolean {
+  const filtrados = modelos.filter(m =>
+    m.tipoImpressao?.includes("duplex") &&
+    m.tipoImpressao?.includes("simples")
+  );
 
+  if (filtrados.length > 0) {
+    toast.warning("Um dos modelos está marcado como duplex e impresso ao mesmo tempo");
+    return false;
+  }
+
+  return true;
+}
 async function onSalvarChecklist() {
 
   // 🔥 Validação Identificação
@@ -444,6 +456,8 @@ async function onSalvarChecklist() {
 
   // 🔥 Validação TI (somente se abriu)
   if (!validarArquivosTI()) return
+
+  if(!validarModelo()) return
 
   try {
     const payload = montarPayloadEnvio(checklist, layouts, modelos)
