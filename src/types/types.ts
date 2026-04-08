@@ -49,7 +49,6 @@ export type Modelo = {
     corretor: string
     estipulante: string
     subestipulante: string
-    outro?: string | null
   }
 
   // Arrays usados na UI

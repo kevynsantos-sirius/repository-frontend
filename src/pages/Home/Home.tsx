@@ -370,8 +370,7 @@ function parseModeloBackend(m: any): Modelo {
       cliente: m.camposBusca?.cliente ?? "",
       corretor: m.camposBusca?.corretor ?? "",
       estipulante: m.camposBusca?.estipulante ?? "",
-      subestipulante: m.camposBusca?.subestipulante ?? "",
-      outro: m.camposBusca?.outro ?? ""
+      subestipulante: m.camposBusca?.subestipulante ?? ""
     },
 
     tipoImpressao: [],
@@ -715,8 +714,7 @@ function onNovoModelo(file: File) {
       cliente: "",
       corretor: "",
       estipulante: "",
-      subestipulante: "",
-      outro: ""
+      subestipulante: ""
     },
 
     // ARRAYS (UI)
