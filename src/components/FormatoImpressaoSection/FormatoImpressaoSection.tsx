@@ -23,6 +23,18 @@ export default function FormatoImpressaoSection({ modelo, onUpdateModelo }: Prop
     });
   }
 
+  // 🔥 REMOVER arquivo (seta excluido = true)
+  function removerArquivoImpressao(id: string) {
+    const atualizados = modelo.arquivosImpressao.map(arq =>
+      arq.id === id ? { ...arq, excluido: true } : arq
+    );
+
+    onUpdateModelo({
+      ...modelo,
+      arquivosImpressao: atualizados
+    });
+  }
+
   return (
     <div className="mt-4 mb-4">
       <h6 className="fw-bold">Formatação & Impressão</h6>
@@ -75,45 +87,55 @@ export default function FormatoImpressaoSection({ modelo, onUpdateModelo }: Prop
         </div>
       </div>
 
-    {/* ARQUIVO DE IMPRESSÃO */}
-    <span className="label-azul">Arquivo de impressão (opcional)</span>
-    <input
-      type="file"
-      className="form-control mt-1"
-      multiple
-      onChange={(e) => {
-        const files = Array.from(e.target.files ?? []);
+      {/* ARQUIVO DE IMPRESSÃO */}
+      <span className="label-azul">Arquivo de impressão (opcional)</span>
+      <input
+        type="file"
+        className="form-control mt-1"
+        multiple
+        onChange={(e) => {
+          const files = Array.from(e.target.files ?? []);
 
-        const novosArquivos: ArquivoGerenciado[] = files.map(file => ({
-          id: crypto.randomUUID(),      // ou '' se o backend gerar
-          name: file.name,
-          nomeArquivo: file.name,
-          observacao: '',
-          file: file,
-          arquivo: null,                // não usamos esse campo no envio
-          tipo: 1,                       // coloque o valor correto (impressão)
-          excluido: false
-        }));
+          const novosArquivos: ArquivoGerenciado[] = files.map(file => ({
+            id: crypto.randomUUID(),
+            name: file.name,
+            nomeArquivo: file.name,
+            observacao: '',
+            file: file,
+            arquivo: null,
+            tipo: 1,
+            excluido: false
+          }));
 
-        onUpdateModelo({
-          ...modelo,
-          arquivosImpressao: [
-            ...(modelo.arquivosImpressao ?? []),
-            ...novosArquivos
-          ],
-        });
-      }}
-    />
+          onUpdateModelo({
+            ...modelo,
+            arquivosImpressao: [
+              ...(modelo.arquivosImpressao ?? []),
+              ...novosArquivos
+            ],
+          });
+        }}
+      />
 
-    {modelo.arquivosImpressao?.length > 0 && (
-      <ul className="mt-2">
-        {modelo.arquivosImpressao.map((arq, index) => (
-          <li key={arq.id ?? index}>
-            <strong>{arq.name}</strong>
-          </li>
-        ))}
-      </ul>
-    )}
+      {/* LISTAGEM (somente não excluídos) */}
+      {modelo.arquivosImpressao?.some(a => !a.excluido) && (
+        <ul className="mt-2">
+          {modelo.arquivosImpressao
+            .filter(a => !a.excluido)
+            .map((arq) => (
+              <li key={arq.id} className="d-flex justify-content-between align-items-center mb-2">
+                <strong>{arq.name}</strong>
+
+                <button
+                  className="btn btn-sm btn-danger ms-3"
+                  onClick={() => removerArquivoImpressao(arq.id)}
+                >
+                  Remover
+                </button>
+              </li>
+            ))}
+        </ul>
+      )}
     </div>
   );
 }
