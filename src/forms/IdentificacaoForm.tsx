@@ -1,6 +1,8 @@
 import type { ChecklistVersaoDTO } from '../dto/ChecklistVersaoDTO'
 import type { UsuarioDTO } from '../dto/UsuarioDTO'
-import type { Dispatch, SetStateAction } from 'react'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import type { Ramo } from '../types/types'
+import { buscarRamos } from '../services/ramo'
 
 type Props = {
   checklist: ChecklistVersaoDTO | null
@@ -20,6 +22,20 @@ export default function IdentificacaoForm({
   setBtnSalvarCheckList
 }: Props) {
 
+  const [ramos, setRamos] = useState<Ramo[]>([])
+
+  useEffect(() => {
+    async function carregar() {
+      try {
+        const data = await buscarRamos()
+        setRamos(data)
+      } catch (err) {
+        console.error("Erro ao buscar ramos", err)
+      }
+    }
+
+    carregar()
+  }, [])
   // Loading somente quando estiver editando e ainda não carregou
   if (!checklist && !isNovo) {
     return (
@@ -32,47 +48,47 @@ export default function IdentificacaoForm({
   // Garante objeto sempre existente
   const checklistForm: ChecklistVersaoDTO = checklist as ChecklistVersaoDTO
 
-function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
-  campo: K,
-  valor: ChecklistVersaoDTO[K]
-) {
-  onChangeChecklist(prev => {
-    const base: ChecklistVersaoDTO = prev ?? {
-      idChecklistVersao: 0,
-      idChecklist: 0,
-      nomeDocumento: '',
-      idRamo: 0,
-      nomeRamo: null,
-      centroCusto: '',
-      status: 0,
-      idUsuario: 0,
+  function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
+    campo: K,
+    valor: ChecklistVersaoDTO[K]
+  ) {
+    onChangeChecklist(prev => {
+      const base: ChecklistVersaoDTO = prev ?? {
+        idChecklistVersao: 0,
+        idChecklist: 0,
+        nomeDocumento: '',
+        idRamo: 0,
+        nomeRamo: null,
+        centroCusto: '',
+        status: 0,
+        idUsuario: 0,
 
-      icatu: false,
-      caixa: false,
-      rioGrande: false,
+        icatu: false,
+        caixa: false,
+        rioGrande: false,
 
-      idDemanda: '',
+        idDemanda: '',
 
-      temLayout: false,
-      viaServico: false,
-      viaTxt: false,
+        temLayout: false,
+        viaServico: false,
+        viaTxt: false,
 
-      checklistDTO: null,
+        checklistDTO: null,
 
-      usuario: {
-        id: user?.id ?? 0,
-        nomeUsuario: user?.nomeUsuario ?? ''
-      },
+        usuario: {
+          id: user?.id ?? 0,
+          nomeUsuario: user?.nomeUsuario ?? ''
+        },
 
-      layouts: []
-    }
+        layouts: []
+      }
 
-    return {
-      ...base,
-      [campo]: valor
-    }
-  })
-}
+      return {
+        ...base,
+        [campo]: valor
+      }
+    })
+  }
 
 
 
@@ -101,8 +117,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
               maxLength={50}
               required
               value={checklistForm?.nomeDocumento ?? ''}
-              onChange={(e) =>
-              {atualizarCampo('nomeDocumento', e.target.value); setBtnSalvarCheckList(true); }
+              onChange={(e) => { atualizarCampo('nomeDocumento', e.target.value); setBtnSalvarCheckList(true); }
               }
             />
 
@@ -112,20 +127,25 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
             <label className="form-label">
               Ramo <span className="text-danger">*</span>
             </label>
+
             <select
               disabled={!isNovo}
               className="form-control"
               required
               value={checklistForm?.idRamo ?? ''}
-              onChange={(e) =>
-              {atualizarCampo('idRamo', Number(e.target.value)); setBtnSalvarCheckList(true); }
-              }
+              onChange={(e) => {
+                atualizarCampo('idRamo', Number(e.target.value))
+
+                setBtnSalvarCheckList(true)
+              }}
             >
               <option value="">Selecione</option>
-              <option value="1">CAPITALIZAÇÃO</option>
-              <option value="2">PREVIDÊNCIA</option>
-              <option value="3">SEGUROS</option>
-              <option value="4">FUNDO DE PENSÃO</option>
+
+              {ramos.map((ramo) => (
+                <option key={ramo.idRamo} value={ramo.idRamo}>
+                  {ramo.nomeRamo}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -140,8 +160,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
               className="form-control"
               required
               value={checklistForm?.status ?? ''}
-              onChange={(e) =>
-              {atualizarCampo('status', Number(e.target.value)); setBtnSalvarCheckList(true); }
+              onChange={(e) => { atualizarCampo('status', Number(e.target.value)); setBtnSalvarCheckList(true); }
               }
             >
               <option value="">Selecione</option>
@@ -161,8 +180,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
               maxLength={5}
               required
               value={checklistForm?.centroCusto ?? ''}
-              onChange={(e) =>
-              {atualizarCampo('centroCusto', e.target.value); setBtnSalvarCheckList(true);}
+              onChange={(e) => { atualizarCampo('centroCusto', e.target.value); setBtnSalvarCheckList(true); }
               }
             />
           </div>
@@ -196,8 +214,7 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
               maxLength={40}
               required
               value={checklistForm?.idDemanda ?? ''}
-              onChange={(e) =>
-              {atualizarCampo('idDemanda', e.target.value); setBtnSalvarCheckList(true);}
+              onChange={(e) => { atualizarCampo('idDemanda', e.target.value); setBtnSalvarCheckList(true); }
               }
             />
           </div>
@@ -212,12 +229,11 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
                 type="checkbox"
                 className="form-check-input"
                 checked={checklistForm?.icatu ?? false}
-                onChange={(e) =>
-                {atualizarCampo('icatu', e.target.checked); setBtnSalvarCheckList(true);}
+                onChange={(e) => { atualizarCampo('icatu', e.target.checked); setBtnSalvarCheckList(true); }
                 }
               />
               <label className="form-check-label ms-2">
-                Documento Icatu?
+                Documento Cliente Personalizado?
               </label>
             </div>
 
@@ -226,12 +242,11 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
                 type="checkbox"
                 className="form-check-input"
                 checked={checklistForm?.rioGrande ?? false}
-                onChange={(e) =>
-                {atualizarCampo('rioGrande', e.target.checked); setBtnSalvarCheckList(true);}
+                onChange={(e) => { atualizarCampo('rioGrande', e.target.checked); setBtnSalvarCheckList(true); }
                 }
               />
               <label className="form-check-label ms-2">
-                Documento Rio Grande?
+                Documento Cliente Plus?
               </label>
             </div>
 
@@ -240,11 +255,10 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
                 type="checkbox"
                 className="form-check-input"
                 checked={checklistForm?.caixa ?? false}
-                onChange={(e) =>
-                  {atualizarCampo('caixa', e.target.checked); setBtnSalvarCheckList(true);}}
+                onChange={(e) => { atualizarCampo('caixa', e.target.checked); setBtnSalvarCheckList(true); }}
               />
               <label className="form-check-label ms-2">
-                Documento Caixa?
+                Documento Cliente Personal?
               </label>
             </div>
 
