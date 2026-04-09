@@ -41,10 +41,10 @@ export default function ChecklistDocPreviewModal({ aberto, onClose, data }: Prop
       const COL_VALUE = 6500
 
       const cellBorder = {
-        top:    { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
+        top: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
         bottom: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
-        left:   { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
-        right:  { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
+        left: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
+        right: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
       }
 
       const labelCell = (text: string) =>
@@ -112,6 +112,14 @@ export default function ChecklistDocPreviewModal({ aberto, onClose, data }: Prop
           rows,
         })
 
+      /* auxiliar p/ tabelas simples de arrays */
+      const simpleTable = (label: string, values: string[]) =>
+        createTable([
+          new TableRow({
+            children: [labelCell(label), valueCell(values.length ? values.join(", ") : "-")],
+          }),
+        ])
+
       /* =========================
          CAPA
       ========================= */
@@ -139,7 +147,7 @@ export default function ChecklistDocPreviewModal({ aberto, onClose, data }: Prop
         row("Ramo", data.nomeRamo ?? "-"),
         row("Centro de custo", data.centroCusto),
         row("Status", data.status === 1 ? "Ativo" : "Inativo"),
-        row("Responsável", data.usuario?.nomeUsuario),
+        row("Responsável", data.usuario?.nomeUsuario ?? "-"),
         row("Demanda", data.idDemanda),
       ])
 
@@ -158,21 +166,87 @@ export default function ChecklistDocPreviewModal({ aberto, onClose, data }: Prop
          LAYOUTS + MASSAS
       ========================= */
 
-      const layoutsSections = data.layouts.flatMap((layout) => {
-        const massaBlocks = layout.massasDados.flatMap((massa) => [
-          thirdTitle(`Massa: ${massa.nomeMassaDados}`),
+      const layoutsSections = (data.layouts ?? []).flatMap((layout) => {
+        const massaBlocks = (layout.massasDados ?? []).flatMap((massa) => [
+          thirdTitle(`Massa: ${massa.nomeMassaDados ?? "-"}`),
           createTable([row("Observação da massa", massa.observacao ?? "-")]),
         ])
 
         return [
-          subTitle(`Layout: ${layout.nomeLayout}`),
+          subTitle(`Layout: ${layout.nomeLayout ?? "-"}`),
           createTable([row("Observação do layout", layout.observacao ?? "-")]),
           ...massaBlocks,
         ]
       })
 
       /* =========================
-         CABEÇALHO E RODAPÉ SIMPLES
+         MODELOS — agora com NULL-SAFE 👍
+      ========================= */
+
+      const modelosSections = (data.modelos ?? []).flatMap((modelo) => {
+        const camposBusca = modelo.camposBusca ?? {
+          backoffice: "",
+          cliente: "",
+          corretor: "",
+          estipulante: "",
+          subestipulante: "",
+        }
+
+        const logos = modelo.logos ?? []
+        const arquivos = modelo.arquivosAdicionais ?? []
+        const assinaturas = modelo.assinaturas ?? []
+
+        const logosList =
+          logos.length > 0
+            ? logos.map((l) => new Paragraph(`• ${l.name ?? l.nomeArquivo ?? "-"}`))
+            : [new Paragraph("-")]
+
+        const arquivosList =
+          arquivos.length > 0
+            ? arquivos.map((a) => new Paragraph(`• ${a.name ?? a.nomeArquivo ?? "-"}`))
+            : [new Paragraph("-")]
+
+        const assinaturasList =
+          assinaturas.length > 0
+            ? assinaturas.map((s) => new Paragraph(`• ${s.name ?? s.nomeArquivo ?? "-"}`))
+            : [new Paragraph("-")]
+
+        return [
+          subTitle(`Modelo: ${modelo.nomeRecurso || modelo.id || "-"}`),
+
+          createTable([
+            row("Observação", modelo.observacao ?? "-"),
+            row("Regras de acesso", modelo.regrasAcesso ?? "-"),
+          ]),
+
+          thirdTitle("Campos de busca"),
+          createTable([
+            row("Backoffice", camposBusca.backoffice || "-"),
+            row("Cliente", camposBusca.cliente || "-"),
+            row("Corretor", camposBusca.corretor || "-"),
+            row("Estipulante", camposBusca.estipulante || "-"),
+            row("Subestipulante", camposBusca.subestipulante || "-"),
+          ]),
+
+          thirdTitle("Tipo de impressão"),
+          simpleTable("Impressão", modelo.tipoImpressao ?? []),
+
+          thirdTitle("Tipo de acabamento"),
+          simpleTable("Acabamento", modelo.tipoAcabamento ?? []),
+
+          thirdTitle("Logos"),
+          ...logosList,
+
+          thirdTitle("Arquivos adicionais"),
+          ...arquivosList,
+
+          thirdTitle("Assinaturas"),
+          ...assinaturasList,
+        ]
+      })
+
+      /* =========================
+         CABEÇALHO / RODAPÉ
       ========================= */
 
       const header = new Header({
@@ -187,7 +261,7 @@ export default function ChecklistDocPreviewModal({ aberto, onClose, data }: Prop
       const footer = new Footer({
         children: [
           new Paragraph({
-            text: "Documento gerado automaticamente",
+            text: "",
             alignment: AlignmentType.CENTER,
           }),
         ],
@@ -216,6 +290,9 @@ export default function ChecklistDocPreviewModal({ aberto, onClose, data }: Prop
 
               sectionTitle("Layouts e Massas"),
               ...layoutsSections,
+
+              sectionTitle("Modelos de Envio"),
+              ...modelosSections,
             ],
           },
         ],
