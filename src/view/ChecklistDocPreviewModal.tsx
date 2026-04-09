@@ -8,10 +8,15 @@ import {
   TableCell,
   WidthType,
   TextRun,
+  HeadingLevel,
+  AlignmentType,
+  Header,
+  Footer,
 } from "docx"
 import { saveAs } from "file-saver"
 import { renderAsync } from "docx-preview"
 import type { ChecklistVersaoDTO } from "../dto/ChecklistVersaoDTO"
+import { BorderStyle } from "docx"
 
 type Props = {
   aberto: boolean
@@ -19,11 +24,7 @@ type Props = {
   data: ChecklistVersaoDTO
 }
 
-export default function ChecklistDocPreviewModal({
-  aberto,
-  onClose,
-  data,
-}: Props) {
+export default function ChecklistDocPreviewModal({ aberto, onClose, data }: Props) {
   const previewRef = useRef<HTMLDivElement>(null)
   const [blob, setBlob] = useState<Blob | null>(null)
 
@@ -31,20 +32,26 @@ export default function ChecklistDocPreviewModal({
     if (!aberto || !data) return
 
     async function gerarDoc() {
-
       /* =========================
-         CONFIG FIXA DEFINITIVA
-         ========================= */
+         CONFIG FIXA DO DOCUMENTO
+      ========================= */
 
       const TABLE_WIDTH = 10000
-      const COL_LABEL = 4000
-      const COL_VALUE = 6000
+      const COL_LABEL = 3500
+      const COL_VALUE = 6500
+
+      const cellBorder = {
+        top:    { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
+        bottom: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
+        left:   { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
+        right:  { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
+      }
 
       const labelCell = (text: string) =>
         new TableCell({
           width: { size: COL_LABEL, type: WidthType.DXA },
-          margins: { top: 200, bottom: 200, left: 250, right: 250 },
-          shading: { fill: "F2F2F2" },
+          shading: { fill: "F3F3F3" },
+          borders: cellBorder,
           children: [
             new Paragraph({
               children: [new TextRun({ text, bold: true })],
@@ -55,14 +62,10 @@ export default function ChecklistDocPreviewModal({
       const valueCell = (text?: string) =>
         new TableCell({
           width: { size: COL_VALUE, type: WidthType.DXA },
-          margins: { top: 200, bottom: 200, left: 250, right: 250 },
+          borders: cellBorder,
           children: [
             new Paragraph({
-              children: [
-                new TextRun({
-                  text: text || "-",
-                }),
-              ],
+              children: [new TextRun(text || "-")],
             }),
           ],
         })
@@ -72,29 +75,64 @@ export default function ChecklistDocPreviewModal({
           children: [labelCell(label), valueCell(value)],
         })
 
+      const title = (text: string) =>
+        new Paragraph({
+          text,
+          heading: HeadingLevel.TITLE,
+          alignment: AlignmentType.CENTER,
+          spacing: { after: 400, before: 400 },
+        })
+
       const sectionTitle = (text: string) =>
         new Paragraph({
-          children: [
-            new TextRun({
-              text,
-              bold: true,
-              size: 32,
-            }),
-          ],
-          spacing: { before: 600, after: 300 },
+          text,
+          heading: HeadingLevel.HEADING_1,
+          spacing: { before: 400, after: 200 },
+        })
+
+      const subTitle = (text: string) =>
+        new Paragraph({
+          text,
+          heading: HeadingLevel.HEADING_2,
+          spacing: { before: 250, after: 120 },
+        })
+
+      const thirdTitle = (text: string) =>
+        new Paragraph({
+          text,
+          heading: HeadingLevel.HEADING_3,
+          spacing: { before: 100, after: 80 },
         })
 
       const createTable = (rows: TableRow[]) =>
         new Table({
           width: { size: TABLE_WIDTH, type: WidthType.DXA },
           layout: "fixed",
-          columnWidths: [COL_LABEL, COL_VALUE], // 🔥 ESSA LINHA RESOLVE O GOOGLE DOCS
+          columnWidths: [COL_LABEL, COL_VALUE],
           rows,
         })
 
       /* =========================
-         IDENTIFICAÇÃO
-         ========================= */
+         CAPA
+      ========================= */
+
+      const cover = [
+        title(data.nomeDocumento),
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: `Gerado em ${new Date().toLocaleDateString()}`,
+              italics: true,
+            }),
+          ],
+          alignment: AlignmentType.CENTER,
+          spacing: { after: 800 },
+        }),
+      ]
+
+      /* =========================
+         TABELAS PRINCIPAIS
+      ========================= */
 
       const identificacaoTable = createTable([
         row("Nome do documento", data.nomeDocumento),
@@ -105,19 +143,11 @@ export default function ChecklistDocPreviewModal({
         row("Demanda", data.idDemanda),
       ])
 
-      /* =========================
-         DESTINOS
-         ========================= */
-
       const destinosTable = createTable([
         row("Icatu", data.icatu ? "Sim" : "Não"),
         row("Caixa", data.caixa ? "Sim" : "Não"),
         row("Rio Grande", data.rioGrande ? "Sim" : "Não"),
       ])
-
-      /* =========================
-         FORMA DE ENVIO
-         ========================= */
 
       const envioTable = createTable([
         row("Via Serviço", data.viaServico ? "Sim" : "Não"),
@@ -125,36 +155,57 @@ export default function ChecklistDocPreviewModal({
       ])
 
       /* =========================
-         LAYOUTS E MASSAS
-         ========================= */
+         LAYOUTS + MASSAS
+      ========================= */
 
-      const layoutsTables = data.layouts.flatMap((layout) => {
-
-        const massaRows = layout.massasDados.flatMap((massa) => [
-          row("Massa", massa.nomeMassaDados),
-          row("Observação da massa", massa.observacao ?? "-"),
+      const layoutsSections = data.layouts.flatMap((layout) => {
+        const massaBlocks = layout.massasDados.flatMap((massa) => [
+          thirdTitle(`Massa: ${massa.nomeMassaDados}`),
+          createTable([row("Observação da massa", massa.observacao ?? "-")]),
         ])
 
         return [
-          sectionTitle(`Layout: ${layout.nomeLayout}`),
-
-          createTable([
-            row("Observação do layout", layout.observacao ?? "-"),
-            ...massaRows,
-          ]),
+          subTitle(`Layout: ${layout.nomeLayout}`),
+          createTable([row("Observação do layout", layout.observacao ?? "-")]),
+          ...massaBlocks,
         ]
       })
 
       /* =========================
+         CABEÇALHO E RODAPÉ SIMPLES
+      ========================= */
+
+      const header = new Header({
+        children: [
+          new Paragraph({
+            text: data.nomeDocumento,
+            alignment: AlignmentType.RIGHT,
+          }),
+        ],
+      })
+
+      const footer = new Footer({
+        children: [
+          new Paragraph({
+            text: "Documento gerado automaticamente",
+            alignment: AlignmentType.CENTER,
+          }),
+        ],
+      })
+
+      /* =========================
          DOCUMENTO FINAL
-         ========================= */
+      ========================= */
 
       const doc = new Document({
         sections: [
           {
-            properties: {},
+            headers: { default: header },
+            footers: { default: footer },
             children: [
-              sectionTitle("Identificação do Documento"),
+              ...cover,
+
+              sectionTitle("Identificação"),
               identificacaoTable,
 
               sectionTitle("Destinos"),
@@ -164,7 +215,7 @@ export default function ChecklistDocPreviewModal({
               envioTable,
 
               sectionTitle("Layouts e Massas"),
-              ...layoutsTables,
+              ...layoutsSections,
             ],
           },
         ],
@@ -196,9 +247,12 @@ export default function ChecklistDocPreviewModal({
         <div
           ref={previewRef}
           style={{
-            height: "60vh",
+            height: "65vh",
             overflow: "auto",
-            border: "1px solid #ddd",
+            background: "#fff",
+            padding: 20,
+            borderRadius: 8,
+            boxShadow: "0 0 10px rgba(0,0,0,0.15)",
             marginBottom: 16,
           }}
         />
@@ -208,7 +262,7 @@ export default function ChecklistDocPreviewModal({
             Baixar DOCX
           </button>
 
-          <button className="btn btn-outline-primary" onClick={onClose}>
+          <button className="btn btn-outline-secondary" onClick={onClose}>
             Fechar
           </button>
         </div>
@@ -230,6 +284,6 @@ const overlay = {
 const modal = {
   background: "white",
   padding: 20,
-  width: "80%",
+  width: "85%",
   borderRadius: 8,
 }
