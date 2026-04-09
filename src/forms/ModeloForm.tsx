@@ -139,7 +139,7 @@ function removerArquivo(
                   <>
                     <div className="mb-3">
                       <span className="label-azul">Modelo selecionado</span>
-                      <p className="mt-1">{modeloSelecionado.arquivo?.name}</p>
+                      <p className="mt-1">{modeloSelecionado.nomeRecurso ?? modeloSelecionado.arquivo?.name}</p>
                     </div>
 
                     <div className="mb-3">
