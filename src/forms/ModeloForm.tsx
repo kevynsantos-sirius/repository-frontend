@@ -7,7 +7,7 @@ import ModalGerenciarArquivos from "../modal/ModalGerenciarArquivos"
 // 👉 novo import
 import FormatoImpressaoSection from "../components/FormatoImpressaoSection/FormatoImpressaoSection";
 import DisponibilizacaoSection from "../components/DisponibilizacaoSection/DisponibilizacaoSection";
-
+import ListaArquivos from "../components/ListaArquivos/ListaArquivos";
 type Props = {
   checklist: ChecklistVersaoDTO | null
   modelos: Modelo[]
@@ -146,6 +146,13 @@ function removerArquivo(
                       <span className="label-azul">Observação</span>
                       <p className="mt-1">{modeloSelecionado.observacao || "(Nenhuma observação cadastrada)"}</p>
                     </div>
+                    {modeloSelecionado && (
+                      <>
+                        <ListaArquivos titulo="Logos anexadas" arquivos={modeloSelecionado.logos} />
+                        <ListaArquivos titulo="Assinaturas anexadas" arquivos={modeloSelecionado.assinaturas} />
+                        <ListaArquivos titulo="Arquivos adicionais anexados" arquivos={modeloSelecionado.arquivosAdicionais} />
+                      </>
+                    )}
                   </>
                 ) : (
                   <p className="text-muted">Nenhum modelo selecionado</p>
