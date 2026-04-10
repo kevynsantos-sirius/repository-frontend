@@ -1,6 +1,8 @@
 import type { ChecklistVersaoDTO } from '../dto/ChecklistVersaoDTO'
 import type { UsuarioDTO } from '../dto/UsuarioDTO'
-import type { Dispatch, SetStateAction } from 'react'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import type { Ramo } from '../types/types'
+import { buscarRamos } from '../services/ramo'
 
 type Props = {
   checklist: ChecklistVersaoDTO | null
@@ -19,6 +21,21 @@ export default function IdentificacaoForm({
   onChangeChecklist,
   setBtnSalvarCheckList
 }: Props) {
+
+  const [ramos, setRamos] = useState<Ramo[]>([])
+
+  useEffect(() => {
+    async function carregar() {
+      try {
+        const data = await buscarRamos()
+        setRamos(data)
+      } catch (err) {
+        console.error("Erro ao buscar ramos", err)
+      }
+    }
+
+    carregar()
+  }, [])
 
   // Loading somente quando estiver editando e ainda não carregou
   if (!checklist && !isNovo) {
@@ -117,15 +134,18 @@ function atualizarCampo<K extends keyof ChecklistVersaoDTO>(
               className="form-control"
               required
               value={checklistForm?.idRamo ?? ''}
-              onChange={(e) =>
-              {atualizarCampo('idRamo', Number(e.target.value)); setBtnSalvarCheckList(true); }
-              }
+              onChange={(e) => {
+                atualizarCampo('idRamo', Number(e.target.value))
+
+                setBtnSalvarCheckList(true)
+              }}
             >
               <option value="">Selecione</option>
-              <option value="1">CAPITALIZAÇÃO</option>
-              <option value="2">PREVIDÊNCIA</option>
-              <option value="3">SEGUROS</option>
-              <option value="4">FUNDO DE PENSÃO</option>
+               {ramos.map((ramo) => (
+                <option key={ramo.idRamo} value={ramo.idRamo}>
+                  {ramo.nomeRamo}
+                </option>
+              ))}
             </select>
           </div>
         </div>
